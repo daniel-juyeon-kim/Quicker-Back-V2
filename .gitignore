@@ -1,0 +1,18 @@
+# node_modules
+/node_modules
+
+# env
+.env
+
+# DB
+/Maria/DB/
+
+# 인증서
+/config
+
+#logs
+/logs/*
+
+# todo
+TODO.*
+todo.*
