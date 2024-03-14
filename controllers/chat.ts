@@ -3,6 +3,16 @@ import { messageInstance } from "../mongo/command";
 import { HTTPError } from "../types/http-error";
 
 export class ChatController {
+  // query: {
+  //   orderNum: string
+  // }
+
+  // {
+  //   roomName: string,
+  //   id: string,
+  //   message: string,
+  //   date : { type: Date, default: Date.now }
+  // }
   async getRecentMessage (req: Request, res: Response, next: NextFunction) {
     try {
       if (typeof req.query.orderNum !== "string") {

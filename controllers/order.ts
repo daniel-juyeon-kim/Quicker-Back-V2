@@ -13,6 +13,59 @@ import { HTTPError } from "../types/http-error";
 
 initModels(sequelizeConnector);
 export class OrderController {
+  // body: {
+  //   userWalletAddress: string,
+  //   Order: {
+  //     id: number;
+  //     ID_REQ: string;
+  //     ID_DVRY: string | undefined;
+  //     DETAIL: string | undefined;
+  //     PAYMENT: number;
+  //     CHECK_RES: number;
+  //     PICTURE: string | undefined;
+  //   },
+  //   Transportation: {
+  //     ID: number;
+  //     WALKING: number;
+  //     BICYCLE: number;
+  //     SCOOTER: number;
+  //     BIKE: number;
+  //     CAR: number;
+  //     TRUCK: number;
+  //   },
+  //   Destination: {
+  //     id: number;
+  //     X: number;
+  //     Y: number;
+  //     DETAIL: string;
+  //   },
+  //   Departure: {
+  //     ID: number;
+  //     X: number;
+  //     Y: number;
+  //     DETAIL: string;
+  //   },
+  //   Product: {
+  //     ID: number;
+  //     WIDTH: number;
+  //     LENGTH: number;
+  //     HEIGHT: number;
+  //     WEIGHT: number;
+  //   },
+  //   Sender: {
+  //     ID: number;
+  //     NAME: string;
+  //     PHONE: string;
+  //   },
+  //   Recipient: {
+  //     id: number;
+  //     NAME: string;
+  //     PHONE: string;
+  //   }
+  // }
+
+  // response 200
+
   async request(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
@@ -29,6 +82,39 @@ export class OrderController {
     }
   }
 
+  // query : {
+  //   orderIds: string
+  // }
+
+  // {
+  //   id: number
+  //   DETAIL: string| undefined
+  //   Destination: {    
+  //     X: number
+  //     Y: number
+  //     DETAIL: string
+  //   }
+  //   Departure: {
+  //     X: number
+  //     Y: number
+  //     DETAIL: string
+  //   }
+  //   Recipient: {
+  //     NAME: string
+  //     PHONE: string
+  //   }
+  //   Sender : {
+  //     NAME: string
+  //     PHONE: string    
+  //   }   
+  //   Product: {
+  //     WIDTH: number
+  //     LENGTH: number
+  //     HEIGHT: number
+  //     WEIGHT: number
+  //   }
+  // }[]
+  
   async orderlist(req: Request, res: Response, next: NextFunction) {
     try {
       const orderIds = req.query.orderIds;
@@ -39,6 +125,22 @@ export class OrderController {
       next(error);
     }
   }
+
+  // query {
+  //   orderid
+  // }
+
+  // response : {
+  //   id: number;
+  //   Destination : {
+  //     X: number;
+  //     Y: number;
+  //   }
+  //   Departure: {
+  //     X!: number;
+  //     Y!: number;
+  //   }  
+  // }
 
   async order(req: Request, res: Response, next: NextFunction) {
     try {
@@ -53,6 +155,12 @@ export class OrderController {
     }
   }
 
+  // body: {
+  //   userWalletAddress : string
+  //   orderId: number
+  // }
+
+  // response 200
   async updateOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
@@ -64,6 +172,12 @@ export class OrderController {
       next(error);
     }
   }
+
+  // query {
+  //   orderNum: number
+  // }
+
+  // response 200
 
   async getRoomInfo(req: Request, res: Response, next: NextFunction) {
     try {
@@ -82,6 +196,14 @@ export class OrderController {
     }
   }
 
+  // body {
+  //   X: number
+  //   Y: number
+  //   address: string // walletAddress
+  // }
+
+  // response 200
+
   async postLocation(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
@@ -99,6 +221,16 @@ export class OrderController {
     }
   }
 
+  // query {
+  //   quicker: string // address
+  // }
+
+  // response {
+  //   address : string,
+  //   X : number,
+  //   Y : number
+  // }
+
   async getLocation(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.query;
@@ -111,6 +243,14 @@ export class OrderController {
       next(error);
     }
   }
+
+  // query {
+  //   orderNum: number
+  // }
+
+  // response {
+  //   image: string
+  // }
 
   async getImage(req: Request, res: Response, next: NextFunction) {
     try {
@@ -134,6 +274,13 @@ export class OrderController {
     }
   }
 
+  // body {
+  //   file: string
+  //   orderNum: number
+  // }
+
+  // response 200
+
   async postImage(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
@@ -149,6 +296,15 @@ export class OrderController {
       next(error);
     }
   }
+
+  // query {
+  //   orderNum: number
+  // }
+
+  // response {
+  //   imageBuffer: string
+  //   reason: string
+  // }
 
   async getFailImage(req: Request, res: Response, next: NextFunction) {
     try {
@@ -168,6 +324,13 @@ export class OrderController {
       next(error);
     }
   }
+
+  // body {
+  //   file: string
+  //   reason: string
+  // }
+
+  // response 200
 
   async postFailImage(req: Request, res: Response, next: NextFunction) {
     try {
@@ -191,6 +354,14 @@ export class OrderController {
       next(error);
     }
   }
+
+  // query {
+  //   distance: number
+  // }
+
+  // response {
+  //   distance: number
+  // }
 
   async getAverageCost(req: Request, res: Response, next: NextFunction) {
     try {

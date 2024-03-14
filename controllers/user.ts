@@ -10,6 +10,40 @@ initModels(sequelizeConnector);
 
 export class UserController {
   // NOTE : 이름 변경 필
+
+  // query : {
+  //   userWalletAdress: string
+  // }
+  
+  // {
+  //   id: number;
+  //   DETAIL: string | undefined;
+  //   PAYMENT: number;
+  //   Transportation : {
+  //     WALKING: number;
+  //     BICYCLE: number;
+  //     SCOOTER: number;
+  //     BIKE: number;
+  //     CAR: number;
+  //     TRUCK: number;
+  //   },
+  //   Destination: {
+  //     X: number;
+  //     Y: number;
+  //     DETAIL: string;
+  //   },
+  //   Departure: {
+  //     X: number;
+  //     Y: number;
+  //     DETAIL: string;
+  //   },
+  //   Product: {
+  //     WIDTH: number;
+  //     LENGTH: number;
+  //     HEIGHT: number;
+  //     WEIGHT: number;
+  //   }[]
+  // }
   async getRequests(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.query;
@@ -30,6 +64,15 @@ export class UserController {
     }
   }
 
+  // body {
+  //   User: {
+  //     contact: string
+  //   }
+  //   Birthday: string
+  // }
+
+  // response : {200}
+   
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
@@ -41,6 +84,14 @@ export class UserController {
       next(error);
     }
   }
+
+  // query : {
+  //   walletAddress : string
+  // }
+
+  // {
+  //   name : string
+  // }
 
   async findUserNameByWalletAddress(
     req: Request,
@@ -61,12 +112,20 @@ export class UserController {
     }
   }
 
+  // body : {
+  //   walletAddress: string,
+  //   imageId: string
+  // }
+
+  // response 200
+
   async putUserImageId(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
       const { walletAddress, imageId } = body;
       const user = await userInstance.findId(walletAddress);
       if (user !== null) {
+        // TODO: 반환 데이터 참고할 때 이거 참조하자
         console.log(user.id, imageId);
         await userInstance.updateImageId(user.id, imageId);
         res.send({ message: "done" });
@@ -78,6 +137,14 @@ export class UserController {
     }
   }
 
+  // query: {
+  //   walletAddress: string
+  // }
+
+  // Image : {
+  //   imageId: string
+  // }
+  
   async getUserImageId(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.query;

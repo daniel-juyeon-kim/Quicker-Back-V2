@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { orderInstance } from "../maria/commands";
 export class AdminController {
+  // body: {
+  //   id: number
+  // }
+
   async deleteAssociateOrder (req: Request, res: Response) {
     try {
       let deleteTargetId = parseInt(req.body.id);
@@ -11,6 +15,11 @@ export class AdminController {
       res.send(error);
     }
   }
+
+  // body: {
+  //   startNumber: number
+  //   endNumber: number
+  // }
 
   async deleteAssociateOrders (req: Request, res: Response) {
     try {
