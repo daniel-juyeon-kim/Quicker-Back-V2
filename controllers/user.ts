@@ -73,16 +73,37 @@ export class UserController {
   //   Birthday: string
   // }
 
+  // User {
+  //   wallet_address: string;
+  //   name: string;
+  //   email: string;
+  //   contact: string;
+  // }
+  
+  // Birthday {
+  //   id!: string;
+  //   year!: number;
+  //   month!: number;
+  //   date!: number;
+  // }
+
+  // id: string;
+  // timeStamp: number;
+
   // response : {200}
-   
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const body = req.body;
-      const { user, userBirthDate, hashed } = cryptoInstance.encryptForUserInfo(body, config.crypto.key as string);
-      await userInstance.register(user, userBirthDate, hashed);
-      res.send({ msg: "done" });
+      const {User, Birthday} = matchedData(req);
+      
+      const hash = cryptoInstance.hashing(User.contact, config.crypto.key as string);
+      
+      User.id = hash;
+      Birthday.id = hash;
+      
+      await userInstance.register(User, Birthday, hash);
+
+      res.send(new HTTPResponse(200));
     } catch (error) {
-      console.error(error);
       next(error);
     }
   }
