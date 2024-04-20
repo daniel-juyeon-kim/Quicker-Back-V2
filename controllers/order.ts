@@ -183,17 +183,10 @@ export class OrderController {
 
   async getRoomInfo(req: Request, res: Response, next: NextFunction) {
     try {
-      const query = req.query;
-      const orderNum = query.orderNum;
-      let room = null;
-      if (typeof orderNum === "string") {
-        room = await roomInstance.find(parseInt(orderNum));
-      } else if (typeof orderNum === "number") {
-        room = await roomInstance.find(orderNum);
-      }
-      res.send(room);
+      const { orderNum } = matchedData(req);
+      const room = await roomInstance.find(parseInt(orderNum));
+      res.send(new HTTPResponse(200, room));
     } catch (error) {
-      console.error(error);
       next(error);
     }
   }
