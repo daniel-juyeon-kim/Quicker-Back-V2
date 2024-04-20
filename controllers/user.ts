@@ -4,6 +4,8 @@ import { orderInstance, userInstance } from "../maria/commands";
 import sequelizeConnector from "../maria/connector/sequelize-connector";
 import { initModels } from "../maria/models/init-models";
 import { cryptoInstance } from "../service";
+import { matchedData } from "express-validator";
+import { HTTPErrorResponse, HTTPResponse } from "../service/http-response";
 
 require("dotenv").config();
 initModels(sequelizeConnector);
@@ -93,21 +95,17 @@ export class UserController {
   //   name : string
   // }
 
-  async findUserNameByWalletAddress(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async findUserNameByWalletAddress(req: Request, res: Response, next: NextFunction) {
     try {
-      const query = req.query;
-      const walletAddress = query.walletAddress;
-      if (typeof walletAddress !== "string") {
-        throw new Error("TypeError : walletAddress be string");
+      const { walletAddress } = matchedData(req)
+      const name = await userInstance.findName(walletAddress);
+      
+      if (!name) {
+        throw new HTTPErrorResponse(500, "사용자가 존재하지 않습니다.")
       }
-      const user = await userInstance.findName(walletAddress);
-      res.json(user);
+      
+      res.send(new HTTPResponse(200, name));
     } catch (error) {
-      console.error(error);
       next(error);
     }
   }
