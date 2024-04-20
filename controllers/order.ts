@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { classifyDistance, updateOrder } from "../service/order";
+import { updateOrder } from "../service/order";
 
 import config from "../config";
 import { averageInstance, locationInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
@@ -9,7 +9,9 @@ import { initModels } from "../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../mongo/command";
 import connectMongo from "../mongo/connector";
 import { cryptoInstance, nhnApi } from "../service";
-import { HTTPError } from "../types/http-error";
+import { matchedData } from "express-validator";
+import { HTTPErrorResponse, HTTPResponse } from "../service/http-response";
+import { classifyDistance } from "../service/classify";
 
 initModels(sequelizeConnector);
 export class OrderController {
@@ -234,7 +236,7 @@ export class OrderController {
   async getLocation(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.query;
-      const address = query.quicker;
+      const address = query.quicker as string;
       const connection = await connectMongo("realTimeLocation");
       const location = await currentLocationInstance.find(connection, address);
       res.json(location);
@@ -331,7 +333,6 @@ export class OrderController {
   // }
 
   // response 200
-
   async postFailImage(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
@@ -365,18 +366,20 @@ export class OrderController {
 
   async getAverageCost(req: Request, res: Response, next: NextFunction) {
     try {
-      const query = req.query;
-      const classifiedDistance = await classifyDistance(query);
-      const averageCost = await averageInstance.findLastMonthCost(
-        classifiedDistance,
-      );
-      if (averageCost !== null) {
-        res.send({ distance: averageCost[classifiedDistance] });
-        return;
+      const { distance } = matchedData(req);
+
+      const unit = classifyDistance(parseInt(distance));
+      const averageCost = await averageInstance.findLastMonthCost(unit);
+
+      if (!averageCost) {
+        throw new HTTPErrorResponse(500);
       }
-      const HTTPError : HTTPError = new Error("Internal Server Error")
-      HTTPError.status = 500 
-      throw HTTPError
+
+      if (!averageCost[unit]) {
+        throw new HTTPErrorResponse(404, "요청한 데이터가 존재하지 않습니다.");
+      }
+
+      res.send(new HTTPResponse(200, { distance: averageCost[unit] }));
     } catch (error) {
       next(error);
     }
