@@ -208,17 +208,13 @@ export class OrderController {
 
   async postLocation(req: Request, res: Response, next: NextFunction) {
     try {
-      const body = req.body;
-      const address = body.address;
-      const loaction = {
-        X: body.X,
-        Y: body.Y,
-      };
+      const { address, ...location } = matchedData(req);
+
       const connection = await connectMongo("realTimeLocation");
-      await currentLocationInstance.create(connection, address, loaction);
-      res.send({ msg: "done" });
+      await currentLocationInstance.create(connection, address, location);
+      
+      res.send(new HTTPResponse(200));
     } catch (error) {
-      console.error(error);
       next(error);
     }
   }
@@ -228,23 +224,31 @@ export class OrderController {
   // }
 
   // response {
-  //   address : string,
   //   X : number,
   //   Y : number
   // }
 
   async getLocation(req: Request, res: Response, next: NextFunction) {
     try {
-      const query = req.query;
-      const address = query.quicker as string;
+      const { quicker } = matchedData(req);
+
       const connection = await connectMongo("realTimeLocation");
-      const location = await currentLocationInstance.find(connection, address);
-      res.json(location);
+      const location = await currentLocationInstance.find(connection, quicker);
+
+      if (!location) {
+        throw new HTTPErrorResponse(500)
+      }
+
+      if (!(location.X && location.Y)) {
+        throw new HTTPErrorResponse(404, "요청한 데이터가 존재하지 않습니다.")
+      }
+
+      res.send(location);
     } catch (error) {
-      console.error(error);
       next(error);
     }
   }
+
 
   // query {
   //   orderNum: number
