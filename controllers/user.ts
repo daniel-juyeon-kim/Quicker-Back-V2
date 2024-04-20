@@ -119,17 +119,15 @@ export class UserController {
 
   async putUserImageId(req: Request, res: Response, next: NextFunction) {
     try {
-      const body = req.body;
-      const { walletAddress, imageId } = body;
+      const { walletAddress, imageId } = matchedData(req);
+
       const user = await userInstance.findId(walletAddress);
-      if (user !== null) {
-        // TODO: 반환 데이터 참고할 때 이거 참조하자
-        console.log(user.id, imageId);
-        await userInstance.updateImageId(user.id, imageId);
-        res.send({ message: "done" });
-      } else {
-        throw new Error("Can not find user id");
-      }
+      if (!user) {
+        return next(new HTTPErrorResponse(500, "사용자가 존재하지 않습니다."))
+      } 
+      await userInstance.updateImageId(user.id, imageId);
+      
+      res.send(new HTTPResponse(200))
     } catch (error) {
       next(error);
     }
@@ -145,18 +143,19 @@ export class UserController {
   
   async getUserImageId(req: Request, res: Response, next: NextFunction) {
     try {
-      const query = req.query;
-      const walletAddress = query.walletAddress;
-      if (typeof walletAddress !== "string") {
-        throw new Error("TypeError : walletAddress be string");
-      }
+      const { walletAddress } = matchedData(req)
+      
       const user = await userInstance.findId(walletAddress);
-      if (user === null) {
-        throw new Error("userid not exist");
+      if (!user) {
+        return next(new HTTPErrorResponse(500, "사용자가 존재하지 않습니다."))
       }
-      const imageId = await userInstance.findImageId(user.id);
-      console.log(imageId);
-      res.send(imageId);
+    
+      const imageId = await userInstance.findImageId(user.id);  
+      if (!imageId) {
+        throw new Error("사용자의 이미지 정보가 존재하지 않습니다.");
+      }
+
+      res.send(new HTTPResponse(200, imageId));
     } catch (error) {
       next(error);
     }
