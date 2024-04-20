@@ -36,32 +36,3 @@ export const updateOrder = async (body: any, nhnApi : NHNAPI, cryptoInstance : C
 
   await nhnApi.sendMessage(messageBody)
 };
-
-export const classifyDistance = async (query: any) => {
-  type Distance =
-    | "5KM"
-    | "10KM"
-    | "15KM"
-    | "20KM"
-    | "25KM"
-    | "30KM"
-    | "40KM"
-    | "50KM"
-    | "60KM"
-    | "60+KM";
-  let classifiedDistance: Distance = "5KM";
-  const distance: number = query.distance;
-  //TODO: 중복제거
-  const classifyDistance = (distance: number) => {
-    const listDistance = [5, 10, 15, 20, 25, 30, 40, 50, 60];
-    for (const distanceUnit of listDistance) {
-      if (distance <= distanceUnit) {
-        return (distanceUnit + "KM") as Distance;
-      } else if (60 < distance) {
-        return "60+KM" as Distance;
-      }
-    }
-  };
-  classifiedDistance = classifyDistance(distance) as Distance;
-  return classifiedDistance;
-};
