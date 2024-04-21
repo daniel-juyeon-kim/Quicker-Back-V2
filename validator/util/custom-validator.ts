@@ -2,7 +2,7 @@ import { message } from "../";
 import { Types } from "../";
 import { checkNotNumber } from "../../service/checker";
 
-export const intArrayValidator = (arg: string) => {
+export const validateIntList = (arg: string) => {
   arg.split(",").forEach((splitArg) => {
     try {
       checkNotNumber(splitArg)

@@ -1,6 +1,6 @@
 import { Schema } from "express-validator";
 import { message } from "../../../../src/message";
-import { intArrayValidator } from "../../../../util/custom-validator";
+import { validateIntList } from "../../../../util/custom-validator";
 
 // GET /orders/detail
 export const getMethodSchema: Schema = {
@@ -10,7 +10,7 @@ export const getMethodSchema: Schema = {
       errorMessage: message.notExist,
     },
     custom: {
-      options: intArrayValidator
+      options: validateIntList
     }
   },
 };
