@@ -15,6 +15,60 @@ import { classifyDistance } from "../service/classify";
 
 initModels(sequelizeConnector);
 export class OrderController {
+    // query : {
+  //   userWalletAdress: string
+  // }
+  
+  // {
+  //   id: number;
+  //   DETAIL: string | undefined;
+  //   PAYMENT: number;
+  //   Transportation : {
+  //     WALKING: number;
+  //     BICYCLE: number;
+  //     SCOOTER: number;
+  //     BIKE: number;
+  //     CAR: number;
+  //     TRUCK: number;
+  //   },
+  //   Destination: {
+  //     X: number;
+  //     Y: number;
+  //     DETAIL: string;
+  //   },
+  //   Departure: {
+  //     X: number;
+  //     Y: number;
+  //     DETAIL: string;
+  //   },
+  //   Product: {
+  //     WIDTH: number;
+  //     LENGTH: number;
+  //     HEIGHT: number;
+  //     WEIGHT: number;
+  //   }[]
+  // }
+  async getRequests(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { walletAddress } = matchedData(req);
+      
+      const user = await userInstance.findId(walletAddress);
+
+      if (!user) {
+        throw new HTTPErrorResponse(404, "해당 지갑주소와 일치하는 사용자가 존재하지 않습니다.")
+      }
+      
+      const orders = await orderInstance.findForSearch(user.id);
+      if (orders.length === 0) {
+        throw new HTTPErrorResponse(404, "생성된 오더가 없습니다.")
+      }
+
+      res.send(new HTTPResponse(200, orders));
+    } catch (error) {
+      next(error);
+    }
+  }
+  
   // body: {
   //   userWalletAddress: string,
   //   Order: {
