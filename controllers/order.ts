@@ -12,6 +12,7 @@ import { cryptoInstance, nhnApi } from "../service";
 import { matchedData } from "express-validator";
 import { HTTPErrorResponse, HTTPResponse } from "../service/http-response";
 import { classifyDistance } from "../service/classify";
+import { parseToNumberList } from "../service/parser";
 
 initModels(sequelizeConnector);
 export class OrderController {
@@ -144,8 +145,8 @@ export class OrderController {
 
   // {
   //   id: number
-  //   DETAIL: string| undefined
-  //   Destination: {    
+  //   DETAIL: string | undefined
+  //   Destination: {
   //     X: number
   //     Y: number
   //     DETAIL: string
@@ -161,8 +162,8 @@ export class OrderController {
   //   }
   //   Sender : {
   //     NAME: string
-  //     PHONE: string    
-  //   }   
+  //     PHONE: string
+  //   }
   //   Product: {
   //     WIDTH: number
   //     LENGTH: number
@@ -170,13 +171,15 @@ export class OrderController {
   //     WEIGHT: number
   //   }
   // }[]
-  
+
   async orderlist(req: Request, res: Response, next: NextFunction) {
     try {
-      const orderIds = req.query.orderIds;
-      const idList = JSON.parse(`[${orderIds}]`);
-      const orders = await orderInstance.findForDetail(idList);
-      res.send(orders);
+      const { orderIds } = matchedData(req) as { orderIds: string };
+
+      const parsedIds = parseToNumberList(orderIds);
+      const orders = await orderInstance.findForDetail(parsedIds);
+
+      res.send(new HTTPResponse(200, orders));
     } catch (error) {
       next(error);
     }
