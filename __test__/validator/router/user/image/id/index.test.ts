@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { message, RequestValidator, Types } from "../../../../../../validator";
 import { getMethodSchema, putMethodSchema } from "../../../../../../validator/schema/routes/user/image/id";
-import { Types, message, validate } from "../../../../../../validator";
 import { TestName } from "../../../types/test-name";
-
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -15,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("GET: /user/image/id", () => {
-  const testTarget = validate(getMethodSchema, ["query"])
+  const testTarget = RequestValidator.validate(getMethodSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -64,7 +63,7 @@ describe("GET: /user/image/id", () => {
 });
 
 describe("PUT: /user/image/id", () => {
-  const testTarget = validate(putMethodSchema, ["body"])
+  const testTarget = RequestValidator.validate(putMethodSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -78,7 +77,7 @@ describe("PUT: /user/image/id", () => {
       expect(next).toHaveBeenCalledWith();
     });
   });
-  
+
   describe(TestName.INVALID_REQUSET, () => {
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
       req.body = {

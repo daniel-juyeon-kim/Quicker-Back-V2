@@ -1,4 +1,4 @@
-import { Types, message } from "../../validator";
+import { message, Types } from "../../validator";
 import { validateIntList } from "../../validator/util/custom-validator";
 import { TestName } from "./router/types/test-name";
 

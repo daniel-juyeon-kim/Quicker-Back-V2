@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { Types, message, validate } from "../../../../validator";
-import { getMethodSchema, postMethodSchema, patchMethodSchema } from "../../../../validator/schema/routes/order";
+import { message, RequestValidator, Types } from "../../../../validator";
+import { getMethodSchema, patchMethodSchema, postMethodSchema } from "../../../../validator/schema/routes/order";
 import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
@@ -14,7 +14,7 @@ describe("GET: /order", () => {
     next = jest.fn();
   });
 
-  const testTarget = validate(getMethodSchema, ["query"]);
+  const testTarget = RequestValidator.validate(getMethodSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -115,7 +115,7 @@ describe("POST: /order", () => {
     next = jest.fn();
   });
 
-  const testTarget = validate(postMethodSchema, ["body"]);
+  const testTarget = RequestValidator.validate(postMethodSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -196,7 +196,7 @@ describe("PATCH: /order", () => {
     next = jest.fn();
   });
 
-  const testTarget = validate(patchMethodSchema, ["body"]);
+  const testTarget = RequestValidator.validate(patchMethodSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

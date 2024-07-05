@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
+import { message, RequestValidator, Types } from "../../../../../../validator";
 import { getMethodSchema, postMethodSchema } from "../../../../../../validator/schema/routes/order/image/fail";
-import { Types, message, validate } from "../../../../../../validator";
 import { TestName } from "../../../types/test-name";
-
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -16,7 +15,7 @@ beforeEach(() => {
 });
 
 describe("GET: /order/image/fail", () => {
-  const testTarget = validate(getMethodSchema, ["query"]);
+  const testTarget = RequestValidator.validate(getMethodSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -64,7 +63,7 @@ describe("GET: /order/image/fail", () => {
 });
 
 describe("POST: /order/image/fail", () => {
-  const testTarget = validate(postMethodSchema, ["body"]);
+  const testTarget = RequestValidator.validate(postMethodSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

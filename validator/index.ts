@@ -1,9 +1,5 @@
-import { validate } from "./src/validate";
-import { Types } from "./src/types";
 import { message } from "./src/message";
+import { Types } from "./src/types";
+import { RequestValidator } from "./src/validator";
 
-export {
-  validate,
-  Types,
-  message
-}
+export { RequestValidator, Types, message };

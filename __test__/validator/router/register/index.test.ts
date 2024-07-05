@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { message, RequestValidator, Types } from "../../../../validator";
 import { postMethodSchema } from "../../../../validator/schema/routes/register";
-import { Types, message, validate } from "../../../../validator";
 import { TestName } from "../types/test-name";
-
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -29,7 +28,7 @@ beforeEach(() => {
 //     date!: number;
 // }
 describe("POST: /register", () => {
-  const testTarget = validate(postMethodSchema, ["body"])
+  const testTarget = RequestValidator.validate(postMethodSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -104,7 +103,7 @@ describe("POST: /register", () => {
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
       req.body = {
         User: {
-          name: "이름"
+          name: "이름",
         },
         Birthday: {
           year: 1999,
@@ -123,30 +122,30 @@ describe("POST: /register", () => {
         value: undefined,
       });
     });
-    
+
     test(TestName.EMPTY_ATTRIBUTE, async () => {
-        req.body = {
-          User: {
-            wallet_address: "문자열",
-            name: "문자열",
-            email: "temp@gmaicom",
-            contact: "01012341234",
-          },
-          Birthday: {
-            year: 1999,
-            month: 1,
-          },
-        };
-  
-        await testTarget(req as Request, res as Response, next);
-  
-        expect(next).toHaveBeenCalledWith({
-          location: "body",
-          msg: message.notExist,
-          path: "Birthday.date",
-          type: "field",
-          value: undefined,
-        });
+      req.body = {
+        User: {
+          wallet_address: "문자열",
+          name: "문자열",
+          email: "temp@gmaicom",
+          contact: "01012341234",
+        },
+        Birthday: {
+          year: 1999,
+          month: 1,
+        },
+      };
+
+      await testTarget(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith({
+        location: "body",
+        msg: message.notExist,
+        path: "Birthday.date",
+        type: "field",
+        value: undefined,
       });
+    });
   });
 });
