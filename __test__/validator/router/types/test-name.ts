@@ -5,5 +5,5 @@ export enum TestName {
   INVALID_REQUSET = "유효하지 않은 요청",
   MISS_TYPE = "타입이 알맞지 않음",
   NOT_EXIST_ATTRIBUTE = "속성이 누락됨",
-  EMPTY_ATTRIBUTE = "값이 비어있음"
+  EMPTY_ATTRIBUTE = "값이 비어있음",
 }

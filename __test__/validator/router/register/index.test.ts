@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator, Types } from "../../../../validator";
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
 import { postMethodSchema } from "../../../../validator/schema/routes/register";
 import { TestName } from "../types/test-name";
 
@@ -93,7 +93,7 @@ describe("POST: /register", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.OBJECT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
         path: "User",
         type: "field",
         value: "문자열",
@@ -116,7 +116,7 @@ describe("POST: /register", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "User.wallet_address",
         type: "field",
         value: undefined,
@@ -141,7 +141,7 @@ describe("POST: /register", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "Birthday.date",
         type: "field",
         value: undefined,

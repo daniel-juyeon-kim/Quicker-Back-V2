@@ -1,21 +1,20 @@
-import { message } from "../../../src/message";
-import { Types } from "../../../src/types";
+import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
 
 const existAndString = {
   notEmpty: {
-    errorMessage: message.notExist,
+    errorMessage: ValidateErrorMessage.notExist,
   },
   isString: {
-    errorMessage: message.mustBe(Types.STRING),
+    errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
   },
 };
 
 const existAndInt = {
   notEmpty: {
-    errorMessage: message.notExist,
+    errorMessage: ValidateErrorMessage.notExist,
   },
   isInt: {
-    errorMessage: message.mustBe(Types.INT),
+    errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
   },
 };
 
@@ -23,17 +22,17 @@ const existAndInt = {
 export const postMethodSchema = {
   User: {
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isObject: {
-      errorMessage: message.mustBe(Types.OBJECT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
     },
   },
   "User.name": {
     ...existAndString,
   },
   "User.wallet_address": {
-    ...existAndString
+    ...existAndString,
   },
   "User.email": {
     ...existAndString,
@@ -49,19 +48,19 @@ export const postMethodSchema = {
   },
   Birthday: {
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isObject: {
-      errorMessage: message.mustBe(Types.OBJECT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
     },
   },
   "Birthday.year": {
-    ...existAndInt
+    ...existAndInt,
   },
   "Birthday.month": {
-    ...existAndInt
+    ...existAndInt,
   },
   "Birthday.date": {
-    ...existAndInt
+    ...existAndInt,
   },
 };

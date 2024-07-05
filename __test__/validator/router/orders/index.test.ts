@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator } from "../../../../validator";
+import { RequestValidator, ValidateErrorMessage } from "../../../../validator";
 import { getMethodSchema } from "../../../../validator/schema/routes/orders";
 import { TestName } from "../types/test-name";
 
@@ -36,7 +36,7 @@ describe("GET: /orders", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "walletAddress",
         type: "field",
         value: "",
@@ -52,7 +52,7 @@ describe("GET: /orders", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "walletAddress",
         type: "field",
         value: "",

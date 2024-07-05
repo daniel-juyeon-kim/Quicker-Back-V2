@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { message, RequestValidator, Types } from "../../../../../../validator";
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../../validator";
 import { getMethodSchema, postMethodSchema } from "../../../../../../validator/schema/routes/order/image/complete";
 import { TestName } from "../../../types/test-name";
 
@@ -39,7 +39,7 @@ describe("GET: /order/image/complete", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "orderNum",
         type: "field",
         value: "1d",
@@ -53,7 +53,7 @@ describe("GET: /order/image/complete", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "orderNum",
         type: "field",
         value: undefined,
@@ -86,7 +86,7 @@ describe("POST: /order/image/complete", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "orderNum",
         type: "field",
         value: "1d",
@@ -100,7 +100,7 @@ describe("POST: /order/image/complete", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "orderNum",
         type: "field",
         value: undefined,

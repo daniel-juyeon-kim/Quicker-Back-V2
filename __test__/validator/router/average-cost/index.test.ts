@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator, Types } from "../../../../validator";
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
 import { getMethodSchema } from "../../../../validator/schema/routes/average-cost";
 import { TestName } from "../types/test-name";
 
@@ -36,7 +36,7 @@ describe("GET: /average-cost", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "distance",
         type: "field",
         value: "",
@@ -52,7 +52,7 @@ describe("GET: /average-cost", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "distance",
         type: "field",
         value: "42d",

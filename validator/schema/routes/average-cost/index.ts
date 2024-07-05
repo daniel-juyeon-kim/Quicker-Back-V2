@@ -1,14 +1,14 @@
 import { Schema } from "express-validator";
-import { Types, message } from "../../..";
+import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
 
 export const getMethodSchema: Schema = {
   distance: {
     trim: true,
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isNumeric: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
   },
 };

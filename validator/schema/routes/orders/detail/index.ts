@@ -1,16 +1,17 @@
 import { Schema } from "express-validator";
-import { message } from "../../../../src/message";
-import { validateIntList } from "../../../../util/custom-validator";
+
+import { CustomValidator } from "../../../..";
+import { ValidateErrorMessage } from "../../../../src/error-message";
 
 // GET /orders/detail
 export const getMethodSchema: Schema = {
   orderIds: {
     escape: true,
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     custom: {
-      options: validateIntList
-    }
+      options: CustomValidator.validateIntList,
+    },
   },
 };

@@ -1,19 +1,18 @@
 import { Schema } from "express-validator";
-import { message } from "../../../../../src/message";
-import { Types } from "../../../../../src/types";
+import { ExpectType, ValidateErrorMessage } from "../../../../../src/error-message";
 
 // GET /user/image/id
 export const getMethodSchema: Schema = {
   walletAddress: {
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
-      errorMessage: message.mustBe(Types.STRING)
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
     isNumeric: {
-      errorMessage: message.mustBe(Types.INT)
-    }
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+    },
   },
 };
 
@@ -23,23 +22,23 @@ export const putMethodSchema: Schema = {
     escape: true,
     trim: true,
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
-      errorMessage: message.mustBe(Types.STRING),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
   },
   imageId: {
     escape: true,
     trim: true,
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isNumeric: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
     isString: {
-      errorMessage: message.mustBe(Types.STRING),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
   },
 };

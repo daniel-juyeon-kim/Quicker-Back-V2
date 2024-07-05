@@ -1,14 +1,13 @@
-import { message } from "../../../../../src/message";
-import { Types } from "../../../../../src/types";
+import { ExpectType, ValidateErrorMessage } from "../../../../../src/error-message";
 
 // GET /order/image/complete
 export const getMethodSchema = {
   orderNum: {
     notEmpty: {
-      errorMessage: message.notExist
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isInt: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
   },
 };
@@ -17,13 +16,13 @@ export const getMethodSchema = {
 export const postMethodSchema = {
   orderNum: {
     notEmpty: {
-      errorMessage: message.notExist
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
     isInt: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
   },
 };

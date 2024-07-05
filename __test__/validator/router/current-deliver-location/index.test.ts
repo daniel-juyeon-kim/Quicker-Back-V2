@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator, Types } from "../../../../validator";
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
 import { getMethodSchema, postMethodSchema } from "../../../../validator/schema/routes/current-deliver-location";
 import { TestName } from "../types/test-name";
 
@@ -36,7 +36,7 @@ describe("GET: /current-deliver-location", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "quicker",
         type: "field",
         value: "",
@@ -74,7 +74,7 @@ describe("POST: /current-deliver-location", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "Y",
         type: "field",
         value: "2",
@@ -91,7 +91,7 @@ describe("POST: /current-deliver-location", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "address",
         type: "field",
         value: "",

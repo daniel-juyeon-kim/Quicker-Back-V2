@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator, Types } from "../../../../validator";
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
 import { getMethodSchema, patchMethodSchema, postMethodSchema } from "../../../../validator/schema/routes/order";
 import { TestName } from "../types/test-name";
 
@@ -38,7 +38,7 @@ describe("GET: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "orderId",
         type: "field",
         value: "1d",
@@ -52,7 +52,7 @@ describe("GET: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "orderId",
         type: "field",
         value: "",
@@ -133,7 +133,7 @@ describe("POST: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "Destination.id",
         type: "field",
         value: "문자열",
@@ -147,7 +147,7 @@ describe("POST: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "Departure.X",
         type: "field",
         value: "",
@@ -161,7 +161,7 @@ describe("POST: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "Product.ID",
         type: "field",
         value: undefined,
@@ -175,7 +175,7 @@ describe("POST: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.PHONE_NUMBER),
+        msg: ValidateErrorMessage.mustBe(ExpectType.PHONE_NUMBER),
         path: "Sender.PHONE",
         type: "field",
         value: "39fj20",
@@ -214,7 +214,7 @@ describe("PATCH: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "orderId",
         type: "field",
         value: "3e4",
@@ -228,7 +228,7 @@ describe("PATCH: /order", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "orderId",
         type: "field",
         value: "3",

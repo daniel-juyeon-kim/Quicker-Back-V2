@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator, Types } from "../../../../../../validator";
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../../validator";
 import { getMethodSchema, putMethodSchema } from "../../../../../../validator/schema/routes/user/image/id";
 import { TestName } from "../../../types/test-name";
 
@@ -39,7 +39,7 @@ describe("GET: /user/image/id", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "walletAddress",
         type: "field",
         value: "문자열",
@@ -53,7 +53,7 @@ describe("GET: /user/image/id", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "walletAddress",
         type: "field",
         value: undefined,
@@ -88,7 +88,7 @@ describe("PUT: /user/image/id", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "imageId",
         type: "field",
         value: "",
@@ -105,7 +105,7 @@ describe("PUT: /user/image/id", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "walletAddress",
         type: "field",
         value: "",
@@ -122,7 +122,7 @@ describe("PUT: /user/image/id", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "body",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "imageId",
         type: "field",
         value: "문자열",

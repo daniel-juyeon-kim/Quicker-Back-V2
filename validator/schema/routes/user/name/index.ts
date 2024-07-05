@@ -1,14 +1,13 @@
-import { message } from "../../../../src/message";
-import { Types } from "../../../../src/types";
+import { ExpectType, ValidateErrorMessage } from "../../../../src/error-message";
 
 // GET /user/name
 export const getMethodSchema = {
   walletAddress: {
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
-      errorMessage: message.mustBe(Types.STRING),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
   },
 };

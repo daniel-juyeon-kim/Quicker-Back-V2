@@ -1,16 +1,15 @@
 import { Schema } from "express-validator";
-import { message } from "../../../src/message";
-import { Types } from "../../../src/types";
+import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
 
 // GET /current-deliver-location
 export const getMethodSchema = {
   quicker: {
     escape: true,
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
-      errorMessage: message.mustBe(Types.STRING),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
   },
 };
@@ -19,36 +18,36 @@ export const getMethodSchema = {
 export const postMethodSchema: Schema = {
   X: {
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
       negated: true,
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
     isInt: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
   },
   Y: {
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
       negated: true,
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
     isInt: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
   },
   address: {
     trim: true,
     escape: true,
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isString: {
-      errorMessage: message.mustBe(Types.STRING),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
   },
 };

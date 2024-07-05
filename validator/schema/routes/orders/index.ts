@@ -1,11 +1,11 @@
-import { message } from "../../../src/message";
+import { ValidateErrorMessage } from "../../../src/error-message";
 
 // GET /orders
 export const getMethodSchema = {
   walletAddress: {
     escape: true,
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
   },
 };

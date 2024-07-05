@@ -1,4 +1,4 @@
-import { message, Types } from "../..";
+import { ExpectType, ValidateErrorMessage } from "../..";
 
 export class CustomValidator {
   private static SPLITTER = ",";
@@ -12,7 +12,7 @@ export class CustomValidator {
     const number = parseInt(expectNumber);
 
     if (isNaN(number)) {
-      throw new Error(message.mustBe(Types.INT_ARRAY));
+      throw new Error(ValidateErrorMessage.mustBe(ExpectType.INT_ARRAY));
     }
   }
 }

@@ -1,4 +1,4 @@
-import { CustomValidator, message, Types } from "../../validator";
+import { CustomValidator, ExpectType, ValidateErrorMessage } from "../../validator";
 import { TestName } from "./router/types/test-name";
 
 describe("커스텀 validator 테스트", () => {
@@ -10,6 +10,6 @@ describe("커스텀 validator 테스트", () => {
   });
 
   test(TestName.FAIL, () => {
-    expect(() => CustomValidator.validateIntList("1,a,3,4")).toThrow(message.mustBe(Types.INT_ARRAY));
+    expect(() => CustomValidator.validateIntList("1,a,3,4")).toThrow(ValidateErrorMessage.mustBe(ExpectType.INT_ARRAY));
   });
 });

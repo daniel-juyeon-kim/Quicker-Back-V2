@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator, Types } from "../../../../../validator";
-import { getMethodSchema } from "../../../../../validator/schema/routes/orders/detail";
+
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../validator";
+import { getMethodSchema } from "../../../../../validator/schema/routes/orders/detail/index";
 import { TestName } from "../../types/test-name";
 
 let req: Partial<Request>;
@@ -38,7 +39,7 @@ describe("GET: /orders/detail", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.mustBe(Types.INT_ARRAY),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT_ARRAY),
         path: "orderIds",
         type: "field",
         value: "a,2,3,4",
@@ -54,7 +55,7 @@ describe("GET: /orders/detail", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "orderIds",
         type: "field",
         value: "",

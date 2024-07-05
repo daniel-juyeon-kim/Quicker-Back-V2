@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { message, RequestValidator, Types } from "../../../../../validator";
-import { getMethodSchema } from "../../../../../validator/schema/routes/room/message";
+import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../validator";
+import { getMethodSchema } from "../../../../../validator/schema/routes/room/";
 import { TestName } from "../../types/test-name";
 
 let req: Partial<Request>;
@@ -13,7 +13,7 @@ beforeEach(() => {
   next = jest.fn();
 });
 
-describe("GET: /room/message", () => {
+describe("GET: /room/ValidateErrorMessage", () => {
   const testTarget = RequestValidator.validate(getMethodSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
@@ -36,7 +36,7 @@ describe("GET: /room/message", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.notExist,
+        msg: ValidateErrorMessage.notExist,
         path: "orderNum",
         type: "field",
         value: undefined,
@@ -52,7 +52,7 @@ describe("GET: /room/message", () => {
 
       expect(next).toHaveBeenCalledWith({
         location: "query",
-        msg: message.mustBe(Types.INT),
+        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
         path: "orderNum",
         type: "field",
         value: "문자열",

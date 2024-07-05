@@ -1,14 +1,13 @@
-import { message } from "../../../../src/message";
-import { Types } from "../../../../src/types";
+import { ExpectType, ValidateErrorMessage } from "../../../../src/error-message";
 
 // GET /room/message
 export const getMethodSchema = {
   orderNum: {
     notEmpty: {
-      errorMessage: message.notExist,
+      errorMessage: ValidateErrorMessage.notExist,
     },
     isInt: {
-      errorMessage: message.mustBe(Types.INT),
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
     },
   },
 };

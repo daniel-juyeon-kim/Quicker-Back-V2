@@ -1,6 +1,5 @@
-import { message } from "./src/message";
-import { Types } from "./src/types";
+import { ExpectType, ValidateErrorMessage } from "./src/error-message";
 import { CustomValidator } from "./src/util/custom-validator";
 import { RequestValidator } from "./src/validator";
 
-export { RequestValidator, Types, message, CustomValidator };
+export { RequestValidator, ExpectType, ValidateErrorMessage, CustomValidator };
