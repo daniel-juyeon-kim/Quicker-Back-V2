@@ -6,7 +6,8 @@
   "scripts": {
     "awsStart": "pm2 start server.ts",
     "start": "nodemon server.ts",
-    "test": "jest -c ./jest.config.ts"
+    "test": "jest",
+    "ci": "npm i jest ts-jest typescript @types/jest"
   },
   "keywords": [],
   "author": "",

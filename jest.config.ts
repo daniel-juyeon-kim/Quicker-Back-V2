@@ -102,7 +102,7 @@ const config: Config = {
 
   // A preset that is used as a base for Jest's configuration
   preset: "ts-jest",
- 
+
   // Run tests from one or more projects
   // projects: undefined,
 
@@ -122,7 +122,7 @@ const config: Config = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+  rootDir: "./__test__",
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [
@@ -175,11 +175,14 @@ const config: Config = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.ts?$":['ts-jest', {
-      isolatedModules: true,
-    }]
+    "^.+\\.ts?$": [
+      "ts-jest",
+      {
+        isolatedModules: true,
+      },
+    ],
   },
-  
+
   maxWorkers: 1,
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
