@@ -1,0 +1,8 @@
+services:
+  server:
+    container_name: server
+    image: ${IMAGE_NAME}
+    ports:
+      - ${PORT1}
+      - ${PORT2}
+    working_dir: ${WORKING_DIR}
