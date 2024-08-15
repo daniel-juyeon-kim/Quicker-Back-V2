@@ -1,0 +1,35 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+  push:
+    branches:
+      - main
+
+jobs:
+  connect-ec2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Commands
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          PACKAGE_URL: ghcr.io/${{ github.repository }}:latest
+          IMAGE_NAME: ghcr.io/${{ github.repository }}
+        with:
+          host: ${{ secrets.EC2_IP }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          username: ${{ secrets.EC2_USERNAME }}
+          script: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+            if [ "$(docker compose ps --filter "status=running" -q)" ]; then
+              docker compose down
+              docker rmi ${{ env.PACKAGE_URL }}
+            fi
+
+            docker pull ${{ env.PACKAGE_URL }}
+            IMAGE_NAME=${{ env.IMAGE_NAME }} docker compose up -d
+            rm /home/${{ secrets.EC2_USERNAME }}/.docker/config.json

@@ -1,0 +1,39 @@
+name: Code Review
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types:
+      - completed
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: anc95/ChatGPT-CodeReview@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANGUAGE: Korean
+          OPENAI_API_ENDPOINT: https://api.openai.com/v1
+          MODEL: gpt-4o-mini
+          PROMPT: |
+            You will pretend to be a senior developer at a big IT company. Provide feedback on code quality.
+            - Provide feedback only on problematic areas.
+            - Keep feedback concise, 1-5 sentences.
+            - Point out potential bugs, errors, or logical issues.
+            - Suggest alternatives but keep explanations brief.
+            - Propose refactoring methods for the problematic code.
+            - Suggest ways to improve readability and maintainability.
+            - Settings and configuration files are not subject to code review.
+          top_p: 1
+          temperature: 1
+          max_tokens: 10000
+          MAX_PATCH_LENGTH: 10000
