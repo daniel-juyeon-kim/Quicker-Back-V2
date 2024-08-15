@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
@@ -34,13 +34,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
+        env:
+          PACKAGE_URL: ghcr.io/${{ github.repository }}:latest
         run: |
+          set -e
           docker build \
-          -t ghcr.io/${{ github.repository }}:latest \
-          --build-arg="REPOSITORY_OWNER=${{ github.repository_owner }}" \
-          --build-arg="GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
-          --build-arg="REPOSITORY_NAME=${{ github.event.repository.name }}" \
-          --build-arg="DOT_ENV=${{ secrets.DOT_ENV }}" \
-          --build-arg="EXPOSE_PORT=${{ secrets.EXPOSE_PORT }}" \
-          --build-arg="PROJECT_PATH=${{ secrets.PROJECT_PATH }}" .
-          docker push ghcr.io/${{ github.repository }}:latest
+            -t ${{ env.PACKAGE_URL }} \
+            --build-arg="REPOSITORY_OWNER=${{ github.repository_owner }}" \
+            --build-arg="GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
+            --build-arg="REPOSITORY_NAME=${{ github.event.repository.name }}" \
+            --build-arg="DOT_ENV=${{ secrets.DOT_ENV }}" \
+            --build-arg="EXPOSE_PORT=${{ secrets.EXPOSE_PORT }}" \
+            --build-arg="PROJECT_PATH=${{ secrets.PROJECT_PATH }}" .
+          docker push ${{ env.PACKAGE_URL }}
