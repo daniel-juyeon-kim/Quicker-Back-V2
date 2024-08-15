@@ -1,7 +1,5 @@
 import { Server } from "socket.io";
 import { messageInstance } from "../mongo/command";
-import {createAdapter} from "@socket.io/cluster-adapter"
-import { setupWorker } from"@socket.io/sticky";
 
 const main = (server: any) => {
   const io = new Server(server, {
@@ -11,18 +9,14 @@ const main = (server: any) => {
       credentials: true,
     },
     transports: ["websocket"],
-    connectionStateRecovery: {}
+    connectionStateRecovery: {},
   });
 
-  io.adapter(createAdapter());
-  setupWorker(io);
-
   try {
-
     // 이벤트 설정
     io.on("connect", (socket) => {
       console.log(`connect ${socket.id}`);
-      console.log("접속 : " + socket.id)
+      console.log("접속 : " + socket.id);
       // 임의의 채팅방 이름
       let roomName = "";
       // 이벤트 관리
@@ -30,14 +24,14 @@ const main = (server: any) => {
         roomName = receiveRoomName.roomName;
         socket.join(roomName);
         // db 내용 불러옴
-        try{
+        try {
           const messages = await messageInstance.find(roomName.toString());
           if (messages !== undefined) {
             socket.emit("loadMessage", messages);
           }
         } catch (error) {
-          console.log(error) 
-          throw error
+          console.log(error);
+          throw error;
         }
       });
       socket.on("sendMessage", (receiveMessage: Message, done: Function) => {
@@ -54,10 +48,10 @@ const main = (server: any) => {
             roomName: roomName,
             receiveMessage: receiveMessage.data,
           });
-          done();  
+          done();
         } catch (error) {
-          console.log(error) 
-          throw error
+          console.log(error);
+          throw error;
         }
       });
     });
