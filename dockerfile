@@ -19,4 +19,4 @@ RUN npm i &&\
 
 EXPOSE ${EXPOSE_PORT}
 
-ENTRYPOINT ["npm" , "start"]
+CMD ["npm" , "start"]
