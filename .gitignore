@@ -3,6 +3,7 @@
 
 # env
 .env
+.env*
 
 # DB
 /Maria/DB/
@@ -16,3 +17,7 @@
 # todo
 TODO.*
 todo.*
+
+# docker
+dockerfile.dev
+docker-compose.override.yml
