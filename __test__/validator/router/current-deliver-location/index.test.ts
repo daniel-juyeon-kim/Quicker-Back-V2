@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
-import { getMethodSchema, postMethodSchema } from "../../../../validator/schema/routes/current-deliver-location";
+import {
+  getCurrentDeliverLocationSchema,
+  postCurrentDeliverLocationSchema,
+} from "../../../../validator/schema/routes/current-deliver-location";
 import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
@@ -14,7 +17,7 @@ beforeEach(() => {
 });
 
 describe("GET: /current-deliver-location", () => {
-  const testTarget = RequestValidator.validate(getMethodSchema, ["query"]);
+  const testTarget = RequestValidator.validate(getCurrentDeliverLocationSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -46,7 +49,7 @@ describe("GET: /current-deliver-location", () => {
 });
 
 describe("POST: /current-deliver-location", () => {
-  const testTarget = RequestValidator.validate(postMethodSchema, ["body"]);
+  const testTarget = RequestValidator.validate(postCurrentDeliverLocationSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

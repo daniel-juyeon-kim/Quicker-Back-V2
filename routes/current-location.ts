@@ -1,29 +1,37 @@
 import express from "express";
 import { orderController } from "../controllers";
 import { validate } from "../validator";
-import { getMethodSchema, postMethodSchema } from "../validator/schema/routes/current-deliver-location"
+import {
+  getCurrentDeliverLocationSchema,
+  postCurrentDeliverLocationSchema,
+} from "../validator/schema/routes/current-deliver-location";
 
 const router = express.Router();
 
+// GET /current-deliver-location
+
 // query {
-//   quicker: string // address
+//   quicker: string // 지갑주소
 // }
 
-// response {
+// code: 200,
+// message: "OK",
+// body {
 //   X : number,
 //   Y : number
 // }
+router.get("/", validate(getCurrentDeliverLocationSchema, ["query"]), orderController.getLocation);
 
-// GET /current-deliver-location
-router.get("/", validate(getMethodSchema, ["query"]), orderController.getLocation)
+// POST /current-deliver-location
 
 // body {
 //   X: number
 //   Y: number
-//   address: string // walletAddress
+//   address: string // 지갑주소
 // }
 
-// POST /current-deliver-location
-router.post("/",validate(postMethodSchema, ["body"]), orderController.postLocation);
+// code: 200,
+// message: "OK",
+router.post("/", validate(postCurrentDeliverLocationSchema, ["body"]), orderController.postLocation);
 
 export default router;
