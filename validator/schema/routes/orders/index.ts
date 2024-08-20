@@ -1,7 +1,7 @@
 import { ValidateErrorMessage } from "../../../src/error-message";
 
 // GET /orders
-export const getMethodSchema = {
+export const getOrdersSchema = {
   walletAddress: {
     escape: true,
     notEmpty: {
