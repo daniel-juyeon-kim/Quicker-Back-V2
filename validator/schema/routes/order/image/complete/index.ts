@@ -1,7 +1,7 @@
 import { ExpectType, ValidateErrorMessage } from "../../../../../src/error-message";
 
 // GET /order/image/complete
-export const getMethodSchema = {
+export const getOrderImageCompleteSchema = {
   orderNum: {
     notEmpty: {
       errorMessage: ValidateErrorMessage.notExist,
@@ -13,7 +13,7 @@ export const getMethodSchema = {
 };
 
 // POST /order/image/complete
-export const postMethodSchema = {
+export const postOrderImageCompleteSchema = {
   orderNum: {
     notEmpty: {
       errorMessage: ValidateErrorMessage.notExist,

@@ -2,7 +2,7 @@ import { Schema } from "express-validator";
 import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
 
 // GET /order
-export const getMethodSchema = {
+export const getOrderSchema = {
   orderId: {
     trim: true,
     escape: true,
@@ -391,7 +391,7 @@ const recipientSchema: Schema = {
 // }
 
 // POST /order
-export const postMethodSchema: Schema = {
+export const postOrderSchema: Schema = {
   walletAddress: {
     escape: true,
     notEmpty: {
@@ -416,7 +416,7 @@ export const postMethodSchema: Schema = {
 // }
 
 // PATCH /order
-export const patchMethodSchema: Schema = {
+export const patchOrderSchema: Schema = {
   userWalletAddress: {
     escape: true,
     notEmpty: {
