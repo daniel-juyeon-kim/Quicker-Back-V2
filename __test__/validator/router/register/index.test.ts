@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
-import { postMethodSchema } from "../../../../validator/schema/routes/register";
+import { postRegisterSchema } from "../../../../validator/schema/routes/register";
 import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
@@ -28,7 +28,7 @@ beforeEach(() => {
 //     date!: number;
 // }
 describe("POST: /register", () => {
-  const testTarget = RequestValidator.validate(postMethodSchema, ["body"]);
+  const testTarget = RequestValidator.validate(postRegisterSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
