@@ -1,8 +1,8 @@
 import { Schema } from "express-validator";
-import { ExpectType, ValidateErrorMessage } from "../../../../../src/error-message";
+import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
 
-// GET /user/image/id
-export const getMethodSchema: Schema = {
+// GET /user/name
+export const getUserNameSchema = {
   walletAddress: {
     notEmpty: {
       errorMessage: ValidateErrorMessage.notExist,
@@ -10,14 +10,23 @@ export const getMethodSchema: Schema = {
     isString: {
       errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
-    isNumeric: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+  },
+};
+
+// GET /user/image/id
+export const getUserImageIdSchema: Schema = {
+  walletAddress: {
+    notEmpty: {
+      errorMessage: ValidateErrorMessage.notExist,
+    },
+    isString: {
+      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
     },
   },
 };
 
 // PUT /user/image/id
-export const putMethodSchema: Schema = {
+export const putUserImageIdSchema: Schema = {
   walletAddress: {
     escape: true,
     trim: true,
