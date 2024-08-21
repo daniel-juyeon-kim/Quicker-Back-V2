@@ -3,9 +3,7 @@
 
 # env
 .env
-
-# DB
-/Maria/DB/
+.env.local
 
 # 인증서
 /config
@@ -14,5 +12,8 @@
 /logs/*
 
 # todo
-TODO.*
-todo.*
+todo.md
+
+# docker
+dockerfile.dev
+docker-compose.override.yml
