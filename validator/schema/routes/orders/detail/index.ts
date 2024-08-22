@@ -4,7 +4,7 @@ import { CustomValidator } from "../../../..";
 import { ValidateErrorMessage } from "../../../../src/error-message";
 
 // GET /orders/detail
-export const getMethodSchema: Schema = {
+export const getOrdersDetailSchema: Schema = {
   orderIds: {
     escape: true,
     notEmpty: {

@@ -1,21 +1,22 @@
-import dotenv from "dotenv"
-dotenv.config({path : '../.env'})
-
 import chalk from "chalk";
 import { Application } from "express";
-import config from "../config";
-import { KeyChecker } from "../service/key-validator";
+import { isPositiveNumber, isUndefined } from "../util";
 
-const keyChecker = new KeyChecker();
+const initializePort = (app: Application, port: string | undefined) => {
+  validate(port);
 
-const nodeenv = keyChecker.checkObject({key : config.nodeenv})
-const local = keyChecker.checkObject(config.server.local)
-const remote = keyChecker.checkObject(config.server.aws)
-
-const port = {
-  init: (app: Application) => {
-    const HTTP_PORT = (nodeenv.key === "development") ? local.http : remote.http;
-    return app.listen(HTTP_PORT, () => console.log(chalk.blueBright(`[RUNNING] | App is listening on port ${HTTP_PORT} !`)));
-  },
+  return app.listen(port, () => console.log(chalk.blueBright(`[RUNNING] App is listening on port ${port} !`)));
 };
-export default port
+
+const validate = (port: string | undefined) => {
+  const errorMessage = `[WARN] Port is invalid value ${port}`;
+
+  if (isUndefined(port)) {
+    throw new Error(errorMessage);
+  } else if (isPositiveNumber(parseInt(port))) {
+    return;
+  }
+  throw new Error(errorMessage);
+};
+
+export default initializePort;

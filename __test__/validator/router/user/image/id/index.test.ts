@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../../validator";
-import { getMethodSchema, putMethodSchema } from "../../../../../../validator/schema/routes/user/image/id";
+import { getUserImageIdSchema, putUserImageIdSchema } from "../../../../../../validator/schema/routes/user";
 import { TestName } from "../../../types/test-name";
 
 let req: Partial<Request>;
@@ -14,12 +14,12 @@ beforeEach(() => {
 });
 
 describe("GET: /user/image/id", () => {
-  const testTarget = RequestValidator.validate(getMethodSchema, ["query"]);
+  const testTarget = RequestValidator.validate(getUserImageIdSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
       req.query = {
-        walletAddress: "1",
+        walletAddress: "3f39sl3sef091dfwn",
       };
 
       await testTarget(req as Request, res as Response, next);
@@ -30,22 +30,6 @@ describe("GET: /user/image/id", () => {
   });
 
   describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.MISS_TYPE, async () => {
-      req.query = {
-        walletAddress: "문자열",
-      };
-
-      await testTarget(req as Request, res as Response, next);
-
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "walletAddress",
-        type: "field",
-        value: "문자열",
-      });
-    });
-
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
       req.query = {};
 
@@ -63,7 +47,7 @@ describe("GET: /user/image/id", () => {
 });
 
 describe("PUT: /user/image/id", () => {
-  const testTarget = RequestValidator.validate(putMethodSchema, ["body"]);
+  const testTarget = RequestValidator.validate(putUserImageIdSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
-import { getMethodSchema } from "../../../../validator/schema/routes/average-cost";
+import { getAverageCostSchema } from "../../../../validator/schema/routes/average-cost";
 import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("GET: /average-cost", () => {
-  const testTarget = RequestValidator.validate(getMethodSchema, ["query"]);
+  const testTarget = RequestValidator.validate(getAverageCostSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

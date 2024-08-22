@@ -1,7 +1,8 @@
 import { Schema } from "express-validator";
 import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
 
-export const getMethodSchema: Schema = {
+// GET /average/cost
+export const getAverageCostSchema: Schema = {
   distance: {
     trim: true,
     notEmpty: {

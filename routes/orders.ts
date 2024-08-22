@@ -1,16 +1,86 @@
 import express from "express";
 
-import { orderController, userController } from "../controllers";
-import DetailRouter from "./orders-detail";
-
+import { orderController } from "../controllers";
 import { validate } from "../validator";
-import { getMethodSchema } from "../validator/schema/routes/orders";
+import { getOrdersSchema } from "../validator/schema/routes/orders";
+import { getOrdersDetailSchema } from "../validator/schema/routes/orders/detail";
 
 const router = express.Router();
 
 // GET /orders
-router.get("/", validate(getMethodSchema, ["query"]), orderController.getRequests);
 
-router.use("/detail", DetailRouter)
+// query {
+//   walletAddress: string
+// }
+
+// code: 200,
+// message: "OK",
+// body: {
+//   id: number,
+//   DETAIL: string | null,
+//   Transportation: {
+//     WALKING: number,
+//     BICYCLE: number,
+//     SCOOTER: number,
+//     BIKE: number,
+//     CAR: number,
+//     TRUCK: number
+//   },
+//   Destination: {
+//     X: number,
+//     Y: number,
+//     DETAIL: string
+//   },
+//   Departure: {
+//     X: number,
+//     Y: number,
+//     DETAIL: string
+//   },
+//   Product: {
+//     WIDTH: number,
+//     LENGTH: number,
+//     HEIGHT: number,
+//     WEIGHT: number
+//   }[]
+// }
+router.get("/", validate(getOrdersSchema, ["query"]), orderController.getRequests);
+
+// GET /orders/detail
+
+// query {
+//   orderIds: 1,2,3 string
+// }
+
+// code: 200,
+// message: "OK",
+// body: {
+//   id: number,
+//   DETAIL: string,
+//   Destination: {
+//     X: number,
+//     Y: number,
+//     DETAIL: string
+//   },
+//   Departure: {
+//     X: number,
+//     Y: number,
+//     DETAIL: string
+//   },
+//   Recipient: {
+//     NAME: string,
+//     PHONE: string
+//   },
+//   Sender: {
+//     NAME: string,
+//     PHONE: string
+//   },
+//   Product: {
+//     WIDTH: number,
+//     LENGTH: number,
+//     HEIGHT: number,
+//     WEIGHT: number
+//   }[]
+// }
+router.get("/detail", validate(getOrdersDetailSchema, ["query"]), orderController.orderlist);
 
 export default router;

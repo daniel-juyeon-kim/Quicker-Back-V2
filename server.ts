@@ -1,20 +1,21 @@
 import express from "express";
 
 import chat from "./chat/socket";
-import router from "./loaders/express";
-import loader from "./loaders/loader";
-import port from "./loaders/port";
+import config from "./config";
+
+import setUpMiddleware from "./loaders/middleware";
+import initializePort from "./loaders/port";
+import routing from "./loaders/router";
 
 const startServer = () => {
-    const app = express();
+  const app = express();
 
-    loader.init(app);
+  setUpMiddleware(app);
+  routing(app);
+  const server = initializePort(app, config.port);
 
-    router.handle(app);
-    
-    const server = port.init(app)
-    
-    chat(server)
-}
+  // 채팅 서버
+  chat(server);
+};
 
 startServer();

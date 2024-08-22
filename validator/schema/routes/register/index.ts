@@ -19,7 +19,7 @@ const existAndInt = {
 };
 
 // POST /register
-export const postMethodSchema = {
+export const postRegisterSchema = {
   User: {
     notEmpty: {
       errorMessage: ValidateErrorMessage.notExist,

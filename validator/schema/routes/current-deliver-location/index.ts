@@ -2,7 +2,7 @@ import { Schema } from "express-validator";
 import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
 
 // GET /current-deliver-location
-export const getMethodSchema = {
+export const getCurrentDeliverLocationSchema = {
   quicker: {
     escape: true,
     notEmpty: {
@@ -15,7 +15,7 @@ export const getMethodSchema = {
 };
 
 // POST /current-deliver-location
-export const postMethodSchema: Schema = {
+export const postCurrentDeliverLocationSchema: Schema = {
   X: {
     notEmpty: {
       errorMessage: ValidateErrorMessage.notExist,
