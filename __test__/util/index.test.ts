@@ -1,4 +1,4 @@
-import { isDevelopment, isUndefined } from "../../util";
+import { isDevelopment, isPositiveNumber, isUndefined } from "../../util";
 
 describe("isUndefined 테스트", () => {
   test("통과", () => {
@@ -26,6 +26,22 @@ describe("isDevelopment 테스트", () => {
   test("실패", () => {
     ["production", undefined].forEach((value) => {
       const result = isDevelopment(value);
+
+      expect(result).toBe(false);
+    });
+  });
+});
+
+describe("isPositiveNumber 테스트", () => {
+  test("통과", () => {
+    const result = isPositiveNumber(1);
+
+    expect(result).toBe(true);
+  });
+
+  test("실패", () => {
+    [0, NaN].forEach((value) => {
+      const result = isPositiveNumber(value);
 
       expect(result).toBe(false);
     });
