@@ -14,9 +14,9 @@ WORKDIR ${PROJECT_PATH}
 RUN git clone ${GITHUB_REPOSITORY_URL} .
 
 RUN npm i &&\
-    npm i -g pm2 &&\
+    npm i -g pm2 bun &&\
     echo ${DOT_ENV} > .env
 
 EXPOSE ${EXPOSE_PORT}
 
-CMD ["npm" , "start"]
+CMD ["pm2-runtime", "server.ts"]
