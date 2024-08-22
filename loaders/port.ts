@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import { Application } from "express";
+import { isPositiveNumber, isUndefined } from "../util";
 
 const initializePort = (app: Application, port: string | undefined) => {
   validate(port);
@@ -8,13 +9,14 @@ const initializePort = (app: Application, port: string | undefined) => {
 };
 
 const validate = (port: string | undefined) => {
-  const errorMessage = `port is ${port}`;
+  const errorMessage = `[WARN] Port is invalid value ${port}`;
 
-  if (port === undefined) {
+  if (isUndefined(port)) {
     throw new Error(errorMessage);
-  } else if (isNaN(parseInt(port))) {
-    throw new Error(errorMessage);
+  } else if (isPositiveNumber(parseInt(port))) {
+    return;
   }
+  throw new Error(errorMessage);
 };
 
 export default initializePort;
