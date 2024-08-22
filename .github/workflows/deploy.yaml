@@ -48,13 +48,14 @@ jobs:
 
             # docke-compose로 생성된 컨테이너 삭제
             if [ "$(docker compose ps -q)" ]; then
+              # 컨테이너 종료 및 삭제
               docker compose down
-              docker stop $(docker compose ps -a -q)
-              docker rm $(docker compose ps -a -q)
             fi
 
-            # 기존 이미지 삭제
-            docker rmi ${{ env.PACKAGE_URL }}
+            if [ "$(docker images | grep -q ${{ env.PACKAGE_URL }})" ]; then
+              # 기존 이미지 삭제
+              docker rmi ${{ env.PACKAGE_URL }}
+            fi
 
             # github container registry 로그인
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
