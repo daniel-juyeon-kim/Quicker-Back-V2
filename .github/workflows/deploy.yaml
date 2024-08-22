@@ -36,24 +36,36 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           PACKAGE_URL: ghcr.io/${{ github.repository }}:latest
-          IMAGE_NAME: ghcr.io/${{ github.repository }}
         with:
           host: ${{ secrets.EC2_IP }}
           key: ${{ secrets.EC2_SSH_KEY }}
           username: ${{ secrets.EC2_USERNAME }}
           script: |
             set -e
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
-            if [ "$(docker compose ps --filter "status=running" -q)" ]; then
+            # .env생성
+            printf "%s\n" "${{ secrets.DOT_ENV }}" > .env && echo "IMAGE_NAME=${{ env.PACKAGE_URL }}" >> .env
+
+            # docke-compose로 생성된 컨테이너 삭제
+            if [ "$(docker compose ps -q)" ]; then
               docker compose down
-              docker rmi ${{ env.PACKAGE_URL }}
+              docker stop $(docker compose ps -a -q)
+              docker rm $(docker compose ps -a -q)
             fi
 
-            echo ${{ secrets.DOT_ENV }} > .env
+            # 기존 이미지 삭제
+            docker rmi ${{ env.PACKAGE_URL }}
 
-            IMAGE_NAME=${{ env.IMAGE_NAME }} docker compose up -d
+            # github container registry 로그인
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
+            # 새로 빌드된 이미지 설치
+            docker pull ${{ env.PACKAGE_URL }}
+
+            # 컨테이너 실행
+            docker compose up -d
+
+            # 환경정보 파일 삭제
             rm .docker/config.json
             rm docker-compose.yml
             rm .env
