@@ -1,27 +1,28 @@
-import bodyParser from "body-parser";
 import compression from "compression";
 import cors from "cors";
 import express, { Application } from "express";
 import morgan from "morgan";
 
+import config from "../config";
 import { cronJob, folder } from "../middlewares";
+import { isDevelopment } from "../util";
 
 folder.createLogFolder();
 cronJob;
 
+const NODE_ENV = config.nodeEnv;
+
 const setUpMiddleware = (app: Application) => {
-  executeDevelopMiddleware(app);
+  setUpDevelopMiddleware(app);
 
   app.use(compression());
   app.use(cors());
   app.use(express.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
+  app.use(express.json());
 };
 
-const executeDevelopMiddleware = (app: Application) => {
-  const isDevelopment = process.env.NODE_ENV === "development" ? process.env.NODE_ENV : "production";
-
-  if (isDevelopment) {
+const setUpDevelopMiddleware = (app: Application) => {
+  if (isDevelopment(NODE_ENV)) {
     app.use(morgan("combined"));
   }
 };
