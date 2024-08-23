@@ -1,13 +1,8 @@
 name: Build
 
 on:
-  workflow_run:
-    workflows: ["Test"]
-    types:
-      - completed
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [closed]
 
 jobs:
   build:
@@ -17,6 +12,16 @@ jobs:
       packages: write
 
     steps:
+      - name: Was PR merged?
+        run: |
+          if [ "${{ github.event.pull_request.merged }}" == "true" ]; then
+            echo "PR was merged."
+            exit 0
+          else
+            echo "PR was not merged."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
