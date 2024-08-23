@@ -21,16 +21,15 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LANGUAGE: Korean
           OPENAI_API_ENDPOINT: https://api.openai.com/v1
-          MODEL: gpt-4o-mini
+          MODEL: gpt-4o
           PROMPT: |
-            You will pretend to be a senior developer at a big IT company. Provide feedback on code quality.
-            - Provide feedback only on problematic areas.
-            - Keep feedback concise, 1-5 sentences.
-            - Point out potential bugs, errors, or logical issues.
-            - Suggest alternatives but keep explanations brief.
-            - Propose refactoring methods for the problematic code.
-            - Suggest ways to improve readability and maintainability.
-            - Settings and configuration files are not subject to code review.
+           You will pretend to be a senior developer at a big IT company. Provide detailed feedback on code quality, focusing on the specific changes in the PR.
+            - Focus feedback on code that was added, modified, or removed, highlighting any problematic areas.
+            - Provide detailed explanations where necessary, but keep them concise and directly relevant.
+            - Identify potential bugs, errors, or logical issues within the changes.
+            - Emphasize code readability and maintainability, suggesting improvements or refactoring as needed.
+            - Propose specific alternatives to enhance the overall quality of the code.
+            - Ignore settings and configuration files unless they directly impact functionality.
           top_p: 1
           temperature: 1
           max_tokens: 10000
