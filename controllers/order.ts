@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { updateOrder } from "../service/order";
 
+import { matchedData } from "express-validator";
 import config from "../config";
 import { averageInstance, locationInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
 import sequelizeConnector from "../maria/connector/sequelize-connector";
@@ -9,17 +10,16 @@ import { initModels } from "../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../mongo/command";
 import connectMongo from "../mongo/connector";
 import { cryptoInstance, nhnApi } from "../service";
-import { matchedData } from "express-validator";
-import { HTTPErrorResponse, HTTPResponse } from "../service/http-response";
 import { classifyDistance } from "../service/classify";
 import { parseToNumberList } from "../service/parser";
+import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
 initModels(sequelizeConnector);
 export class OrderController {
-    // query : {
+  // query : {
   //   userWalletAdress: string
   // }
-  
+
   // {
   //   id: number;
   //   DETAIL: string | undefined;
@@ -52,24 +52,24 @@ export class OrderController {
   async getRequests(req: Request, res: Response, next: NextFunction) {
     try {
       const { walletAddress } = matchedData(req);
-      
+
       const user = await userInstance.findId(walletAddress);
 
       if (!user) {
-        throw new HTTPErrorResponse(404, "해당 지갑주소와 일치하는 사용자가 존재하지 않습니다.")
-      }
-      
-      const orders = await orderInstance.findForSearch(user.id);
-      if (orders.length === 0) {
-        throw new HTTPErrorResponse(404, "생성된 오더가 없습니다.")
+        throw new HttpErrorResponse(404, "해당 지갑주소와 일치하는 사용자가 존재하지 않습니다.");
       }
 
-      res.send(new HTTPResponse(200, orders));
+      const orders = await orderInstance.findForSearch(user.id);
+      if (orders.length === 0) {
+        throw new HttpErrorResponse(404, "생성된 오더가 없습니다.");
+      }
+
+      res.send(new HttpResponse(200, orders));
     } catch (error) {
       next(error);
     }
   }
-  
+
   // body: {
   //   userWalletAddress: string,
   //   Order: {
@@ -132,7 +132,7 @@ export class OrderController {
       if (!user) throw new Error("회원이 아님");
       body.Order.ID_REQ = user.id;
       await orderInstance.create(body);
-      
+
       res.send({ msg: "done" });
     } catch (error) {
       next(error);
@@ -179,7 +179,7 @@ export class OrderController {
       const parsedIds = parseToNumberList(orderIds);
       const orders = await orderInstance.findForDetail(parsedIds);
 
-      res.send(new HTTPResponse(200, orders));
+      res.send(new HttpResponse(200, orders));
     } catch (error) {
       next(error);
     }
@@ -198,7 +198,7 @@ export class OrderController {
   //   Departure: {
   //     X!: number;
   //     Y!: number;
-  //   }  
+  //   }
   // }
 
   async order(req: Request, res: Response, next: NextFunction) {
@@ -224,7 +224,7 @@ export class OrderController {
     try {
       const body = req.body;
       //TODO: 리팩토링 보류
-      await updateOrder(body, nhnApi, cryptoInstance, config.crypto.url as string);
+      await updateOrder(body, nhnApi, cryptoInstance, config.urlCryptoKey as string);
       res.send({ msg: "done" });
     } catch (error) {
       console.error(error);
@@ -242,7 +242,7 @@ export class OrderController {
     try {
       const { orderNum } = matchedData(req);
       const room = await roomInstance.find(parseInt(orderNum));
-      res.send(new HTTPResponse(200, room));
+      res.send(new HttpResponse(200, room));
     } catch (error) {
       next(error);
     }
@@ -262,8 +262,8 @@ export class OrderController {
 
       const connection = await connectMongo("realTimeLocation");
       await currentLocationInstance.create(connection, address, location);
-      
-      res.send(new HTTPResponse(200));
+
+      res.send(new HttpResponse(200));
     } catch (error) {
       next(error);
     }
@@ -286,11 +286,11 @@ export class OrderController {
       const location = await currentLocationInstance.find(connection, quicker);
 
       if (!location) {
-        throw new HTTPErrorResponse(500)
+        throw new HttpErrorResponse(500);
       }
 
       if (!(location.X && location.Y)) {
-        throw new HTTPErrorResponse(404, "요청한 데이터가 존재하지 않습니다.")
+        throw new HttpErrorResponse(404, "요청한 데이터가 존재하지 않습니다.");
       }
 
       res.send(location);
@@ -298,7 +298,6 @@ export class OrderController {
       next(error);
     }
   }
-
 
   // query {
   //   orderNum: number
@@ -340,7 +339,7 @@ export class OrderController {
   async postImage(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body;
-      if (!req.file) throw new Error('image file not exist')
+      if (!req.file) throw new Error("image file not exist");
       const documentFile = req.file;
       const orderNum = body.orderNum;
       const bufferImage = documentFile.buffer;
@@ -398,12 +397,7 @@ export class OrderController {
       const orderNum = body.orderNum;
       const reason = body.reason;
       const connection = await connectMongo("orderFail");
-      await imageInstance.createFailImage(
-        connection,
-        orderNum,
-        bufferImage,
-        reason,
-      );
+      await imageInstance.createFailImage(connection, orderNum, bufferImage, reason);
       res.send({ msg: "done" });
     } catch (error) {
       next(error);
@@ -426,14 +420,14 @@ export class OrderController {
       const averageCost = await averageInstance.findLastMonthCost(unit);
 
       if (!averageCost) {
-        throw new HTTPErrorResponse(500);
+        throw new HttpErrorResponse(500);
       }
 
       if (!averageCost[unit]) {
-        throw new HTTPErrorResponse(404, "요청한 데이터가 존재하지 않습니다.");
+        throw new HttpErrorResponse(404, "요청한 데이터가 존재하지 않습니다.");
       }
 
-      res.send(new HTTPResponse(200, { distance: averageCost[unit] }));
+      res.send(new HttpResponse(200, { distance: averageCost[unit] }));
     } catch (error) {
       next(error);
     }

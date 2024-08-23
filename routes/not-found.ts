@@ -1,12 +1,9 @@
 import express from "express";
-import { HTTPError } from "../types/http-error";
+import { HttpErrorResponse } from "../util/http-response";
 const router = express.Router();
 
-
-router.all("/", (req, res, next) => {
-    const error : HTTPError = new Error('404 Not Found')
-    error.status = 404
-    next(error)
-})
+router.all("/", (_, __, next) => {
+  next(new HttpErrorResponse(404));
+});
 
 export default router;
