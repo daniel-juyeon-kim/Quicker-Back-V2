@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../../validator";
+import { ExpectType, validate, ValidateErrorMessage } from "../../../../../../validator";
 import { getUserImageIdSchema, putUserImageIdSchema } from "../../../../../../validator/schema/routes/user";
 import { TestName } from "../../../types/test-name";
 
@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("GET: /user/image/id", () => {
-  const testTarget = RequestValidator.validate(getUserImageIdSchema, ["query"]);
+  const testTarget = validate(getUserImageIdSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -47,7 +47,7 @@ describe("GET: /user/image/id", () => {
 });
 
 describe("PUT: /user/image/id", () => {
-  const testTarget = RequestValidator.validate(putUserImageIdSchema, ["body"]);
+  const testTarget = validate(putUserImageIdSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

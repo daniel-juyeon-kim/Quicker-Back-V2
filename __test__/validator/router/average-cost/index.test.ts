@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
+import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
 import { getAverageCostSchema } from "../../../../validator/schema/routes/average-cost";
 import { TestName } from "../types/test-name";
 
@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("GET: /average-cost", () => {
-  const testTarget = RequestValidator.validate(getAverageCostSchema, ["query"]);
+  const testTarget = validate(getAverageCostSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

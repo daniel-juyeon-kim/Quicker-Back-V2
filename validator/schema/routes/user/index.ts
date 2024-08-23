@@ -1,5 +1,5 @@
 import { Schema } from "express-validator";
-import { ExpectType, ValidateErrorMessage } from "../../../src/error-message";
+import { ExpectType, ValidateErrorMessage } from "../../../error-message";
 
 // GET /user/name
 export const getUserNameSchema = {
