@@ -6,11 +6,9 @@ permissions:
 
 on:
   workflow_run:
-    workflows: ["Test"]
-    types:
-      - completed
-  pull_request:
-    types: [opened, reopened, synchronize]
+    workflows: [Test]
+    types: [completed]
+    branches-ignore: main
 
 jobs:
   code-review:
