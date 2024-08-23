@@ -54,6 +54,7 @@
     "@types/node-fetch": "^2.6.11",
     "@types/sequelize": "^4.28.20",
     "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
     "globals": "^15.9.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
