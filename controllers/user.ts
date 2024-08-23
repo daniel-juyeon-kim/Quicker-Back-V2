@@ -6,7 +6,7 @@ import { userInstance } from "../maria/commands";
 import sequelizeConnector from "../maria/connector/sequelize-connector";
 import { initModels } from "../maria/models/init-models";
 import { cryptoInstance } from "../service";
-import { HTTPErrorResponse, HTTPResponse } from "../service/http-response";
+import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
 require("dotenv").config();
 initModels(sequelizeConnector);
@@ -41,14 +41,14 @@ export class UserController {
     try {
       const { User, Birthday } = matchedData(req);
 
-      const hash = cryptoInstance.hashing(User.contact, config.crypto.key as string);
+      const hash = cryptoInstance.encrypt(User.contact, config.cryptoKey as string);
 
       User.id = hash;
       Birthday.id = hash;
 
       await userInstance.register(User, Birthday, hash);
 
-      res.send(new HTTPResponse(200));
+      res.send(new HttpResponse(200));
     } catch (error) {
       next(error);
     }
@@ -65,13 +65,13 @@ export class UserController {
   async findUserNameByWalletAddress(req: Request, res: Response, next: NextFunction) {
     try {
       const { walletAddress } = matchedData(req);
-      
+
       const name = await userInstance.findName(walletAddress);
       if (!name) {
-        throw new HTTPErrorResponse(500, "사용자가 존재하지 않습니다.");
+        throw new HttpErrorResponse(500, "사용자가 존재하지 않습니다.");
       }
 
-      res.send(new HTTPResponse(200, name));
+      res.send(new HttpResponse(200, name));
     } catch (error) {
       next(error);
     }
@@ -90,12 +90,12 @@ export class UserController {
 
       const user = await userInstance.findId(walletAddress);
       if (!user) {
-        throw new HTTPErrorResponse(500, "사용자가 존재하지 않습니다.");
+        throw new HttpErrorResponse(500, "사용자가 존재하지 않습니다.");
       }
 
       await userInstance.updateImageId(user.id, imageId);
 
-      res.send(new HTTPResponse(200));
+      res.send(new HttpResponse(200));
     } catch (error) {
       next(error);
     }
@@ -115,7 +115,7 @@ export class UserController {
 
       const user = await userInstance.findId(walletAddress);
       if (!user) {
-        return next(new HTTPErrorResponse(500, "사용자가 존재하지 않습니다."));
+        return next(new HttpErrorResponse(500, "사용자가 존재하지 않습니다."));
       }
 
       const imageId = await userInstance.findImageId(user.id);
@@ -123,7 +123,7 @@ export class UserController {
         throw new Error("사용자의 이미지 정보가 존재하지 않습니다.");
       }
 
-      res.send(new HTTPResponse(200, imageId));
+      res.send(new HttpResponse(200, imageId));
     } catch (error) {
       next(error);
     }
