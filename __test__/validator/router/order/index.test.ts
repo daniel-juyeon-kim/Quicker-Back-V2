@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
+import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
 import { getOrderSchema, patchOrderSchema, postOrderSchema } from "../../../../validator/schema/routes/order";
 import { TestName } from "../types/test-name";
 
@@ -14,7 +14,7 @@ describe("GET: /order", () => {
     next = jest.fn();
   });
 
-  const testTarget = RequestValidator.validate(getOrderSchema, ["query"]);
+  const testTarget = validate(getOrderSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -115,7 +115,7 @@ describe("POST: /order", () => {
     next = jest.fn();
   });
 
-  const testTarget = RequestValidator.validate(postOrderSchema, ["body"]);
+  const testTarget = validate(postOrderSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -196,7 +196,7 @@ describe("PATCH: /order", () => {
     next = jest.fn();
   });
 
-  const testTarget = RequestValidator.validate(patchOrderSchema, ["body"]);
+  const testTarget = validate(patchOrderSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

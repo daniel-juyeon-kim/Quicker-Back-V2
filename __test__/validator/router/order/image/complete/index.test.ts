@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../../validator";
+import { ExpectType, validate, ValidateErrorMessage } from "../../../../../../validator";
 import {
   getOrderImageCompleteSchema,
   postOrderImageCompleteSchema,
@@ -18,7 +18,7 @@ beforeEach(() => {
 });
 
 describe("GET: /order/image/complete", () => {
-  const testTarget = RequestValidator.validate(getOrderImageCompleteSchema, ["query"]);
+  const testTarget = validate(getOrderImageCompleteSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -66,7 +66,7 @@ describe("GET: /order/image/complete", () => {
 });
 
 describe("POST: /order/image/complete", () => {
-  const testTarget = RequestValidator.validate(postOrderImageCompleteSchema, ["body"]);
+  const testTarget = validate(postOrderImageCompleteSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
+import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
 import { postRegisterSchema } from "../../../../validator/schema/routes/register";
 import { TestName } from "../types/test-name";
 
@@ -28,7 +28,7 @@ beforeEach(() => {
 //     date!: number;
 // }
 describe("POST: /register", () => {
-  const testTarget = RequestValidator.validate(postRegisterSchema, ["body"]);
+  const testTarget = validate(postRegisterSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

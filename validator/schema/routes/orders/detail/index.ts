@@ -1,7 +1,7 @@
 import { Schema } from "express-validator";
 
-import { CustomValidator } from "../../../..";
-import { ValidateErrorMessage } from "../../../../src/error-message";
+import { validateStringTypeNumberList } from "../../../..";
+import { ValidateErrorMessage } from "../../../../error-message";
 
 // GET /orders/detail
 export const getOrdersDetailSchema: Schema = {
@@ -11,7 +11,7 @@ export const getOrdersDetailSchema: Schema = {
       errorMessage: ValidateErrorMessage.notExist,
     },
     custom: {
-      options: CustomValidator.validateIntList,
+      options: validateStringTypeNumberList,
     },
   },
 };

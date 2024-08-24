@@ -1,14 +1,24 @@
 const DEVELOPMENT = "development";
 const ZERO = 0;
 
-export const isUndefined = (value: any): value is undefined => {
-  return value === undefined;
-};
+export type Env = string | undefined;
 
-export const isDevelopment = (env: string | undefined): env is typeof DEVELOPMENT => {
+export const isDevelopment = (env: Env): env is typeof DEVELOPMENT => {
   return env === DEVELOPMENT;
 };
 
-export const isPositiveNumber = (number: number) => {
-  return Number.isFinite(number) && ZERO < number;
+export const isUndefined = (value: unknown): value is undefined => {
+  return value === undefined;
+};
+
+export const isPositiveNumber = (value: number) => {
+  return isNumber(value) && isPositive(value);
+};
+
+export const isNumber = (value: number): value is number => {
+  return Number.isFinite(value);
+};
+
+const isPositive = (value: number) => {
+  return ZERO < value;
 };
