@@ -3,8 +3,8 @@ import { isNumber } from "../util";
 
 const SPLITTER = ",";
 
-export const validateStringTypeNumberList = (string: string): true => {
-  string.split(SPLITTER).forEach(validateNumber);
+export const validateStringTypeNumberList = (value: string): true => {
+  value.split(SPLITTER).forEach(validateNumber);
 
   return true;
 };
