@@ -1,4 +1,4 @@
-import { ValidateErrorMessage } from "../../../src/error-message";
+import { ValidateErrorMessage } from "../../../error-message";
 
 // GET /orders
 export const getOrdersSchema = {

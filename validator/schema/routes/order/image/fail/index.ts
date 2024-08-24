@@ -1,4 +1,4 @@
-import { ExpectType, ValidateErrorMessage } from "../../../../../src/error-message";
+import { ExpectType, ValidateErrorMessage } from "../../../../../error-message";
 
 // GET /order/image/fail
 export const getOrderImageFailSchema = {

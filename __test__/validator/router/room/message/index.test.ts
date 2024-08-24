@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../../validator";
+import { ExpectType, validate, ValidateErrorMessage } from "../../../../../validator";
 import { getRoomSchema } from "../../../../../validator/schema/routes/room/";
 import { TestName } from "../../types/test-name";
 
@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("GET: /room/ValidateErrorMessage", () => {
-  const testTarget = RequestValidator.validate(getRoomSchema, ["query"]);
+  const testTarget = validate(getRoomSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

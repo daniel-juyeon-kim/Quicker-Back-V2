@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, RequestValidator, ValidateErrorMessage } from "../../../../validator";
+import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
 import {
   getCurrentDeliverLocationSchema,
   postCurrentDeliverLocationSchema,
@@ -17,7 +17,7 @@ beforeEach(() => {
 });
 
 describe("GET: /current-deliver-location", () => {
-  const testTarget = RequestValidator.validate(getCurrentDeliverLocationSchema, ["query"]);
+  const testTarget = validate(getCurrentDeliverLocationSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -49,7 +49,7 @@ describe("GET: /current-deliver-location", () => {
 });
 
 describe("POST: /current-deliver-location", () => {
-  const testTarget = RequestValidator.validate(postCurrentDeliverLocationSchema, ["body"]);
+  const testTarget = validate(postCurrentDeliverLocationSchema, ["body"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
