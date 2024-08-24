@@ -11,14 +11,14 @@ export const isUndefined = (value: unknown): value is undefined => {
   return value === undefined;
 };
 
-export const isPositiveNumber = (number: number) => {
-  return isNumber(number) && isOverZero(number);
+export const isPositiveNumber = (value: number) => {
+  return isNumber(value) && isPositive(value);
 };
 
-export const isNumber = (number: number): number is number => {
-  return Number.isFinite(number);
+export const isNumber = (value: number): value is number => {
+  return Number.isFinite(value);
 };
 
-const isOverZero = (number: number) => {
-  return ZERO < number;
+const isPositive = (value: number) => {
+  return ZERO < value;
 };
