@@ -3,12 +3,15 @@ import { checkSchema, Location, Result, Schema, ValidationError, validationResul
 
 export const validate = (schema: Schema, location: Location[]): RequestHandler => {
   return async (req, _, next) => {
+    // 스키마로 요청 검증
     const validateResult = await generateResult(schema, location, req);
 
+    // 요청값에 검증에러가 없으면 다음 미들웨어로
     if (isPass(validateResult)) {
       return next();
     }
 
+    // 요청값에 검증에러가 있으면 에러를 에러를 처리하는 미들웨어로
     const error = validateResult.array({ onlyFirstError: true })[0];
     next(error);
   };
