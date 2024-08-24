@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { RequestValidator, ValidateErrorMessage } from "../../../../validator";
+import { validate, ValidateErrorMessage } from "../../../../validator";
 import { getOrdersSchema } from "../../../../validator/schema/routes/orders";
 import { TestName } from "../types/test-name";
 
@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("GET: /orders", () => {
-  const testTarget = RequestValidator.validate(getOrdersSchema, ["query"]);
+  const testTarget = validate(getOrdersSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {

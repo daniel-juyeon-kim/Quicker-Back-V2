@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { RequestValidator, ValidateErrorMessage } from "../../../../../validator";
+import { validate, ValidateErrorMessage } from "../../../../../validator";
 import { getUserNameSchema } from "../../../../../validator/schema/routes/user";
 import { TestName } from "../../types/test-name";
 
@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe("GET: /user/name", () => {
-  const testTarget = RequestValidator.validate(getUserNameSchema, ["query"]);
+  const testTarget = validate(getUserNameSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
