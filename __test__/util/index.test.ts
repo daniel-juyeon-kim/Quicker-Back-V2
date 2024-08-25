@@ -1,4 +1,4 @@
-import { isDevelopment, isNumber, isPositiveNumber, isUndefined } from "../../util";
+import { isEmptyString, isNumber, isPositiveNumber, isString, isUndefined } from "../../util";
 
 describe("isUndefined 테스트", () => {
   test("통과", () => {
@@ -16,16 +16,16 @@ describe("isUndefined 테스트", () => {
   });
 });
 
-describe("isDevelopment 테스트", () => {
+describe("isNumber 테스트", () => {
   test("통과", () => {
-    const result = isDevelopment("production");
+    const result = isNumber(1);
 
-    expect(result).toBe(false);
+    expect(result).toBe(true);
   });
 
   test("실패", () => {
-    ["production", undefined].forEach((value) => {
-      const result = isDevelopment(value);
+    [-Infinity, NaN, Infinity].forEach((value) => {
+      const result = isNumber(value);
 
       expect(result).toBe(false);
     });
@@ -48,16 +48,28 @@ describe("isPositiveNumber 테스트", () => {
   });
 });
 
-describe("isNumber 테스트", () => {
+describe("isString 테스트", () => {
   test("통과", () => {
-    const result = isNumber(1);
-
-    expect(result).toBe(true);
+    expect(isString("")).toBe(true);
   });
 
   test("실패", () => {
-    [-Infinity, NaN, Infinity].forEach((value) => {
-      const result = isNumber(value);
+    [1, NaN, {}].forEach((value) => {
+      const result = isString(value);
+
+      expect(result).toBe(false);
+    });
+  });
+});
+
+describe("isEmptyString 테스트", () => {
+  test("통과", () => {
+    expect(isEmptyString("")).toBe(true);
+  });
+
+  test("실패", () => {
+    ["asdf", "d"].forEach((value) => {
+      const result = isEmptyString(value);
 
       expect(result).toBe(false);
     });
