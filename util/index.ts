@@ -1,5 +1,5 @@
 const ZERO = 0;
-export type RemoveFromStringUnion<T extends string> = T extends "" ? never : T;
+export type ExcludeEmptyString = Exclude<string, "">;
 
 export const isUndefined = (value: unknown): value is undefined => {
   return value === undefined;
