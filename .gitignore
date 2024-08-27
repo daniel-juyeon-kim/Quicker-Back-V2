@@ -5,9 +5,6 @@
 .env
 .env.local
 
-# 인증서
-/config
-
 #logs
 /logs/*
 
