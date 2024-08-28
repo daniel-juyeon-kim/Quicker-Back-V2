@@ -1,10 +1,14 @@
 import { isEmptyString, isString } from "..";
 import { isEnvType, isValidEnv } from "../env";
-import { Env, EnvConfig, EnvObject } from "../env/types";
+import { Env, EnvObject } from "../env/types";
 import { EnvChecker } from "./env-checker";
 
+type EnvConfig = {
+  readonly [K: string]: EnvObject | Env;
+};
+
 export abstract class AbstractEnvChecker implements EnvChecker {
-  public check(key: string, value: Env | EnvObject | EnvConfig) {
+  public check(key: string, value: EnvConfig | EnvObject | Env) {
     if (isEnvType(value)) {
       this.showInvalidEnv(key, value);
       return;
@@ -31,7 +35,7 @@ export abstract class AbstractEnvChecker implements EnvChecker {
   }
 
   private throwInvalidKeyError(key: string, value: Env) {
-    const errorMessage = `[WARNNING] ${key} is ${value}`;
+    const errorMessage = `[WARN] ${key} is ${value}`;
     throw new Error(errorMessage);
   }
 }

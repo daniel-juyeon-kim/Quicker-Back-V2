@@ -13,8 +13,8 @@ describe("productionEnvChecker 테스트", () => {
 
   test("실패", () => {
     const testValues = [
-      { value: undefined, errorMessage: "[WARNNING] key is undefined" },
-      { value: "", errorMessage: "[WARNNING] key is empty string" },
+      { value: undefined, errorMessage: "[WARN] key is undefined" },
+      { value: "", errorMessage: "[WARN] key is empty string" },
     ];
 
     testValues.forEach(({ value, errorMessage }) => {
