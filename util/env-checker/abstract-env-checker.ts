@@ -28,9 +28,8 @@ export abstract class AbstractEnvChecker implements EnvChecker {
   }
 
   private throwInvalidEnvError(key: string, value: InvalidEnv) {
-    if (isUndefined(value)) {
-      throw new Error(`[WARN] ${key} is ${value}`);
-    }
-    throw new Error(`[WARN] ${key} is empty string`);
+    const invalidValue = isUndefined(value) ? value : "empty string";
+
+    throw new Error(`[WARN] ${key} is ${invalidValue}`);
   }
 }
