@@ -1,6 +1,6 @@
-import { isEmptyString, isString } from "..";
+import { isUndefined } from "..";
 import { isEnvType, isValidEnv } from "../env";
-import { Env, EnvObject } from "../env/types";
+import { Env, EnvObject, InvalidEnv } from "../env/types";
 import { EnvChecker } from "./env-checker";
 
 type EnvConfig = {
@@ -8,34 +8,29 @@ type EnvConfig = {
 };
 
 export abstract class AbstractEnvChecker implements EnvChecker {
-  public check(key: string, value: EnvConfig | EnvObject | Env) {
+  public checkEnv(key: string, value: EnvConfig | EnvObject | Env) {
     if (isEnvType(value)) {
-      this.showInvalidEnv(key, value);
+      this.checkValidEnv(key, value);
       return;
     }
 
     for (const key in value) {
-      this.check(key, value[key]);
+      this.checkEnv(key, value[key]);
     }
   }
 
-  protected abstract showInvalidEnv(key: string, value: Env): void;
-
-  protected validateEnv(key: string, value: Env) {
+  protected checkValidEnv(key: string, value: Env) {
     if (isValidEnv(value)) {
       return;
     }
 
-    if (isString(value) && isEmptyString(value)) {
-      const value = "empty string";
-      this.throwInvalidKeyError(key, value);
-    }
-
-    this.throwInvalidKeyError(key, value);
+    this.throwInvalidEnvError(key, value);
   }
 
-  private throwInvalidKeyError(key: string, value: Env) {
-    const errorMessage = `[WARN] ${key} is ${value}`;
-    throw new Error(errorMessage);
+  private throwInvalidEnvError(key: string, value: InvalidEnv) {
+    if (isUndefined(value)) {
+      throw new Error(`[WARN] ${key} is ${value}`);
+    }
+    throw new Error(`[WARN] ${key} is empty string`);
   }
 }

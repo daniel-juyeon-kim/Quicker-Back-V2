@@ -6,7 +6,7 @@ describe("productionEnvChecker 테스트", () => {
   test("통과", () => {
     ["value", { a: "d", b: "c" }, { a: { b: "c", d: "e" }, f: { g: "h", i: "i", j: "k" }, l: "m" }].forEach((value) => {
       expect(() => {
-        productionEnvChecker.check("key", value);
+        productionEnvChecker.checkEnv("key", value);
       }).not.toThrow();
     });
   });
@@ -19,7 +19,7 @@ describe("productionEnvChecker 테스트", () => {
 
     testValues.forEach(({ value, errorMessage }) => {
       expect(() => {
-        productionEnvChecker.check("key", value);
+        productionEnvChecker.checkEnv("key", value);
       }).toThrow(errorMessage);
     });
   });
