@@ -4,7 +4,6 @@ import { isNumber } from "../util";
 import { validateEnvValue } from "../util/env";
 import { EnvConfig } from "../util/env/types";
 
-// 테스트 코드 추가 필요
 const initializePort = (app: Application, port: EnvConfig["port"]) => {
   validatePort(port);
 
