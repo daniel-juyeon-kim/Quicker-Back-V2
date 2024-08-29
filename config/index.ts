@@ -47,20 +47,15 @@ export const config = {
 } as const;
 
 const checkAllEnv = (config: EnvConfig) => {
-  const productionEnvChecker = new ProductionEnvChecker();
-  const developEnvChecker = new DevelopEnvChecker();
   const nodeEnv = config.nodeEnv;
 
   if (isValidEnv(nodeEnv)) {
     validateEnv({ nodeEnv });
-
-    if (isDevelopment(nodeEnv)) {
-      developEnvChecker.checkEnv("envObject", config);
-      return;
-    }
   }
 
-  productionEnvChecker.checkEnv("envObject", config);
+  const envChecker = isDevelopment(nodeEnv) ? new DevelopEnvChecker() : new ProductionEnvChecker();
+
+  envChecker.checkEnv("envObject", config);
 };
 
 checkAllEnv(config);
