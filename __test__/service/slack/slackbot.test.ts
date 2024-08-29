@@ -1,25 +1,25 @@
 import { SlackBot } from "../../../service/slack/slack-bot";
 
-const 실패_케이스들 = [
+const failureTestCases = [
   {
-    토큰: undefined,
-    채널_아이디: "채널 아이디",
-    예상_에러_메시지: "[WARN] Invalid Env value, token is undefined",
+    token: undefined,
+    channelId: "채널 아이디",
+    expectErrorMessage: "[WARN] Invalid Env value, token is undefined",
   },
   {
-    토큰: "토큰",
-    채널_아이디: undefined,
-    예상_에러_메시지: "[WARN] Invalid Env value, channelId is undefined",
+    token: "토큰",
+    channelId: undefined,
+    expectErrorMessage: "[WARN] Invalid Env value, channelId is undefined",
   },
   {
-    토큰: "",
-    채널_아이디: "채널 아이디",
-    예상_에러_메시지: "[WARN] Invalid Env value, token is empty string",
+    token: "",
+    channelId: "채널 아이디",
+    expectErrorMessage: "[WARN] Invalid Env value, token is empty string",
   },
   {
-    토큰: "토큰",
-    채널_아이디: "",
-    예상_에러_메시지: "[WARN] Invalid Env value, channelId is empty string",
+    token: "토큰",
+    channelId: "",
+    expectErrorMessage: "[WARN] Invalid Env value, channelId is empty string",
   },
 ];
 
@@ -31,10 +31,10 @@ describe("슬랙 봇 객체 생성 시 환경 변수 undefined, 비어있는 str
   });
 
   test("실패", () => {
-    실패_케이스들.forEach((실패_케이스) => {
+    failureTestCases.forEach((failureTestCase) => {
       expect(() => {
-        new SlackBot({ token: 실패_케이스.토큰, channelId: 실패_케이스.채널_아이디 });
-      }).toThrow(실패_케이스.예상_에러_메시지);
+        new SlackBot({ token: failureTestCase.token, channelId: failureTestCase.channelId });
+      }).toThrow(failureTestCase.expectErrorMessage);
     });
   });
 });
