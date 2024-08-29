@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { matchedData } from "express-validator";
 
-import config from "../config";
+import { config } from "../config";
 import { userInstance } from "../maria/commands";
 import sequelizeConnector from "../maria/connector/sequelize-connector";
 import { initModels } from "../maria/models/init-models";
 import { cryptoInstance } from "../service";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
-require("dotenv").config();
 initModels(sequelizeConnector);
 
 export class UserController {
@@ -67,6 +66,7 @@ export class UserController {
       const { walletAddress } = matchedData(req);
 
       const name = await userInstance.findName(walletAddress);
+
       if (!name) {
         throw new HttpErrorResponse(500, "사용자가 존재하지 않습니다.");
       }
@@ -89,6 +89,7 @@ export class UserController {
       const { walletAddress, imageId } = matchedData(req);
 
       const user = await userInstance.findId(walletAddress);
+
       if (!user) {
         throw new HttpErrorResponse(500, "사용자가 존재하지 않습니다.");
       }
@@ -114,11 +115,13 @@ export class UserController {
       const { walletAddress } = matchedData(req);
 
       const user = await userInstance.findId(walletAddress);
+
       if (!user) {
         return next(new HttpErrorResponse(500, "사용자가 존재하지 않습니다."));
       }
 
       const imageId = await userInstance.findImageId(user.id);
+
       if (!imageId) {
         throw new Error("사용자의 이미지 정보가 존재하지 않습니다.");
       }

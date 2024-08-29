@@ -3,14 +3,13 @@ import cors from "cors";
 import express, { Application } from "express";
 import morgan from "morgan";
 
-import config from "../config";
+import { config } from "../config";
 import { cronJob, folder } from "../middlewares";
-import { isDevelopment } from "../util";
+import { isDevelopment } from "../util/env";
 
 folder.createLogFolder();
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 cronJob;
-
-const NODE_ENV = config.nodeEnv;
 
 const setUpMiddleware = (app: Application) => {
   setUpDevelopMiddleware(app);
@@ -22,7 +21,9 @@ const setUpMiddleware = (app: Application) => {
 };
 
 const setUpDevelopMiddleware = (app: Application) => {
-  if (isDevelopment(NODE_ENV)) {
+  const nodeEnv = config.nodeEnv;
+
+  if (isDevelopment(nodeEnv)) {
     app.use(morgan("combined"));
   }
 };

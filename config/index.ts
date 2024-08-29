@@ -1,4 +1,7 @@
 import dotenv from "dotenv";
+import { isDevelopment, isValidEnv, validateEnv } from "../util/env";
+import { DevelopEnvChecker, ProductionEnvChecker } from "../util/env-checker";
+import { EnvConfig } from "../util/env/types";
 
 const result = dotenv.config({
   path: [".env", ".env.local"],
@@ -8,7 +11,6 @@ const result = dotenv.config({
 if (result.error) {
   throw result.error;
 }
-export type EnvConfig = typeof config;
 
 export const config = {
   nodeEnv: process.env.NODE_ENV,
@@ -43,3 +45,22 @@ export const config = {
     channelId: process.env.SLACK_BOT_CHANNEL_ID,
   },
 } as const;
+
+const checkAllEnv = (config: EnvConfig) => {
+  const productionEnvChecker = new ProductionEnvChecker();
+  const developEnvChecker = new DevelopEnvChecker();
+  const nodeEnv = config.nodeEnv;
+
+  if (isValidEnv(nodeEnv)) {
+    validateEnv({ nodeEnv });
+
+    if (isDevelopment(nodeEnv)) {
+      developEnvChecker.checkEnv("envObject", config);
+      return;
+    }
+  }
+
+  productionEnvChecker.checkEnv("envObject", config);
+};
+
+checkAllEnv(config);
