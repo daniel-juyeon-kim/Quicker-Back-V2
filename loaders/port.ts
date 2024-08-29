@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { Application } from "express";
-import { isNumber } from "../util";
+import { isNumber, isPositiveNumber } from "../util";
 import { validateEnvValue } from "../util/env";
 import { EnvConfig } from "../util/env/types";
 
@@ -15,11 +15,13 @@ type ValidatePortFunction = (port: EnvConfig["port"]) => asserts port is `${numb
 const validatePort: ValidatePortFunction = (port) => {
   validateEnvValue("port", port);
 
-  if (isNumber(parseInt(port))) {
+  const parsedPort = parseInt(port);
+
+  if (isNumber(parsedPort) && isPositiveNumber(parsedPort)) {
     return;
   }
 
-  throw new Error(`[WARN] Port must be a numeric string`);
+  throw new Error(`[WARN] Port must be a positive numeric string`);
 };
 
 export default initializePort;

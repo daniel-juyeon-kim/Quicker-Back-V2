@@ -16,7 +16,9 @@ describe("initalizePort 포트 유효성 검사 테스트", () => {
     const failureTestCases = [
       { value: "", errorMessage: "[WARN] Invalid Env value, port is empty string" },
       { value: undefined, errorMessage: "[WARN] Invalid Env value, port is undefined" },
-      { value: "test", errorMessage: "[WARN] Port must be a numeric string" },
+      { value: "test", errorMessage: "[WARN] Port must be a positive numeric string" },
+      { value: "0", errorMessage: "[WARN] Port must be a positive numeric string" },
+      { value: "-1", errorMessage: "[WARN] Port must be a positive numeric string" },
     ];
 
     failureTestCases.forEach(({ value, errorMessage }) => {
