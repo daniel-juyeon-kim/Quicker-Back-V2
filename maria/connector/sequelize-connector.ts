@@ -1,10 +1,12 @@
-import config from "../../config";
+import { Sequelize } from "sequelize";
+import { config } from "../../config";
+import { validateEnv } from "../../util/env";
 
-const { Sequelize } = require("sequelize");
+validateEnv(config.mariaDB);
 
-export default new Sequelize("Quicker", config.db.maria.user, config.db.maria.password, {
+export default new Sequelize("Quicker", config.mariaDB.user, config.mariaDB.password, {
   dialect: "mariadb",
-  host: config.db.maria.host,
-  port: config.db.maria.port,
-  logging: false
+  host: config.mariaDB.host,
+  port: parseInt(config.mariaDB.port),
+  logging: false,
 });

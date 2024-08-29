@@ -1,7 +1,7 @@
 import express from "express";
 
 import chat from "./chat/socket";
-import config from "./config";
+import { config } from "./config";
 
 import setUpMiddleware from "./loaders/middleware";
 import initializePort from "./loaders/port";

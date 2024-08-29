@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { updateOrder } from "../service/order";
 
 import { matchedData } from "express-validator";
-import config from "../config";
+import { config } from "../config";
 import { averageInstance, locationInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
 import sequelizeConnector from "../maria/connector/sequelize-connector";
 import { initModels } from "../maria/models/init-models";
@@ -60,6 +60,7 @@ export class OrderController {
       }
 
       const orders = await orderInstance.findForSearch(user.id);
+
       if (orders.length === 0) {
         throw new HttpErrorResponse(404, "생성된 오더가 없습니다.");
       }
@@ -204,6 +205,7 @@ export class OrderController {
   async order(req: Request, res: Response, next: NextFunction) {
     try {
       const orderId = req.query.orderid;
+
       if (typeof orderId === "string") {
         const location = await locationInstance.find(parseInt(orderId));
         res.send(location);
@@ -312,9 +314,11 @@ export class OrderController {
       const query = req.query;
       const orderId = query.orderNum;
       const connection = await connectMongo("orderComplete");
+
       if (typeof orderId !== "string") {
         throw new Error("TypeError : orderId be string");
       }
+
       const images = await imageInstance.find(connection, orderId);
       let image;
       if (images.length === 0) {
@@ -365,11 +369,14 @@ export class OrderController {
     try {
       const query = req.query;
       const orderId = query.orderNum;
+
       if (typeof orderId !== "string") {
         throw new Error("TypeError : orderId be string");
       }
+
       const connection = await connectMongo("orderFail");
       const image = await imageInstance.findFailImage(connection, orderId);
+
       if (image === null || undefined) {
         res.send(null);
       } else {
@@ -390,9 +397,11 @@ export class OrderController {
     try {
       const body = req.body;
       const documentFile = req.file;
+
       if (documentFile === undefined) {
         throw new Error("File not exist");
       }
+
       const bufferImage = documentFile.buffer;
       const orderNum = body.orderNum;
       const reason = body.reason;
