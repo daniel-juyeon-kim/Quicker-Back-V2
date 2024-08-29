@@ -1,4 +1,4 @@
-import { isDevelopment, isEnvType, isValidEnv } from "../../../util/env";
+import { isDevelopment, isEnvType, isValidEnv, validateEnv, validateEnvValue } from "../../../util/env";
 
 describe("isDevelopment 테스트", () => {
   test("통과", () => {
@@ -49,5 +49,60 @@ describe("isEnvType 테스트", () => {
 
       expect(result).toBe(false);
     });
+  });
+});
+
+describe("validateEnv 테스트", () => {
+  test("통과", () => {
+    const target = {
+      user: "user",
+      password: "password",
+    } as const;
+
+    expect(() => {
+      validateEnv(target);
+    }).not.toThrow();
+  });
+
+  test("실패", () => {
+    const target = {
+      user: undefined,
+      password: "password",
+    };
+
+    expect(() => {
+      validateEnv(target);
+    }).toThrow("[WARN] Invalid Env value, user is undefined");
+  });
+
+  test("실패", () => {
+    const target = {
+      user: "user",
+      password: "",
+    };
+
+    expect(() => {
+      validateEnv(target);
+    }).toThrow("[WARN] Invalid Env value, password is empty string");
+  });
+});
+
+describe("validateEnvValue 테스트", () => {
+  test("통과", () => {
+    expect(() => {
+      validateEnvValue("user", "user");
+    }).not.toThrow();
+  });
+
+  test("실패", () => {
+    expect(() => {
+      validateEnvValue("user", undefined);
+    }).toThrow("[WARN] Invalid Env value, user is undefined");
+  });
+
+  test("실패", () => {
+    expect(() => {
+      validateEnvValue("password", "");
+    }).toThrow("[WARN] Invalid Env value, password is empty string");
   });
 });

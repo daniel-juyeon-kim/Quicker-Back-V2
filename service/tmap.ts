@@ -9,29 +9,26 @@ interface Body {
 }
 
 interface ExpectType {
-  features : {
-    properties : { 
-      totalDistance : number
-    }
-  }[]
+  features: {
+    properties: {
+      totalDistance: number;
+    };
+  }[];
 }
 
 export class TmapApi {
-  async requestRouteDistance (body: Body, appKey: string) {
-    const response = await fetch(
-      `https://apis.openapi.sk.com/tmap/routes?version=1&format=json&appKey=${appKey}`,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-      },
-    );
-    const data = await response.json() as ExpectType; 
+  public async requestRouteDistance(body: Body, appKey: string) {
+    const response = await fetch(`https://apis.openapi.sk.com/tmap/routes?version=1&format=json&appKey=${appKey}`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    const data = (await response.json()) as ExpectType;
     return data.features[0].properties.totalDistance / 1000;
-  };
+  }
 
-  async requestRouteDistances (locations: Location [], appKey: string) {
+  private async requestRouteDistances(locations: Location[], appKey: string) {
     return await Promise.allSettled(
-      locations.map(async(location) => {
+      locations.map(async (location) => {
         const body = {
           startX: location.Departure.X.toString(),
           startY: location.Departure.Y.toString(),
@@ -43,7 +40,7 @@ export class TmapApi {
           orderId: location.id,
           km: distance,
         };
-      })
-    )
+      }),
+    );
   }
 }
