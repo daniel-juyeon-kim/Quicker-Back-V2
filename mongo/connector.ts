@@ -1,12 +1,16 @@
 import mongoose from "mongoose";
-import config from "../config";
+import { config } from "../config";
+import { validateEnvValue } from "../util/env";
+import { EnvConfig } from "../util/env/types";
 
-const connectMongo = async (databaseName : string) => {
-  if (config.db.mongo === undefined) {
-    throw new Error("dotenv의 MONGO_CHAT의 값이 없음");
-  } else {
-    return mongoose.createConnection(config.db.mongo , {dbName: databaseName});
-  }
+const setUpMongoConnection = (mongoDB: EnvConfig["mongoDB"]) => {
+  validateEnvValue("mongoDB", mongoDB);
+
+  return async (dbName: string) => {
+    return mongoose.createConnection(mongoDB, { dbName });
+  };
 };
 
-export default connectMongo
+const connectMongo = setUpMongoConnection(config.mongoDB);
+
+export default connectMongo;

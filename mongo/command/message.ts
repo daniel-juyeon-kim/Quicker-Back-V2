@@ -1,4 +1,3 @@
-import { Connection } from "mongoose";
 import connectMongo from "../connector";
 import MessageSchema from "../schemas/message";
 
@@ -36,10 +35,7 @@ export class MessageModel {
   async findRecent(orderNum: number) {
     const connection = await connectMongo("chat");
     const messageModel = connection.model(String(orderNum), MessageSchema);
-    const recentMessage = await messageModel
-      .findOne()
-      .select(["-_id", "-__v", "-roomName"])
-      .sort({ $natural: -1 });
+    const recentMessage = await messageModel.findOne().select(["-_id", "-__v", "-roomName"]).sort({ $natural: -1 });
     await connection.destroy();
     return recentMessage;
   }

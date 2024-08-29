@@ -1,22 +1,11 @@
 import chalk from "chalk";
 import { Application } from "express";
-import { isPositiveNumber, isUndefined } from "../util";
+import { validateEnvValue } from "../util/env";
+import { EnvConfig } from "../util/env/types";
 
-const initializePort = (app: Application, port: string | undefined) => {
-  validate(port);
+const initializePort = (app: Application, port: EnvConfig["port"]) => {
+  validateEnvValue("port", port);
 
   return app.listen(port, () => console.log(chalk.blueBright(`[RUNNING] App is listening on port ${port} !`)));
 };
-
-const validate = (port: string | undefined) => {
-  const errorMessage = `[WARN] Port is invalid value ${port}`;
-
-  if (isUndefined(port)) {
-    throw new Error(errorMessage);
-  } else if (isPositiveNumber(parseInt(port))) {
-    return;
-  }
-  throw new Error(errorMessage);
-};
-
 export default initializePort;

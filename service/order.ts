@@ -1,8 +1,8 @@
-import { Crypto } from "./cryto";
 import { cacheOrderInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
+import { Crypto } from "./cryto";
 import { NHNAPI } from "./nhn-api";
 
-export const updateOrder = async (body: any, nhnApi : NHNAPI, cryptoInstance : Crypto, cryptoKey : string) => {
+export const updateOrder = async (body: any, nhnApi: NHNAPI, cryptoInstance: Crypto, cryptoKey: string) => {
   const userWalletAddress = body.userWalletAddress;
   const orderId = body.orderId;
 
@@ -28,11 +28,12 @@ export const updateOrder = async (body: any, nhnApi : NHNAPI, cryptoInstance : C
   if (receiverPhoneNumber === null) {
     throw new Error("수취인의 전화번호에 대한 정보가 없습니다.");
   }
+
   const encryptedUrl = cryptoInstance.encrypt(body, cryptoKey);
 
   const url = process.env.CLIENT_SERVER_DOMAIN + "receipient/?key=" + encryptedUrl;
 
-  const messageBody = nhnApi.generateIncludeUrlBody(url, receiverPhoneNumber.PHONE)
+  const messageBody = nhnApi.generateIncludeUrlBody(url, receiverPhoneNumber.PHONE);
 
-  await nhnApi.sendMessage(messageBody)
+  await nhnApi.sendMessage(messageBody);
 };
