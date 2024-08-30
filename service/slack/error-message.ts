@@ -7,7 +7,7 @@ export class ErrorMessage {
     this.occurDate = occurDate.toLocaleString("ko-KR");
   }
 
-  public createStringMessage() {
+  public toString() {
     return (
       `*에러 발생 [ ${this.occurDate} ]* \n\n` +
       `*Error Message : * ${this.error.message}\n` +
