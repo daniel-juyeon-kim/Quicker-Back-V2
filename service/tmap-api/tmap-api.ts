@@ -1,15 +1,15 @@
 import { Location } from "../../maria/commands/location";
 import { Env, validateEnvValue } from "../../util/env";
-import { ErrorMessage, SlackBot } from "../slack";
+import { ErrorMessage, ErrorMessageBot } from "../slack";
 import { RequestRouteDistanceBody, RouteDistance } from "./types";
 
 export class TmapApi {
   private readonly requestApiUrl = `https://apis.openapi.sk.com/tmap/routes?version=1&format=json&appKey=`;
   private readonly appKey: string;
-  private readonly slackbot: SlackBot;
+  private readonly slackbot: ErrorMessageBot;
   private readonly KM = 1000;
 
-  constructor(appKey: Env, slackbot: SlackBot) {
+  constructor(appKey: Env, slackbot: ErrorMessageBot) {
     validateEnvValue("appKey", appKey);
 
     this.appKey = appKey;

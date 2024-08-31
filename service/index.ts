@@ -1,8 +1,8 @@
 import { config } from "../config";
-import { Klaytn } from "./blockchain/blockchain";
+import { Klaytn } from "./blockchain";
 import { Crypto } from "./cryto";
-import { NaverSmsApi } from "./message-sender/naver-sms-api";
-import { SlackBot } from "./slack/slack-bot";
+import { NaverSmsApi } from "./message-sender";
+import { SlackBot } from "./slack";
 import { TmapApi } from "./tmap-api";
 
 export const cryptoInstance = new Crypto();
