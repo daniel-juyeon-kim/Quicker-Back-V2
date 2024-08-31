@@ -1,7 +1,7 @@
 import { isUndefined } from "..";
 import { isEnvType, isValidEnv } from "../env";
 import { Env, EnvObject, InvalidEnv } from "../env/types";
-import { EnvChecker } from "./env-checker";
+import { EnvChecker } from "./types";
 
 type EnvConfig = {
   readonly [K: string]: EnvObject | Env;
