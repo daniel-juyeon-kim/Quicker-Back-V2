@@ -33,7 +33,7 @@ export const config = {
     deligationPublicKey: process.env.KLAYTN_DELIGATION_PUBLIC_KEY,
     deligationPrivateKey: process.env.KLAYTN_DELIGATION_PRIVATE_KEY,
   },
-  tampApiKey: process.env.TMAP_API_KEY,
+  tmapApiKey: process.env.TMAP_API_KEY,
   nhnApi: {
     accesskey: process.env.NHN_API_ACCESSKEY,
     secretkey: process.env.NHN_API_SECRETKEY,

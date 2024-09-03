@@ -4,12 +4,10 @@ import express, { Application } from "express";
 import morgan from "morgan";
 
 import { config } from "../config";
-import { cronJob, folder } from "../middlewares";
+import { folder } from "../middlewares";
 import { isDevelopment } from "../util/env";
 
 folder.createLogFolder();
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-cronJob;
 
 const setUpMiddleware = (app: Application) => {
   setUpDevelopMiddleware(app);
