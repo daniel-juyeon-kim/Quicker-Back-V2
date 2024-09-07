@@ -1,2 +1,2 @@
 export { NaverSmsApi } from "./naver-sms-api";
-export { MessageSender } from "./types";
+export { SmsApi as MessageSender } from "./types";
