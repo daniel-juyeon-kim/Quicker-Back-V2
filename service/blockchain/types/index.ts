@@ -1,11 +1,8 @@
-export interface Blockchain {
-  getOrderPrices(orderIds: number[]): Promise<
-    (
-      | {
-          orderNumber: number;
-          price: number;
-        }
-      | undefined
-    )[]
-  >;
-}
+export type OrderPrice = {
+  orderNumber: number;
+  price: number;
+};
+
+export type Blockchain = {
+  getOrderPrices(orderIds: number[]): Promise<(OrderPrice | undefined)[]>;
+};
