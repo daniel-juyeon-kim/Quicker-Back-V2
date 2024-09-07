@@ -1,63 +1,46 @@
-import { AverageCalculator } from "../../cron/average-calculator";
 import { CronService } from "../../cron/cron-service";
-import { DB } from "../../cron/data/db";
-import { ExternalApi } from "../../cron/data/external-api";
+import { DataService } from "../../cron/data/data-service";
+import { TableService } from "../../cron/table";
 import { ErrorMessageBot } from "../../service/slack";
 
-const averageCalculator = new AverageCalculator();
-
+let errorBot: jest.Mocked<ErrorMessageBot>;
+let data: jest.Mocked<DataService>;
+const table = { createAverageTable: jest.fn() } as unknown as jest.Mocked<TableService>;
 let cronService: CronService;
-let mockSlackBot: jest.Mocked<ErrorMessageBot>;
-let mockExternalApi: jest.Mocked<ExternalApi>;
-let mockDB: jest.Mocked<DB>;
 
 beforeEach(() => {
-  mockSlackBot = {
+  data = {
+    findLastMonthOrderInfo: jest.fn().mockResolvedValue([
+      { id: 1, km: 30, price: 100000 },
+      { id: 2, km: 50, price: 200000 },
+      { id: 3, km: 60, price: 300000 },
+    ]),
+    saveAverageTable: jest.fn(),
+  } as unknown as jest.Mocked<DataService>;
+
+  errorBot = {
     sendMessage: jest.fn(),
   };
 
-  mockExternalApi = {
-    findPrice: jest.fn(),
-    findDistance: jest.fn(),
-  } as unknown as jest.Mocked<ExternalApi>;
-
-  mockDB = {
-    saveAverage: jest.fn(),
-    findLocation: jest.fn(),
-    findLastMonthOrderIds: jest.fn(),
-  } as unknown as jest.Mocked<DB>;
-
-  cronService = new CronService(mockSlackBot, mockExternalApi, mockDB, averageCalculator);
+  cronService = new CronService(errorBot, data, table);
 });
 
-describe("cronService 테스트", () => {
-  test("정상동작", async () => {
-    mockDB.findLastMonthOrderIds.mockResolvedValue([1, 2]);
-
-    mockExternalApi.findPrice.mockResolvedValue([
-      { orderNumber: 1, price: 100 },
-      { orderNumber: 2, price: 200 },
-    ]);
-
-    mockExternalApi.findDistance.mockResolvedValue([
-      { orderId: 1, km: 10 },
-      { orderId: 2, km: 20 },
-    ]);
-
+describe("", () => {
+  test("정상 흐름", async () => {
     await cronService.run();
 
-    expect(mockDB.saveAverage).toHaveBeenCalled();
-    expect(mockSlackBot.sendMessage).not.toHaveBeenCalled();
+    expect(errorBot.sendMessage).not.toHaveBeenCalled();
+    expect(data.saveAverageTable).toHaveBeenCalled();
   });
 
-  test("실패", async () => {
-    const error = new Error("DB 에러 발생");
-
-    mockDB.findLastMonthOrderIds.mockRejectedValue(error);
+  test("내부 로직에 에러가 발생함", async () => {
+    data.findLastMonthOrderInfo = jest.fn((date: Date) => {
+      throw new Error();
+    });
 
     await cronService.run();
 
-    expect(mockSlackBot.sendMessage).toHaveBeenCalledTimes(1);
-    expect(mockDB.saveAverage).not.toHaveBeenCalled();
+    expect(errorBot.sendMessage).toHaveBeenCalled();
+    expect(data.saveAverageTable).not.toHaveBeenCalled();
   });
 });

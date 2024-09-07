@@ -17,11 +17,11 @@ export class DB {
     await this.averageInstance.create(averageTable);
   }
 
-  public async findLastMonthOrderIds(startDate: Date, endDate: Date) {
-    return await this.cacheOrderInstance.findAllId(startDate, endDate);
+  public findLastMonthOrderIds(startDate: Date, endDate: Date) {
+    return this.cacheOrderInstance.findAllId(startDate, endDate);
   }
 
-  public async findLocation(ids: number[]) {
-    return await this.locationInstance.findAll(ids);
+  public findLocation(ids: number[]) {
+    return this.locationInstance.findAll(ids);
   }
 }
