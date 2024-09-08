@@ -1,12 +1,8 @@
-import { WebClient } from "@slack/web-api";
-
+import { ChatPostMessageResponse, WebClient } from "@slack/web-api";
+import { ErrorMessageBot } from ".";
 import { validateEnv } from "../../util/env";
 import { EnvConfig } from "../../util/env/types";
 import { ErrorMessage } from "./error-message";
-
-interface ErrorMessageBot {
-  sendMessage(message: ErrorMessage): Promise<void>;
-}
 
 export class SlackBot implements ErrorMessageBot {
   private readonly client: WebClient;
@@ -20,9 +16,22 @@ export class SlackBot implements ErrorMessageBot {
   }
 
   public async sendMessage(message: ErrorMessage) {
-    await this.client.chat.postMessage({
-      text: message.createStringMessage(),
-      channel: this.channelId,
-    });
+    try {
+      const response = await this.client.chat.postMessage({
+        text: message.parseToStringForSlack(),
+        channel: this.channelId,
+      });
+
+      this.validateResponse(response);
+    } catch (e) {
+      const error = e as ChatPostMessageResponse;
+    }
+  }
+
+  private validateResponse(response: ChatPostMessageResponse) {
+    if (response.ok) {
+      return;
+    }
+    throw response;
   }
 }

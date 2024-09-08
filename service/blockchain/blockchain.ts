@@ -1,20 +1,9 @@
 import Caver from "caver-js";
-import { QUICKER_DLVR_PROXY_ABI, QUICKER_DLVR_PROXY_ADDRESS } from "../klaytnApi/ContractInfo";
-import { EnvConfig } from "../util/env/types";
+import { QUICKER_DLVR_PROXY_ABI, QUICKER_DLVR_PROXY_ADDRESS } from "../../klaytnApi/ContractInfo";
+import { EnvConfig } from "../../util/env/types";
+import { Blockchain } from "./types";
 
-interface Blockchain {
-  getOrderPrices(orderIds: number[]): Promise<
-    (
-      | {
-          orderNumber: number;
-          price: number;
-        }
-      | undefined
-    )[]
-  >;
-}
-
-export class Klaytn implements Klaytn {
+export class Klaytn implements Blockchain {
   private contract;
 
   constructor(klaytn_baobob_provider: EnvConfig["klaytn"]["baobobProvider"]) {

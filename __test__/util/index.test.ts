@@ -1,4 +1,17 @@
-import { isEmptyString, isNumber, isPositiveNumber, isString, isUndefined } from "../../util";
+import fetch from "node-fetch";
+
+import {
+  isEmptyString,
+  isFulfilled,
+  isNull,
+  isNumber,
+  isPositiveNumber,
+  isString,
+  isUndefined,
+  validateNotZero,
+  validateNumber,
+  validateResponse,
+} from "../../util";
 
 describe("isUndefined 테스트", () => {
   test("통과", () => {
@@ -73,5 +86,91 @@ describe("isEmptyString 테스트", () => {
 
       expect(result).toBe(false);
     });
+  });
+});
+
+describe("isFulfilled 테스트", () => {
+  test("통과", () => {
+    const result = isFulfilled({ status: "fulfilled", value: "값" });
+
+    expect(result).toBe(true);
+  });
+
+  test("싪패", () => {
+    const result = isFulfilled({ status: "rejected", reason: "값" });
+
+    expect(result).toBe(false);
+  });
+});
+
+describe("isNull 테스트", () => {
+  test("통과", () => {
+    expect(isNull(null)).toBe(true);
+  });
+
+  test("실패", () => {
+    [undefined, 0, false, -1, {}, []].forEach((value) => {
+      expect(isNull(value)).toBe(false);
+    });
+  });
+});
+
+describe("validateResponse 테스트", () => {
+  test("통과", () => {
+    const response = { status: 200 } as fetch.Response;
+
+    expect(async () => {
+      await validateResponse(response);
+    }).not.toThrow();
+  });
+
+  test("실패", async () => {
+    const json = jest.fn(
+      () =>
+        new Promise((resolve, reject) => {
+          resolve({ body: "errorBody" });
+          reject(undefined);
+        }),
+    );
+
+    const testCases = [
+      {
+        status: 199,
+        json,
+      },
+      {
+        status: 201,
+        json,
+      },
+    ] as unknown as fetch.Response[];
+
+    testCases.forEach(async (testCase) => {
+      await expect(validateResponse(testCase)).rejects.toStrictEqual({ body: "errorBody" });
+      expect(json).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("validateNumber 테스트", () => {
+  test("통과", () => {
+    expect(() => validateNumber(1)).not.toThrow();
+  });
+
+  test("실패", () => {
+    [Infinity, NaN, -Infinity].forEach((value) => {
+      expect(() => validateNumber(value)).toThrow();
+    });
+  });
+});
+
+describe("validateNotZero 테스트", () => {
+  test("통과", () => {
+    [-1, 1].forEach((value) => {
+      expect(() => validateNotZero(value)).not.toThrow();
+    });
+  });
+
+  test("실패", () => {
+    expect(() => validateNotZero(0)).toThrow();
   });
 });

@@ -1,16 +1,12 @@
 import { config } from "../config";
 import { Klaytn } from "./blockchain";
 import { Crypto } from "./cryto";
-import { DateFomater } from "./dateFormat";
-import { NHNAPI } from "./nhn-api";
-import { SlackBot } from "./slack/slack-bot";
-import { TmapApi } from "./tmap";
+import { NaverSmsApi } from "./message-sender";
+import { SlackBot } from "./slack";
+import { TmapApi } from "./tmap-api";
 
-const tmapApi = new TmapApi();
-const cryptoInstance = new Crypto();
-const dateFormater = new DateFomater();
-const nhnApi = new NHNAPI(config.nhnApi);
-const slackBot = new SlackBot(config.slackbot);
-const blockChain = new Klaytn(config.klaytn.baobobProvider);
-
-export { blockChain, cryptoInstance, dateFormater, nhnApi, slackBot, tmapApi };
+export const cryptoInstance = new Crypto();
+export const slackBot = new SlackBot(config.slackbot);
+export const nhnApi = new NaverSmsApi(config.nhnApi, slackBot);
+export const tmapApi = new TmapApi(config.tmapApiKey, slackBot);
+export const blockChain = new Klaytn(config.klaytn.baobobProvider);

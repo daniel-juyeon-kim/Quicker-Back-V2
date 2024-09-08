@@ -1,18 +1,14 @@
 import { CronJob } from "cron";
+import { config } from "../config";
+import { cronService } from "../cron";
+import { isDevelopment } from "../util/env";
 import { Folder } from "./folder";
-import { caverLimiter } from "./limiter"
 
-const folder = new Folder()
-const cronJob = new CronJob(
-  "0 0 3 1 * *",
-  () => {},
-  null,
-  true,
-  "Asia/Seoul"
-);
+export { caverLimiter } from "./limiter";
 
-export {
-    folder,
-    cronJob,
-    caverLimiter
-}
+export const folder = new Folder();
+
+const developCronFunction = () => console.log(`${new Date()}: cron called`);
+const cronFunction = isDevelopment(config.nodeEnv) ? developCronFunction : cronService.run;
+
+new CronJob("* * * * * *", cronFunction, null, true, "Asia/Seoul");
