@@ -11,4 +11,4 @@ export const folder = new Folder();
 const developCronFunction = () => console.log(`${new Date()}: cron called`);
 const cronFunction = isDevelopment(config.nodeEnv) ? developCronFunction : cronService.run;
 
-new CronJob("* * * * * *", cronFunction, null, true, "Asia/Seoul");
+new CronJob("* * 3 1 *", cronFunction, null, true, "Asia/Seoul");
