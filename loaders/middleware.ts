@@ -1,6 +1,7 @@
 import compression from "compression";
 import cors from "cors";
 import express, { Application } from "express";
+import helmet from "helmet";
 import morgan from "morgan";
 
 import { config } from "../config";
@@ -12,6 +13,7 @@ folder.createLogFolder();
 const setUpMiddleware = (app: Application) => {
   setUpDevelopMiddleware(app);
 
+  app.use(helmet());
   app.use(compression());
   app.use(cors());
   app.use(express.urlencoded({ extended: true }));
