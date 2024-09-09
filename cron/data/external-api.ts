@@ -4,10 +4,13 @@ import { TmapApi } from "../../service/tmap-api";
 import { isUndefined } from "../../util";
 
 export class ExternalApi {
-  constructor(
-    private blockChain: Blockchain,
-    private tmapApi: TmapApi,
-  ) {}
+  private blockChain: Blockchain;
+  private tmapApi: TmapApi;
+
+  constructor({ blockChain, tmapApi }: Dependency) {
+    this.blockChain = blockChain;
+    this.tmapApi = tmapApi;
+  }
 
   public async findPrice(Ids: number[]) {
     return (await this.blockChain.getOrderPrices(Ids)).filter((price) => !isUndefined(price));
@@ -17,3 +20,8 @@ export class ExternalApi {
     return this.tmapApi.requestRouteDistances(locations);
   }
 }
+
+type Dependency = {
+  blockChain: Blockchain;
+  tmapApi: TmapApi;
+};

@@ -5,11 +5,15 @@ import { ExternalApi } from "./external-api";
 import { createLastMonthRange } from "./month";
 
 export class DataService {
-  constructor(
-    private database: DB,
-    private externalApi: ExternalApi,
-    private combiner: Combiner,
-  ) {}
+  private database: DB;
+  private externalApi: ExternalApi;
+  private combiner: Combiner;
+
+  constructor({ database, externalApi, combiner }: Dependency) {
+    this.database = database;
+    this.externalApi = externalApi;
+    this.combiner = combiner;
+  }
 
   public async findLastMonthOrderInfo(date: Date) {
     const { start, end } = createLastMonthRange(date);
@@ -27,3 +31,9 @@ export class DataService {
     await this.database.saveAverage(table);
   }
 }
+
+type Dependency = {
+  database: DB;
+  externalApi: ExternalApi;
+  combiner: Combiner;
+};

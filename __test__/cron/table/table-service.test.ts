@@ -4,7 +4,11 @@ import { CountTable } from "../../../cron/table/impl/count-table";
 import { SumTable } from "../../../cron/table/impl/sum-table";
 import { createAverageTable } from "./impl/util";
 
-const tableService = new TableService(new AverageTable(), new SumTable(), new CountTable());
+const tableService = new TableService({
+  averageTable: new AverageTable(),
+  sumTable: new SumTable(),
+  countTable: new CountTable(),
+});
 
 test("TableService.createAverageTable 테스트", () => {
   const orderInfos = [

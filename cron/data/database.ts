@@ -7,11 +7,15 @@ import { AverageOfCostAttributes, initModels } from "../../maria/models/init-mod
 initModels(sequelizeConnector);
 
 export class DB {
-  constructor(
-    private averageInstance: AverageModel,
-    private cacheOrderInstance: CacheOrderModel,
-    private locationInstance: LocationModel,
-  ) {}
+  private averageInstance: AverageModel;
+  private cacheOrderInstance: CacheOrderModel;
+  private locationInstance: LocationModel;
+
+  constructor({ averageInstance, cacheOrderInstance, locationInstance }: Dependency) {
+    this.averageInstance = averageInstance;
+    this.cacheOrderInstance = cacheOrderInstance;
+    this.locationInstance = locationInstance;
+  }
 
   public async saveAverage(averageTable: AverageOfCostAttributes) {
     await this.averageInstance.create(averageTable);
@@ -25,3 +29,9 @@ export class DB {
     return this.locationInstance.findAll(ids);
   }
 }
+
+type Dependency = {
+  averageInstance: AverageModel;
+  cacheOrderInstance: CacheOrderModel;
+  locationInstance: LocationModel;
+};

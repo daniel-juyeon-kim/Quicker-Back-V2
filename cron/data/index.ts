@@ -5,8 +5,8 @@ import { DataService } from "./data-service";
 import { DB } from "./database";
 import { ExternalApi } from "./external-api";
 
-const db = new DB(averageInstance, cacheOrderInstance, locationInstance);
-const externalApi = new ExternalApi(blockChain, tmapApi);
+const database = new DB({ averageInstance, cacheOrderInstance, locationInstance });
+const externalApi = new ExternalApi({ blockChain, tmapApi });
 const combiner = new Combiner();
 
-export const dataService = new DataService(db, externalApi, combiner);
+export const dataService = new DataService({ database, externalApi, combiner });

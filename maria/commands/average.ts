@@ -15,7 +15,8 @@ export class AverageModel {
       nest: true,
     });
   }
-  create(average: AverageOfCostAttributes) {
-    AverageOfCost.create(average);
+
+  async create(average: AverageOfCostAttributes) {
+    await AverageOfCost.create(average);
   }
 }

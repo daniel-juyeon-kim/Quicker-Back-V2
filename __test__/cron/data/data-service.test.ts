@@ -5,12 +5,13 @@ import { ExternalApi } from "../../../cron/data/external-api";
 
 let database: DB;
 let externalApi: ExternalApi;
+const combiner = new Combiner();
 
 beforeAll(() => {
   database = {
     saveAverage: jest.fn(),
-    findLastMonthOrderIds: jest.fn().mockReturnValue([1, 2, 3]), //: Promise<number>
-    findLocation: jest.fn().mockReturnValue([{}]), // :Promise<Location[]>
+    findLastMonthOrderIds: jest.fn().mockReturnValue([1, 2, 3]),
+    findLocation: jest.fn().mockReturnValue([{}]),
   } as unknown as DB;
 
   externalApi = {
@@ -27,15 +28,17 @@ beforeAll(() => {
   } as unknown as ExternalApi;
 });
 
-test("", async () => {
-  const dataService = new DataService(database, externalApi, new Combiner());
+describe("combiner", () => {
+  test("combineById 테스트", async () => {
+    const dataService = new DataService({ database, externalApi, combiner });
+    const expectResult = [
+      { id: 1, km: 30, price: 100000 },
+      { id: 2, km: 50, price: 200000 },
+      { id: 3, km: 60, price: 300000 },
+    ];
 
-  const result = await dataService.findLastMonthOrderInfo(new Date());
+    const result = await dataService.findLastMonthOrderInfo(new Date());
 
-  const expectResult = [
-    { id: 1, km: 30, price: 100000 },
-    { id: 2, km: 50, price: 200000 },
-    { id: 3, km: 60, price: 300000 },
-  ];
-  expect(result).toStrictEqual(expectResult);
+    expect(result).toStrictEqual(expectResult);
+  });
 });

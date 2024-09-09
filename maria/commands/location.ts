@@ -1,13 +1,13 @@
 import { Departure, Destination, Order } from "../models/init-models";
 
-export interface Location {
-  id: number,
-  Destination: { X: number, Y: number },
-  Departure: { X: number, Y: number }
-}
+export type Location = {
+  id: number;
+  Destination: Pick<Destination, "X" | "Y">;
+  Departure: Pick<Departure, "X" | "Y">;
+};
 
 export class LocationModel {
-  find(orderId: number) : Promise<Location | null> {
+  find(orderId: number): Promise<Location | null> {
     Order.hasOne(Destination, { foreignKey: "id" });
     Order.hasOne(Departure, { foreignKey: "id" });
     return Order.findOne({
@@ -30,7 +30,7 @@ export class LocationModel {
     });
   }
 
-  findAll(orderIds: number[]) : Promise<Location[]> {
+  findAll(orderIds: number[]): Promise<Location[]> {
     Order.hasOne(Destination, { foreignKey: "id" });
     Order.hasOne(Departure, { foreignKey: "id" });
     return Order.findAll({
