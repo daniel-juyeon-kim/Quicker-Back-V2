@@ -1,17 +1,14 @@
 import connectMongo from "../connector";
 import MessageSchema from "../schemas/message";
-
-require("dotenv").config();
-
 export class MessageModel {
-  async create(messageObjcet: MessageObject) {
+  async create(message: MessageObject) {
     try {
       const conn = await connectMongo("chat");
-      const Message = conn.model(String(messageObjcet.roomName), MessageSchema);
+      const Message = conn.model(String(message.roomName), MessageSchema);
       const userMessage = new Message({
-        id: messageObjcet.id,
-        message: messageObjcet.receiveMessage,
-        roomName: messageObjcet.roomName,
+        id: message.id,
+        message: message.receiveMessage,
+        roomName: message.roomName,
       });
       await userMessage.save();
       conn.destroy();
