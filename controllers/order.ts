@@ -10,8 +10,8 @@ import { initModels } from "../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../mongo/command";
 import connectMongo from "../mongo/connector";
 import { cryptoInstance, nhnApi } from "../service";
-import { classifyDistance } from "../service/classify";
 import { parseNumericsToNumberList } from "../service/parser";
+import { findDistanceKey } from "../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
 initModels(sequelizeConnector);
@@ -425,7 +425,7 @@ export class OrderController {
     try {
       const { distance } = matchedData(req);
 
-      const unit = classifyDistance(parseInt(distance));
+      const unit = findDistanceKey(parseInt(distance));
       const averageCost = await averageInstance.findLastMonthCost(unit);
 
       if (!averageCost) {

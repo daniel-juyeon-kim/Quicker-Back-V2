@@ -1,3 +1,4 @@
+import { findDistanceKey } from "../../../util/distance";
 import { DistanceTable, OrderInfo } from "../../types";
 import { Table } from "../abstract/table";
 
@@ -12,7 +13,7 @@ export class SumTable extends Table {
 
   private calculate(orders: OrderInfo[], table: DistanceTable) {
     orders.forEach(({ km, price }) => {
-      const key = this.findTableKey(km);
+      const key = findDistanceKey(km);
 
       table[key] += price;
     });
