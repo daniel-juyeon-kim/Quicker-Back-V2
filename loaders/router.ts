@@ -16,26 +16,26 @@ import {
   user,
 } from "../routes";
 
-const routing = (app: Application) => {
-  // 개발용 라우터
-  app.use("/", home);
-  app.use("/AssociateOrder", associateOrder);
+export const router = {
+  routing: (app: Application) => {
+    // 개발용 라우터
+    app.use("/", home);
+    app.use("/AssociateOrder", associateOrder);
 
-  // 서비스용 라우터
-  app.use("/room", room);
-  app.use("/user", user);
-  app.use("/order", order);
-  app.use("/orders", orders);
-  app.use("/register", register);
-  app.use("/current-deliver-location", currentLocation);
-  app.use("/average", averageCost);
+    // 서비스용 라우터
+    app.use("/room", room);
+    app.use("/user", user);
+    app.use("/order", order);
+    app.use("/orders", orders);
+    app.use("/register", register);
+    app.use("/current-deliver-location", currentLocation);
+    app.use("/average", averageCost);
 
-  // 블록체인 라우터
-  app.use("/caver", caverLimiter, Caver);
+    // 블록체인 라우터
+    app.use("/caver", caverLimiter, Caver);
 
-  // 에러 컨트롤러
-  app.use("*", notFound);
-  app.use(errorController);
-};
-
-export default routing;
+    // 에러 컨트롤러
+    app.use("*", notFound);
+    app.use(errorController);
+  },
+} as const;
