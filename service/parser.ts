@@ -1,19 +1,14 @@
-import { checkNotNumber } from "./checker";
+import { validateNumeric } from "../util";
 
-const ERROR_INCLUDE_NOT_NUMBER = "숫자가 아닌 요소가 포함되어 있습니다.";
+const SPLITTER = ",";
 
 /**
- * "1,2,3"과 같은 문자열을 [1,2,3]인 리스트로 변환하는 함수
- * @param arg "1,2,3"과 같은 형식의 문자열
- * @throws "숫자가 아닌 요소가 포함되어 있습니다."
+ * @param value "1,2,3"
+ * @returns [1,2,3]
+ * @throws `${value}는 유효한 정수가 아닙니다.`
  */
-export const parseToNumberList = (arg: string) => {
-  return arg.split(",").map((splitArg) => {
-    try {
-      checkNotNumber(splitArg);
-      return parseInt(splitArg);
-    } catch (error) {
-      throw new Error(ERROR_INCLUDE_NOT_NUMBER);
-    }
-  });
+export const parseNumericsToNumberList = (value: string) => {
+  value.split(SPLITTER).forEach(validateNumeric);
+
+  return value.split(SPLITTER).map((n) => parseInt(n));
 };

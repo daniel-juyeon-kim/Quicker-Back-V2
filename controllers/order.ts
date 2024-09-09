@@ -11,7 +11,7 @@ import { currentLocationInstance, imageInstance } from "../mongo/command";
 import connectMongo from "../mongo/connector";
 import { cryptoInstance, nhnApi } from "../service";
 import { classifyDistance } from "../service/classify";
-import { parseToNumberList } from "../service/parser";
+import { parseNumericsToNumberList } from "../service/parser";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
 initModels(sequelizeConnector);
@@ -177,7 +177,7 @@ export class OrderController {
     try {
       const { orderIds } = matchedData(req) as { orderIds: string };
 
-      const parsedIds = parseToNumberList(orderIds);
+      const parsedIds = parseNumericsToNumberList(orderIds);
       const orders = await orderInstance.findForDetail(parsedIds);
 
       res.send(new HttpResponse(200, orders));

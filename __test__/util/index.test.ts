@@ -10,6 +10,7 @@ import {
   isUndefined,
   validateNotZero,
   validateNumber,
+  validateNumeric,
   validateResponse,
 } from "../../util";
 
@@ -37,11 +38,9 @@ describe("isNumber 테스트", () => {
   });
 
   test("실패", () => {
-    [-Infinity, NaN, Infinity].forEach((value) => {
-      const result = isNumber(value);
+    const testCases = [-Infinity, NaN, Infinity];
 
-      expect(result).toBe(false);
-    });
+    testCases.forEach((value) => expect(isNumber(value)).toBe(false));
   });
 });
 
@@ -134,14 +133,8 @@ describe("validateResponse 테스트", () => {
     );
 
     const testCases = [
-      {
-        status: 199,
-        json,
-      },
-      {
-        status: 201,
-        json,
-      },
+      { status: 199, json },
+      { status: 201, json },
     ] as unknown as fetch.Response[];
 
     testCases.forEach(async (testCase) => {
@@ -151,26 +144,42 @@ describe("validateResponse 테스트", () => {
   });
 });
 
-describe("validateNumber 테스트", () => {
+describe("validateNumeric 테스트", () => {
   test("통과", () => {
-    expect(() => validateNumber(1)).not.toThrow();
+    const testCases = [-1, 1, "-1", "1"];
+
+    testCases.forEach((testCase) => expect(() => validateNumeric(testCase)).not.toThrow());
   });
 
   test("실패", () => {
-    [Infinity, NaN, -Infinity].forEach((value) => {
-      expect(() => validateNumber(value)).toThrow();
-    });
+    const testCases = [Infinity, NaN, -Infinity];
+
+    testCases.forEach((testCase) => expect(() => validateNumeric(testCase)).toThrow());
+  });
+});
+
+describe("validateNumber 테스트", () => {
+  test("통과", () => {
+    const testCases = [-1, 1];
+
+    testCases.forEach((testCase) => expect(() => validateNumber(testCase)).not.toThrow());
+  });
+
+  test("실패", () => {
+    const testCases = [Infinity, NaN, -Infinity];
+
+    testCases.forEach((testCase) => expect(() => validateNumeric(testCase)).toThrow());
   });
 });
 
 describe("validateNotZero 테스트", () => {
   test("통과", () => {
-    [-1, 1].forEach((value) => {
-      expect(() => validateNotZero(value)).not.toThrow();
-    });
+    const testCases = [-1, 1];
+
+    testCases.forEach((testCase) => expect(() => validateNotZero(testCase)).not.toThrow());
   });
 
   test("실패", () => {
-    expect(() => validateNotZero(0)).toThrow();
+    expect(() => validateNotZero(0)).toThrow("값이 0입니다.");
   });
 });
