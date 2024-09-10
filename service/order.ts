@@ -1,8 +1,13 @@
 import { cacheOrderInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
 import { KeyCreator } from "./cryto";
-import { NaverSmsApi } from "./message-sender/naver-sms-api";
+import { MessageSender } from "./message-sender";
 
-export const updateOrder = async (body: any, nhnApi: NaverSmsApi, cryptoInstance: KeyCreator, cryptoKey: string) => {
+export const updateOrder = async (
+  body: any,
+  messageSender: MessageSender,
+  cryptoInstance: KeyCreator,
+  cryptoKey: string,
+) => {
   const userWalletAddress = body.userWalletAddress;
   const orderId = body.orderId;
 
@@ -33,5 +38,5 @@ export const updateOrder = async (body: any, nhnApi: NaverSmsApi, cryptoInstance
 
   const url = process.env.CLIENT_SERVER_DOMAIN + "receipient/?key=" + encryptedUrl;
 
-  await nhnApi.sendDeliveryTrackingMessage(url, receiverPhoneNumber.PHONE);
+  await messageSender.sendDeliveryTrackingMessage(url, receiverPhoneNumber.PHONE);
 };

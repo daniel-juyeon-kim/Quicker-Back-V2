@@ -4,16 +4,16 @@ import { TmapApi } from "../../service/tmap-api";
 import { isUndefined } from "../../util";
 
 export class ExternalApi {
-  private blockChain: Blockchain;
+  private blockchain: Blockchain;
   private tmapApi: TmapApi;
 
-  constructor({ blockChain, tmapApi }: Dependency) {
-    this.blockChain = blockChain;
+  constructor({ blockchain: blockchain, tmapApi }: Dependency) {
+    this.blockchain = blockchain;
     this.tmapApi = tmapApi;
   }
 
   public async findPrice(Ids: number[]) {
-    return (await this.blockChain.getOrderPrices(Ids)).filter((price) => !isUndefined(price));
+    return (await this.blockchain.getOrderPrices(Ids)).filter((price) => !isUndefined(price));
   }
 
   public async findDistance(locations: Location[]) {
@@ -22,6 +22,6 @@ export class ExternalApi {
 }
 
 type Dependency = {
-  blockChain: Blockchain;
+  blockchain: Blockchain;
   tmapApi: TmapApi;
 };
