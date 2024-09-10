@@ -1,8 +1,8 @@
 import { cacheOrderInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
-import { Crypto } from "./cryto";
+import { KeyCreator } from "./cryto";
 import { NaverSmsApi } from "./message-sender/naver-sms-api";
 
-export const updateOrder = async (body: any, nhnApi: NaverSmsApi, cryptoInstance: Crypto, cryptoKey: string) => {
+export const updateOrder = async (body: any, nhnApi: NaverSmsApi, cryptoInstance: KeyCreator, cryptoKey: string) => {
   const userWalletAddress = body.userWalletAddress;
   const orderId = body.orderId;
 
@@ -29,7 +29,7 @@ export const updateOrder = async (body: any, nhnApi: NaverSmsApi, cryptoInstance
     throw new Error("수취인의 전화번호에 대한 정보가 없습니다.");
   }
 
-  const encryptedUrl = cryptoInstance.encrypt(body, cryptoKey);
+  const encryptedUrl = cryptoInstance.createRecipientUrlParameterValue(body, cryptoKey);
 
   const url = process.env.CLIENT_SERVER_DOMAIN + "receipient/?key=" + encryptedUrl;
 

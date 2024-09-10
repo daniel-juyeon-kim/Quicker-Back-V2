@@ -9,7 +9,7 @@ import sequelizeConnector from "../maria/connector/sequelize-connector";
 import { initModels } from "../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../mongo/command";
 import connectMongo from "../mongo/connector";
-import { cryptoInstance, nhnApi } from "../service";
+import { keyCreator, nhnApi } from "../service";
 import { parseNumericsToNumberList } from "../service/parser";
 import { findDistanceKey } from "../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
@@ -226,7 +226,7 @@ export class OrderController {
     try {
       const body = req.body;
       //TODO: 리팩토링 보류
-      await updateOrder(body, nhnApi, cryptoInstance, config.urlCryptoKey as string);
+      await updateOrder(body, nhnApi, keyCreator, config.urlCryptoKey as string);
       res.send({ msg: "done" });
     } catch (error) {
       console.error(error);
