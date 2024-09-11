@@ -56,13 +56,11 @@ export const validateNumeric = (value: string | number) => {
   validateNumber(value, ERROR_INVALID_NUMBER);
 };
 
-export const validateNumber = (value: number, errorMessage?: string) => {
-  const ERROR_INVALID_NUMBER = errorMessage ? errorMessage : `${value}는 유효한 정수가 아닙니다.`;
-
+export const validateNumber = (value: number, errorMessage = `${value}는 유효한 정수가 아닙니다.`) => {
   if (isNumber(value)) {
     return;
   }
-  throw new Error(ERROR_INVALID_NUMBER);
+  throw new Error(errorMessage);
 };
 
 export const validateNotZero = (value: number) => {
