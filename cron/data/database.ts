@@ -17,8 +17,8 @@ export class DB {
     this.locationInstance = locationInstance;
   }
 
-  public async saveAverage(averageTable: AverageOfCostAttributes) {
-    await this.averageInstance.create(averageTable);
+  public saveAverage(averageTable: AverageOfCostAttributes) {
+    return this.averageInstance.create(averageTable);
   }
 
   public findLastMonthOrderIds(startDate: Date, endDate: Date) {
