@@ -56,7 +56,7 @@ export const validateNumeric = (value: string | number) => {
   validateNumber(value, ERROR_INVALID_NUMBER);
 };
 
-export const validateNumber = (value: number, errorMessage = `${value}는 유효한 정수가 아닙니다.`) => {
+export const validateNumber = (value: number, errorMessage: string) => {
   if (isNumber(value)) {
     return;
   }
