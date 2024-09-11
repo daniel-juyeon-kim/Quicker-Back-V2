@@ -8,18 +8,20 @@ export class CacheOrderModel {
       date: new Date().toISOString(),
     });
   }
-  
-  findAllId(startDate : Date, endDate : Date) {
-    return CacheMatchedOrder.findAll({
-      attributes: ["id"],
-      where: { 
-        date: {
-          [Op.gte]: startDate,
-          [Op.lte]: endDate,
-        }
-      },
-      raw: true,
-      nest: true,
-    });
+
+  async findAllId(startDate: Date, endDate: Date) {
+    return (
+      await CacheMatchedOrder.findAll({
+        attributes: ["id"],
+        where: {
+          date: {
+            [Op.gte]: startDate,
+            [Op.lte]: endDate,
+          },
+        },
+        raw: true,
+        nest: true,
+      })
+    ).map((value) => value.id);
   }
 }

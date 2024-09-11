@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { matchedData } from "express-validator";
 
 import { messageInstance } from "../mongo/command";
-import { isAttributeNull } from "../service/checker";
+import { hasAttributeNull } from "../service/checker";
+import { isNull } from "../util";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
 export class ChatController {
@@ -19,17 +20,17 @@ export class ChatController {
   async getRecentMessage(req: Request, res: Response, next: NextFunction) {
     try {
       const { orderNum } = matchedData(req);
-      const recentMessage = await messageInstance.findRecent(parseInt(orderNum));
+      const message = await messageInstance.findRecent(parseInt(orderNum));
 
-      if (!recentMessage) {
+      if (isNull(message)) {
         throw new HttpErrorResponse(500);
       }
 
-      if (isAttributeNull(recentMessage)) {
-        throw new HttpErrorResponse(404, "요청한 데이터가 존재하지 않습니다.");
+      if (hasAttributeNull(message)) {
+        throw new HttpErrorResponse(404);
       }
 
-      res.send(new HttpResponse(200, recentMessage));
+      res.send(new HttpResponse(200, message));
     } catch (err) {
       next(err);
     }

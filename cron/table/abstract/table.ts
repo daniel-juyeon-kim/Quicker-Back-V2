@@ -1,16 +1,17 @@
-import { isUndefined } from "../../../util";
-import { DistanceKeys } from "../../types";
+import { Order, Table } from "../../types";
 
-export abstract class Table {
-  private readonly DISTANCES = [5, 10, 15, 20, 25, 30, 40, 50, 60, 60] as const;
+export abstract class AbstractTable {
+  public create(orders: Order[]) {
+    const table = this.createTable();
 
-  protected findTableKey(km: number): DistanceKeys {
-    const value = this.DISTANCES.find((DISTANCE) => km <= DISTANCE);
+    orders.forEach(this.calculate(table));
 
-    return isUndefined(value) ? "60+KM" : `${value}KM`;
+    return table;
   }
 
-  protected createTable() {
+  protected abstract calculate(table: Table): ForEachCallBackFn;
+
+  private createTable() {
     return {
       "5KM": 0,
       "10KM": 0,
@@ -25,3 +26,5 @@ export abstract class Table {
     };
   }
 }
+
+type ForEachCallBackFn = Parameters<Array<Order>["forEach"]>[0];

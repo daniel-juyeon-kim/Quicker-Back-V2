@@ -1,20 +1,13 @@
-import { DistanceTable, OrderInfo } from "../../types";
-import { Table } from "../abstract/table";
+import { findDistanceKey } from "../../../util/distance";
+import { Order, Table } from "../../types";
+import { AbstractTable } from "../abstract/table";
 
-export class SumTable extends Table {
-  public create(orders: OrderInfo[]) {
-    const table = this.createTable();
-
-    this.calculate(orders, table);
-
-    return table;
-  }
-
-  private calculate(orders: OrderInfo[], table: DistanceTable) {
-    orders.forEach(({ km, price }) => {
-      const key = this.findTableKey(km);
+export class SumTable extends AbstractTable {
+  protected calculate(table: Table) {
+    return ({ km, price }: Order) => {
+      const key = findDistanceKey(km);
 
       table[key] += price;
-    });
+    };
   }
 }

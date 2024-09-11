@@ -1,13 +1,13 @@
 import { isNull, isUndefined } from "../../util";
-import { Distance, OrderInfo, OrderPrice } from "../types";
+import { Distance, Order, Price } from "../types";
 
 export class Combiner {
-  public combineById(prices: OrderPrice[], distances: Distance[]): OrderInfo[] {
+  public combineById(prices: Price[], distances: Distance[]): Order[] {
     return prices.map(this.combineWithDistance(distances)).filter((orderInfo) => !isNull(orderInfo));
   }
 
   private combineWithDistance(distances: Distance[]) {
-    return (price: OrderPrice) => {
+    return (price: Price) => {
       const distance = distances.find((distance) => price.orderNumber === distance.orderId);
 
       if (isUndefined(distance)) {

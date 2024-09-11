@@ -1,7 +1,7 @@
 import { Birth_date, Image, Join_date, User } from "../models/init-models";
 
 export class UserModel {
-  async register(user: User,userBirthDate: Birth_date,hashed: string) {
+  async register(user: User, userBirthDate: Birth_date, hashed: string) {
     await User.create(user);
     Birth_date.create(userBirthDate);
     Join_date.create({
@@ -40,9 +40,6 @@ export class UserModel {
   }
 
   updateImageId(userId: string, imageId: string) {
-    return Image.update(
-      { id: userId, imageId: imageId },
-      { where: { id: userId } },
-    );
+    return Image.update({ id: userId, imageId: imageId }, { where: { id: userId } });
   }
 }

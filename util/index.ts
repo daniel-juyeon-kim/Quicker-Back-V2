@@ -11,7 +11,7 @@ export const isNull = (value: unknown) => {
   return value === null;
 };
 
-export const isNumber = (value: number): value is number => {
+export const isNumber = (value: number): value is Exclude<number, typeof NaN | typeof Infinity> => {
   return Number.isFinite(value);
 };
 
@@ -47,12 +47,20 @@ const isOK = (responseStatus: Response["status"]) => {
   return responseStatus === OK;
 };
 
-export const validateNumber = (value: number) => {
-  const ERROR_INVALID_NUMBER = "유효한 정수가 아닙니다.";
+export const validateNumeric = (value: string | number) => {
+  const ERROR_INVALID_NUMBER = `${value}는 유효한 정수가 아닙니다.`;
 
-  if (!isNumber(value)) {
-    throw new Error(ERROR_INVALID_NUMBER);
+  if (isString(value)) {
+    return validateNumber(parseInt(value), ERROR_INVALID_NUMBER);
   }
+  validateNumber(value, ERROR_INVALID_NUMBER);
+};
+
+export const validateNumber = (value: number, errorMessage: string) => {
+  if (isNumber(value)) {
+    return;
+  }
+  throw new Error(errorMessage);
 };
 
 export const validateNotZero = (value: number) => {

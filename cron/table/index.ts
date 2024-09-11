@@ -7,6 +7,6 @@ const averageTable = new AverageTable();
 const sumTable = new SumTable();
 const countTable = new CountTable();
 
-export const tableService = new TableService(averageTable, sumTable, countTable);
+export const tableService = new TableService({ averageTable, sumTable, countTable });
 
 export { TableService } from "./table-service";

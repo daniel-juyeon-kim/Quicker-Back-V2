@@ -5,7 +5,7 @@ import { config } from "../config";
 import { userInstance } from "../maria/commands";
 import sequelizeConnector from "../maria/connector/sequelize-connector";
 import { initModels } from "../maria/models/init-models";
-import { cryptoInstance } from "../service";
+import { keyCreator } from "../service";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
 initModels(sequelizeConnector);
@@ -40,12 +40,12 @@ export class UserController {
     try {
       const { User, Birthday } = matchedData(req);
 
-      const hash = cryptoInstance.encrypt(User.contact, config.cryptoKey as string);
+      const userPk = keyCreator.createDbUserPk(User.contact, config.cryptoKey as string);
 
-      User.id = hash;
-      Birthday.id = hash;
+      User.id = userPk;
+      Birthday.id = userPk;
 
-      await userInstance.register(User, Birthday, hash);
+      await userInstance.register(User, Birthday, userPk);
 
       res.send(new HttpResponse(200));
     } catch (error) {

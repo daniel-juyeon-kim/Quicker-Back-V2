@@ -1,12 +1,23 @@
-import { parseToNumberList } from "../../service/parser";
+import { parseNumericsToNumberList } from "../../service/parser";
 
 describe("객체의 속성중 null이 있는지 확인하는 테스트", () => {
-
   test("성공", () => {
-    expect(parseToNumberList('1,2,3,4')).toEqual([1,2,3,4])
+    const testCases = ["1", "1,2", "1,2,3,4"];
+    const expectResults = [[1], [1, 2], [1, 2, 3, 4]];
+
+    testCases.forEach((testCase, index) => {
+      const result = parseNumericsToNumberList(testCase);
+
+      expect(result).toStrictEqual(expectResults[index]);
+    });
   });
 
   test("실패", () => {
-    expect(() => parseToNumberList('1,d,3,4')).toThrow("숫자가 아닌 요소가 포함되어 있습니다.")
+    const testCases = ["Infinity", "2,i"];
+    const expectErrorMessage = ["Infinity는 유효한 정수가 아닙니다.", "i는 유효한 정수가 아닙니다."];
+
+    testCases.forEach((testCase, index) => {
+      expect(() => parseNumericsToNumberList(testCase)).toThrow(expectErrorMessage[index]);
+    });
   });
 });

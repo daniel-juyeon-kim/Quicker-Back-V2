@@ -9,9 +9,9 @@ import sequelizeConnector from "../maria/connector/sequelize-connector";
 import { initModels } from "../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../mongo/command";
 import connectMongo from "../mongo/connector";
-import { cryptoInstance, nhnApi } from "../service";
-import { classifyDistance } from "../service/classify";
-import { parseToNumberList } from "../service/parser";
+import { keyCreator, messageSender } from "../service";
+import { parseNumericsToNumberList } from "../service/parser";
+import { findDistanceKey } from "../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
 initModels(sequelizeConnector);
@@ -177,7 +177,7 @@ export class OrderController {
     try {
       const { orderIds } = matchedData(req) as { orderIds: string };
 
-      const parsedIds = parseToNumberList(orderIds);
+      const parsedIds = parseNumericsToNumberList(orderIds);
       const orders = await orderInstance.findForDetail(parsedIds);
 
       res.send(new HttpResponse(200, orders));
@@ -226,7 +226,7 @@ export class OrderController {
     try {
       const body = req.body;
       //TODO: 리팩토링 보류
-      await updateOrder(body, nhnApi, cryptoInstance, config.urlCryptoKey as string);
+      await updateOrder(body, messageSender, keyCreator, config.urlCryptoKey as string);
       res.send({ msg: "done" });
     } catch (error) {
       console.error(error);
@@ -425,7 +425,7 @@ export class OrderController {
     try {
       const { distance } = matchedData(req);
 
-      const unit = classifyDistance(parseInt(distance));
+      const unit = findDistanceKey(parseInt(distance));
       const averageCost = await averageInstance.findLastMonthCost(unit);
 
       if (!averageCost) {

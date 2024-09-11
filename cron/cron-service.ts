@@ -3,20 +3,29 @@ import { DataService } from "./data/data-service";
 import { TableService } from "./table";
 
 export class CronService {
-  constructor(
-    private errorMessageBot: ErrorMessageBot,
-    private data: DataService,
-    private table: TableService,
-  ) {}
+  private errorMessageBot: ErrorMessageBot;
+  private dataService: DataService;
+  private tableService: TableService;
+
+  constructor({ errorMessageBot, dataService, tableService }: Dependency) {
+    this.errorMessageBot = errorMessageBot;
+    this.dataService = dataService;
+    this.tableService = tableService;
+  }
 
   public async run() {
     try {
-      const orderInfos = await this.data.findLastMonthOrderInfo(new Date());
-      const table = this.table.createAverageTable(orderInfos);
-      await this.data.saveAverageTable(table);
+      const orderInfos = await this.dataService.findLastMonthOrderInfo(new Date());
+      const table = this.tableService.createAverageTable(orderInfos);
+      await this.dataService.saveAverageTable(table);
     } catch (e) {
       const errorMessage = new ErrorMessage(e as Error, new Date());
       this.errorMessageBot.sendMessage(errorMessage);
     }
   }
 }
+type Dependency = {
+  errorMessageBot: ErrorMessageBot;
+  dataService: DataService;
+  tableService: TableService;
+};

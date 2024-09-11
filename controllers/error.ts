@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from "express";
 import { FieldValidationError, Result } from "express-validator";
 
-import { slackBot } from "../service";
+import { errorMessageBot } from "../service";
 import { ErrorMessage } from "../service/slack/error-message";
 import { HttpErrorResponse } from "../util/http-response";
 
@@ -29,7 +29,7 @@ const sendSlackMessage = (error: any) => {
     const errorOccurDate = new Date();
     const errorMessage = new ErrorMessage(error, errorOccurDate);
 
-    slackBot.sendMessage(errorMessage);
+    errorMessageBot.sendMessage(errorMessage);
   } catch (e) {
     console.log(e);
   }

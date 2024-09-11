@@ -1,5 +1,5 @@
 import { Application } from "express";
-import initializePort from "../../loaders/port";
+import { port } from "../../loaders/port";
 
 const app = {
   listen: jest.fn(),
@@ -7,13 +7,11 @@ const app = {
 
 describe("initalizePort 포트 유효성 검사 테스트", () => {
   test("통과", () => {
-    expect(() => {
-      initializePort(app, "3000");
-    }).not.toThrow();
+    expect(() => port.init(app, "3000")).not.toThrow();
   });
 
   test("실패", () => {
-    const failureTestCases = [
+    const testCases = [
       { value: "", errorMessage: "[WARN] Invalid Env value, port is empty string" },
       { value: undefined, errorMessage: "[WARN] Invalid Env value, port is undefined" },
       { value: "test", errorMessage: "[WARN] Port must be a positive numeric string" },
@@ -21,10 +19,8 @@ describe("initalizePort 포트 유효성 검사 테스트", () => {
       { value: "-1", errorMessage: "[WARN] Port must be a positive numeric string" },
     ];
 
-    failureTestCases.forEach(({ value, errorMessage }) => {
-      expect(() => {
-        initializePort(app, value);
-      }).toThrow(errorMessage);
+    testCases.forEach(({ value, errorMessage }) => {
+      expect(() => port.init(app, value)).toThrow(errorMessage);
     });
   });
 });

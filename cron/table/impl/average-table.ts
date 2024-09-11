@@ -1,27 +1,26 @@
 import { AverageOfCostAttributes } from "../../../maria/models/init-models";
 import { validateNotZero, validateNumber } from "../../../util";
-import { DistanceKeys, DistanceTable } from "../../types";
+import { DistanceKeys, Table } from "../../types";
+
+type Tables = {
+  averageTable: AverageOfCostAttributes;
+  sumTable: Table;
+  countTable: Table;
+};
 
 export class AverageTable {
-  public create({ sumTable, countTable, date }: { sumTable: DistanceTable; countTable: DistanceTable; date: Date }) {
+  public create({ sumTable, countTable, date }: { sumTable: Table; countTable: Table; date: Date }) {
     const averageTable = this.createAverageOfCostTable();
+    const sumTableKeys = Object.keys(sumTable) as DistanceKeys[];
 
-    (Object.keys(sumTable) as DistanceKeys[]).forEach(this.calculate({ table: averageTable, sumTable, countTable }));
+    sumTableKeys.forEach(this.calculate({ averageTable, sumTable, countTable }));
 
     this.assignCreatedDate(averageTable, date);
 
     return averageTable;
   }
 
-  private calculate({
-    table: averageTable,
-    sumTable,
-    countTable,
-  }: {
-    table: DistanceTable;
-    sumTable: DistanceTable;
-    countTable: DistanceTable;
-  }) {
+  private calculate({ averageTable, sumTable, countTable }: Tables) {
     return (key: DistanceKeys) => {
       try {
         averageTable[key] = this.calculateAverage(sumTable[key], countTable[key]);
