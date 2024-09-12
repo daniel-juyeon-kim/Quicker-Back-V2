@@ -1,5 +1,5 @@
 import { cacheOrderInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
-import { KeyCreator } from "./cryto";
+import { KeyCreator } from "./key-creator";
 import { MessageSender } from "./message-sender";
 
 export const updateOrder = async (
