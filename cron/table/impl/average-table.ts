@@ -1,5 +1,5 @@
 import { AverageOfCostAttributes } from "../../../maria/models/init-models";
-import { validateNotZero, validateNumber } from "../../../util";
+import { validateNotZero, validateNumeric } from "../../../util";
 import { DistanceKeys, Table } from "../../types";
 
 type Tables = {
@@ -38,7 +38,7 @@ export class AverageTable {
   }
 
   private validate(value: number) {
-    validateNumber(value);
+    validateNumeric(value);
     validateNotZero(value);
   }
 
