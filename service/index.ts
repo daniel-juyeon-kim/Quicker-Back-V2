@@ -1,6 +1,6 @@
 import { config } from "../config";
 import { Blockchain, Klaytn } from "./blockchain";
-import { KeyCreator } from "./cryto";
+import { KeyCreator } from "./key-creator";
 import { MessageSender, NaverSmsApi } from "./message-sender";
 import { ErrorMessageBot, SlackBot } from "./slack";
 import { TmapApi } from "./tmap-api";
