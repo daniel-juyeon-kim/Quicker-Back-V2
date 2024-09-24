@@ -6,7 +6,7 @@ import { CustomNamingStrategy } from "../../../../../database/type-orm/connector
 export const studyDataSource = new DataSource({
   type: "sqlite",
   database: join(`${__dirname}/../study.db`),
-  entities: [join(`${__dirname}/../entity/*.entity.ts`)],
+  entities: [join(`${__dirname}/../**/*.entity.ts`)],
   synchronize: true,
   namingStrategy: new CustomNamingStrategy(),
   logging: false,
