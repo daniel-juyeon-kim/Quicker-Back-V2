@@ -1,2 +1,2 @@
 export { AppDataSource, initializeDataSource } from "./connector";
-export { userRepository } from "./repository";
+export { imageRepository, userRepository } from "./repository";
