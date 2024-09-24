@@ -18,10 +18,18 @@ export const AppDataSource = new DataSource({
   entities: [join(__dirname, "/../entity/*.ts")],
   namingStrategy: new CustomNamingStrategy(),
 });
-export const initializeDataSource = async () => {
+
+export const initializeDataSource = async (dataSource: DataSource) => {
   try {
-    await AppDataSource.initialize();
+    await initializeDataSourceConnection(dataSource);
   } catch (error) {
     console.log(error);
   }
+};
+
+const initializeDataSourceConnection = async (dataSource: DataSource) => {
+  if (dataSource.isInitialized) {
+    return;
+  }
+  await dataSource.initialize();
 };

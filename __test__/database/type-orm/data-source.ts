@@ -9,6 +9,7 @@ export const testAppDataSource = new DataSource({
   type: "sqlite",
   database: join(`${__dirname}/test.db`),
   entities: [entityPath],
+  synchronize: true,
   namingStrategy: new CustomNamingStrategy(),
-  logging: false,
+  logging: true,
 });
