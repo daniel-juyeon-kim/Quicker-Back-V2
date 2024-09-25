@@ -1,46 +1,21 @@
-import { initializeDataSource } from "../../../../database/type-orm";
-import { studyDataSource } from "./connector/data-source";
+import { initializeDataSource } from "../../../../../database/type-orm";
+import { UserMetaData } from "../cascade-one-to-one/entity/user-meta-data.entity";
+import { User } from "../cascade-one-to-one/entity/user.entity";
+import { studyDataSource } from "../data-source";
 import { Child } from "./entity/child.entity";
 import { GrandParent } from "./entity/grandparent.entity";
 import { Parent } from "./entity/parent.entity";
-import { Profile } from "./entity/profile.entity";
-import { UserMetaData } from "./entity/user-meta-data.entity";
-import { User } from "./entity/user.entity";
 
 beforeAll(async () => {
   await initializeDataSource(studyDataSource);
 });
 
 afterAll(async () => {
-  await studyDataSource.manager.delete(User, { name: "이름" });
-  await studyDataSource.manager.delete(UserMetaData, { isLogin: true });
-  await studyDataSource.manager.delete(Child, "가족이름");
-});
-
-describe("cascade save 테스트", () => {
-  test("정상흐름", async () => {
-    const metaData = {
-      isLogin: true,
-    };
-    const profile = {
-      gender: "성별",
-      photo: "photo image",
-    };
-    const userLike = {
-      id: 1,
-      name: "이름",
-      profile,
-      metaData,
-    };
-
-    const userEntity = studyDataSource.manager.create(User, userLike);
-
-    await studyDataSource.manager.save(User, userEntity);
-
-    await expect(studyDataSource.manager.existsBy(User, { id: 1 })).resolves.toBe(true);
-    await expect(studyDataSource.manager.existsBy(Profile, { id: 1 })).resolves.toBe(true);
-    await expect(studyDataSource.manager.existsBy(UserMetaData, { id: 1 })).resolves.toBe(true);
-  });
+  await Promise.allSettled([
+    studyDataSource.manager.clear(User),
+    studyDataSource.manager.clear(UserMetaData),
+    studyDataSource.manager.clear(Child),
+  ]);
 });
 
 describe("1:1 연속 cascade save 테스트", () => {

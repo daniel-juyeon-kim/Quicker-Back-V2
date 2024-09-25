@@ -1,5 +1,5 @@
 import { initializeDataSource } from "../../../../../database/type-orm";
-import { studyDataSource } from "../connector/data-source";
+import { studyDataSource } from "../data-source";
 import { ChatMessage } from "./chat-message.entity";
 
 const date = new Date(1990, 1, 1).toISOString();

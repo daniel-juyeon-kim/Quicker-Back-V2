@@ -3,7 +3,7 @@ import { BirthDate } from "../../../../../database/type-orm/entity/birth-date.en
 import { Image } from "../../../../../database/type-orm/entity/image.entity";
 import { JoinDate } from "../../../../../database/type-orm/entity/join-date.entity";
 import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
-import { testAppDataSource } from "../../data-source";
+import { testAppDataSource } from "../data-source";
 
 const userRepository = new UserRepository(testAppDataSource);
 const hash = "아이디";

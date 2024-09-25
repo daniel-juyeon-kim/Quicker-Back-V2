@@ -1,29 +1,8 @@
-import { initializeDataSource } from "../../../../database/type-orm";
-import { studyDataSource } from "./connector/data-source";
+import { initializeDataSource } from "../../../../../database/type-orm";
+import { studyDataSource } from "../data-source";
 import { Profile } from "./entity/profile.entity";
 import { UserMetaData } from "./entity/user-meta-data.entity";
 import { User } from "./entity/user.entity";
-
-const family = {
-  familyName: "가족이름",
-  name: "조상",
-  parent: {
-    name: "부모",
-    child: {
-      familyName: "가족이름",
-      name: "자식",
-    },
-  },
-};
-
-const createFamily = async () => {
-  const grandParentFamily = studyDataSource.manager.create(GrandParent, family);
-  await studyDataSource.manager.save(GrandParent, grandParentFamily);
-};
-
-const removeFamily = async () => {
-  await studyDataSource.manager.delete(Child, "가족이름");
-};
 
 const user = {
   id: 1,
@@ -43,8 +22,8 @@ const createUser = async () => {
 };
 
 const removeUser = async () => {
-  await studyDataSource.manager.delete(Profile, { gender: "성별" });
-  await studyDataSource.manager.delete(UserMetaData, { isLogin: true });
+  await studyDataSource.manager.clear(Profile);
+  await studyDataSource.manager.clear(UserMetaData);
 };
 
 beforeAll(async () => {
@@ -53,19 +32,16 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await createUser();
-  await createFamily();
 });
 
 afterEach(async () => {
   await removeUser();
-  await removeFamily();
 });
 
 describe("삭제 테스트", () => {
   describe("delete 메서드 테스트", () => {
     test("엔티티의 primary 값으로 삭제", async () => {
-      const result = await studyDataSource.manager.delete(User, 1);
-      console.log(result);
+      await studyDataSource.manager.delete(User, 1);
 
       await expect(studyDataSource.manager.existsBy(User, { id: 1 })).resolves.toBe(false);
     });
@@ -114,20 +90,5 @@ describe("삭제 테스트", () => {
       await expect(studyDataSource.manager.existsBy(Profile, { id: 1 })).resolves.toBe(false);
       await expect(studyDataSource.manager.existsBy(UserMetaData, { id: 1 })).resolves.toBe(true);
     });
-  });
-});
-
-import { Child } from "./entity/child.entity";
-import { GrandParent } from "./entity/grandparent.entity";
-import { Parent } from "./entity/parent.entity";
-
-describe("1:1 연속 cascade 테스트", () => {
-  test("삭제 테스트 ", async () => {
-    // 최하위 엔티티 제거로 최상위 엔티티까지 전부 제거
-    await studyDataSource.manager.delete(Child, { name: "자식" });
-
-    await expect(studyDataSource.manager.existsBy(Child, { familyName: "가족이름" })).resolves.toBe(false);
-    await expect(studyDataSource.manager.existsBy(Parent, { familyName: "가족이름" })).resolves.toBe(false);
-    await expect(studyDataSource.manager.existsBy(GrandParent, { familyName: "가족이름" })).resolves.toBe(false);
   });
 });

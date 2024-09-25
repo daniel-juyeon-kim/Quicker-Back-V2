@@ -1,5 +1,5 @@
 import { initializeDataSource } from "../../../../../database/type-orm";
-import { studyDataSource } from "../connector/data-source";
+import { studyDataSource } from "../data-source";
 import { Clear } from "./clear.entity";
 
 beforeAll(async () => {
@@ -18,8 +18,8 @@ afterEach(async () => {
   await studyDataSource.manager.clear(Clear);
 });
 
-describe("Name of the group", () => {
-  test("should ", async () => {
+describe("clear 학습 테스트", () => {
+  test("정상흐름", async () => {
     await expect(studyDataSource.manager.count(Clear)).resolves.toEqual(3);
     await studyDataSource.manager.clear(Clear);
     await expect(studyDataSource.manager.exists(Clear)).resolves.toEqual(false);

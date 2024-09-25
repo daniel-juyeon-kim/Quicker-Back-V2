@@ -4,7 +4,7 @@ import { Image } from "../../../../../database/type-orm/entity/image.entity";
 import { JoinDate } from "../../../../../database/type-orm/entity/join-date.entity";
 import { ImageRepository } from "../../../../../database/type-orm/repository/impl/image.repository";
 import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
-import { testAppDataSource } from "../../data-source";
+import { testAppDataSource } from "../data-source";
 
 const hash = "아이디";
 const birthDate = {

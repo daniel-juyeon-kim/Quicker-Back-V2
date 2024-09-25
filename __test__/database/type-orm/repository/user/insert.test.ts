@@ -4,7 +4,7 @@ import { Image } from "../../../../../database/type-orm/entity/image.entity";
 import { JoinDate } from "../../../../../database/type-orm/entity/join-date.entity";
 import { User } from "../../../../../database/type-orm/entity/user.entity";
 import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
-import { testAppDataSource } from "../../data-source";
+import { testAppDataSource } from "../data-source";
 
 const userRepository = new UserRepository(testAppDataSource);
 const hash = "아이디";
@@ -27,9 +27,11 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
-  await testAppDataSource.manager.delete(Image, "아이디");
-  await testAppDataSource.manager.delete(BirthDate, "아이디");
-  await testAppDataSource.manager.delete(JoinDate, "아이디");
+  await Promise.allSettled([
+    testAppDataSource.manager.clear(Image),
+    testAppDataSource.manager.clear(BirthDate),
+    testAppDataSource.manager.clear(JoinDate),
+  ]);
 });
 
 describe("register 테스트", () => {

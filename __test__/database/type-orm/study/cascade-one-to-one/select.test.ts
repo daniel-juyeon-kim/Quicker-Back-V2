@@ -1,5 +1,5 @@
-import { initializeDataSource } from "../../../../database/type-orm";
-import { studyDataSource } from "./connector/data-source";
+import { initializeDataSource } from "../../../../../database/type-orm";
+import { studyDataSource } from "../data-source";
 import { Profile } from "./entity/profile.entity";
 import { UserMetaData } from "./entity/user-meta-data.entity";
 import { User } from "./entity/user.entity";
