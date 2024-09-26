@@ -6,9 +6,7 @@ import { testAppDataSource } from "../data-source";
 const hash = "아이디";
 const birthDate = {
   id: hash,
-  year: 2000,
-  month: 9,
-  date: 12,
+  date: new Date(2000, 9, 12).toLocaleDateString(),
 };
 const user = {
   id: hash,
@@ -18,7 +16,6 @@ const user = {
   contact: "연락처",
 };
 const userRepository = new UserRepository(testAppDataSource);
-
 const imageRepository = new ImageRepository(testAppDataSource);
 
 beforeAll(async () => {

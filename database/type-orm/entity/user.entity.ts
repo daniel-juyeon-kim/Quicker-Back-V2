@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { BirthDate } from "./birth-date.entity";
 import { Image } from "./image.entity";
 import { JoinDate } from "./join-date.entity";
@@ -21,16 +21,17 @@ export class User {
   @Column()
   contact!: string;
 
-  @OneToOne(() => Image, { cascade: ["insert"], nullable: false, onDelete: "CASCADE", orphanedRowAction: "delete" })
-  @JoinColumn({ name: "id" })
+  @OneToOne(() => Image, (image) => image.user, { cascade: ["insert"], nullable: false, onDelete: "CASCADE" })
   image!: Image;
 
-  @OneToOne(() => JoinDate, { cascade: ["insert"], nullable: false, onDelete: "CASCADE", orphanedRowAction: "delete" })
-  @JoinColumn({ name: "id" })
+  @OneToOne(() => JoinDate, (joinDate) => joinDate.user, { cascade: ["insert"], nullable: false, onDelete: "CASCADE" })
   joinDate!: JoinDate;
 
-  @OneToOne(() => BirthDate, { cascade: ["insert"], nullable: false, onDelete: "CASCADE", orphanedRowAction: "delete" })
-  @JoinColumn({ name: "id" })
+  @OneToOne(() => BirthDate, (birthDate) => birthDate.user, {
+    cascade: ["insert"],
+    nullable: false,
+    onDelete: "CASCADE",
+  })
   birthDate!: BirthDate;
 
   @OneToMany(() => Order, (order) => order.requesterId, { nullable: true, orphanedRowAction: "delete" })

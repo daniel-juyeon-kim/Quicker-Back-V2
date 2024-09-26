@@ -1,16 +1,17 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { User } from "./user.entity";
+
+export type BasicBirthDate = Omit<BirthDate, "user">;
 
 @Entity("Birth_date")
 export class BirthDate {
   @PrimaryColumn()
   id!: string;
 
-  @Column()
-  year!: number;
+  @Column({ type: "date" })
+  date!: string;
 
-  @Column()
-  month!: number;
-
-  @Column()
-  date!: number;
+  @OneToOne(() => User, (user) => user.birthDate)
+  @JoinColumn()
+  user!: User;
 }

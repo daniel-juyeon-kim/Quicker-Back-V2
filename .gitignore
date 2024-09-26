@@ -17,3 +17,6 @@ docker-compose.override.yml
 
 # 테스트용 sqlite db
 **/*.db
+
+# .vscode
+.vscode

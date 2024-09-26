@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { User } from "./user.entity";
 
 @Entity("Image")
 export class Image {
@@ -7,4 +8,8 @@ export class Image {
 
   @Column({ default: "404" })
   imageId!: string;
+
+  @OneToOne(() => User, (user) => user.image, { cascade: ["insert"], nullable: false, onDelete: "CASCADE" })
+  @JoinColumn()
+  user!: User;
 }

@@ -1,4 +1,4 @@
-import { BirthDate } from "../../entity/birth-date.entity";
+import { BasicBirthDate, BirthDate } from "../../entity/birth-date.entity";
 import { Image } from "../../entity/image.entity";
 import { JoinDate } from "../../entity/join-date.entity";
 import { User } from "../../entity/user.entity";
@@ -36,7 +36,7 @@ export class UserRepository extends AbstractRepository<User> {
     return user.name;
   }
 
-  async createUser({ user, birthDate, hash }: { user: BasicUser; birthDate: BirthDate; hash: string }) {
+  async createUser({ user, birthDate, hash }: { user: BasicUser; birthDate: BasicBirthDate; hash: string }) {
     user.id = hash;
     birthDate.id = hash;
 

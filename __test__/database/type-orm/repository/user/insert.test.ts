@@ -17,9 +17,7 @@ const user = {
 };
 const birthDate = {
   id: hash,
-  year: 2000,
-  month: 9,
-  date: 12,
+  date: new Date(2000, 9, 12).toLocaleDateString(),
 };
 
 beforeAll(async () => {
