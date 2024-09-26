@@ -1,8 +1,8 @@
 import { initializeDataSource } from "../../../../../database/type-orm";
-import { studyDataSource } from "../data-source";
-import { Profile } from "./entity/profile.entity";
-import { UserMetaData } from "./entity/user-meta-data.entity";
+import { createStudyDataSource } from "../data-source";
 import { User } from "./entity/user.entity";
+
+const dataSource = createStudyDataSource(__dirname);
 
 const user = {
   id: 1,
@@ -17,31 +17,22 @@ const user = {
 };
 
 const createUser = async () => {
-  const userEntity = studyDataSource.manager.create(User, user);
-  await studyDataSource.manager.save(User, userEntity);
-};
-
-const removeUser = async () => {
-  await studyDataSource.manager.delete(Profile, { gender: "성별" });
-  await studyDataSource.manager.delete(UserMetaData, { isLogin: true });
+  const userEntity = dataSource.manager.create(User, user);
+  await dataSource.manager.save(User, userEntity);
 };
 
 beforeAll(async () => {
-  await initializeDataSource(studyDataSource);
+  await initializeDataSource(dataSource);
 });
 
 beforeEach(async () => {
   await createUser();
 });
 
-afterEach(async () => {
-  await removeUser();
-});
-
 describe("find", () => {
   describe("findOne 테스트", () => {
     test("정상흐름", async () => {
-      const user = await studyDataSource.manager.findOne(User, {
+      const user = await dataSource.manager.findOne(User, {
         relations: { profile: true, metaData: true },
         where: { id: 1 },
       });
@@ -59,7 +50,7 @@ describe("find", () => {
     });
 
     test("존재하지 않는 데이터 조회", async () => {
-      const user = await studyDataSource.manager.findOne(User, {
+      const user = await dataSource.manager.findOne(User, {
         relations: { profile: true, metaData: true },
         where: { id: 5 },
       });

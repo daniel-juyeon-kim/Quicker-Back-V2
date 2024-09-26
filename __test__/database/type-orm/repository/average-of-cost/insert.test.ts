@@ -11,10 +11,6 @@ beforeAll(async () => {
   await initializeDataSource(testAppDataSource);
 });
 
-afterEach(async () => {
-  await testAppDataSource.manager.clear(AverageOfCost);
-});
-
 describe("createAverage 테스트", () => {
   test("정상 흐름", async () => {
     const average = {

@@ -28,10 +28,6 @@ beforeEach(async () => {
   await testAppDataSource.manager.save(AverageOfCost, average);
 });
 
-afterEach(async () => {
-  await testAppDataSource.manager.clear(AverageOfCost);
-});
-
 describe("findLastMonthAverageCost 테스트", () => {
   test("정상 흐름", async () => {
     await expect(averageRepository.findLastMonthAverageCost("40KM")).resolves.toEqual({ "40KM": 40 });

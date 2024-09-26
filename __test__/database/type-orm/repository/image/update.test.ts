@@ -1,7 +1,4 @@
 import { initializeDataSource } from "../../../../../database/type-orm";
-import { BirthDate } from "../../../../../database/type-orm/entity/birth-date.entity";
-import { Image } from "../../../../../database/type-orm/entity/image.entity";
-import { JoinDate } from "../../../../../database/type-orm/entity/join-date.entity";
 import { ImageRepository } from "../../../../../database/type-orm/repository/impl/image.repository";
 import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
 import { testAppDataSource } from "../data-source";
@@ -30,12 +27,6 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await userRepository.createUser({ user, birthDate, hash });
-});
-
-afterEach(async () => {
-  await testAppDataSource.manager.delete(Image, "아이디");
-  await testAppDataSource.manager.delete(BirthDate, "아이디");
-  await testAppDataSource.manager.delete(JoinDate, "아이디");
 });
 
 describe("updateImageIdByUserId 테스트", () => {

@@ -1,8 +1,10 @@
 import { initializeDataSource } from "../../../../../database/type-orm";
-import { studyDataSource } from "../data-source";
+import { createStudyDataSource } from "../data-source";
 import { Child } from "./entity/child.entity";
 import { GrandParent } from "./entity/grandparent.entity";
 import { Parent } from "./entity/parent.entity";
+
+const dataSource = createStudyDataSource(__dirname);
 
 const family = {
   familyName: "가족이름",
@@ -16,17 +18,13 @@ const family = {
   },
 };
 
-export const createFamily = async () => {
-  const grandParentFamily = studyDataSource.manager.create(GrandParent, family);
-  await studyDataSource.manager.save(GrandParent, grandParentFamily);
-};
-
-export const removeFamily = async () => {
-  await studyDataSource.manager.clear(Child);
+const createFamily = async () => {
+  const grandParentFamily = dataSource.manager.create(GrandParent, family);
+  await dataSource.manager.save(GrandParent, grandParentFamily);
 };
 
 beforeAll(async () => {
-  await initializeDataSource(studyDataSource);
+  await initializeDataSource(dataSource);
 });
 
 beforeEach(async () => {
@@ -36,10 +34,10 @@ beforeEach(async () => {
 describe("1:1 연속 cascade 테스트", () => {
   test("삭제 테스트 ", async () => {
     // 최하위 엔티티 제거로 최상위 엔티티까지 전부 제거
-    await studyDataSource.manager.delete(Child, { name: "자식" });
+    await dataSource.manager.delete(Child, { name: "자식" });
 
-    await expect(studyDataSource.manager.existsBy(Child, { familyName: "가족이름" })).resolves.toBe(false);
-    await expect(studyDataSource.manager.existsBy(Parent, { familyName: "가족이름" })).resolves.toBe(false);
-    await expect(studyDataSource.manager.existsBy(GrandParent, { familyName: "가족이름" })).resolves.toBe(false);
+    await expect(dataSource.manager.existsBy(Child, { familyName: "가족이름" })).resolves.toBe(false);
+    await expect(dataSource.manager.existsBy(Parent, { familyName: "가족이름" })).resolves.toBe(false);
+    await expect(dataSource.manager.existsBy(GrandParent, { familyName: "가족이름" })).resolves.toBe(false);
   });
 });

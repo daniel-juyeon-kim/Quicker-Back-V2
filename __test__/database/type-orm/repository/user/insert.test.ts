@@ -26,14 +26,6 @@ beforeAll(async () => {
   await initializeDataSource(testAppDataSource);
 });
 
-afterEach(async () => {
-  await Promise.allSettled([
-    testAppDataSource.manager.clear(Image),
-    testAppDataSource.manager.clear(BirthDate),
-    testAppDataSource.manager.clear(JoinDate),
-  ]);
-});
-
 describe("register 테스트", () => {
   test("정상흐름", async () => {
     await expect(testAppDataSource.manager.existsBy(User, { id: hash })).resolves.toBe(false);

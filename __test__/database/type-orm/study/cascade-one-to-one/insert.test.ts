@@ -1,20 +1,18 @@
 import { initializeDataSource } from "../../../../../database/type-orm";
-import { studyDataSource } from "../data-source";
+import { createStudyDataSource } from "../data-source";
 import { Child } from "../nested-one-to-one/entity/child.entity";
 import { Profile } from "./entity/profile.entity";
 import { UserMetaData } from "./entity/user-meta-data.entity";
 import { User } from "./entity/user.entity";
 
+const dataSource = createStudyDataSource(__dirname);
+
 beforeAll(async () => {
-  await initializeDataSource(studyDataSource);
+  await initializeDataSource(dataSource);
 });
 
-afterAll(async () => {
-  await Promise.allSettled([
-    studyDataSource.manager.delete(User, { name: "이름" }),
-    studyDataSource.manager.delete(UserMetaData, { isLogin: true }),
-    studyDataSource.manager.delete(Child, "가족이름"),
-  ]);
+afterEach(async () => {
+  await Promise.allSettled([dataSource.manager.clear(UserMetaData), dataSource.manager.clear(Child)]);
 });
 
 describe("cascade save 테스트", () => {
@@ -33,12 +31,30 @@ describe("cascade save 테스트", () => {
       metaData,
     };
 
-    const userEntity = studyDataSource.manager.create(User, userLike);
+    const userEntity = dataSource.manager.create(User, userLike);
 
-    await studyDataSource.manager.save(User, userEntity);
+    await dataSource.manager.save(User, userEntity);
 
-    await expect(studyDataSource.manager.existsBy(User, { id: 1 })).resolves.toBe(true);
-    await expect(studyDataSource.manager.existsBy(Profile, { id: 1 })).resolves.toBe(true);
-    await expect(studyDataSource.manager.existsBy(UserMetaData, { id: 1 })).resolves.toBe(true);
+    await expect(dataSource.manager.existsBy(User, { id: 1 })).resolves.toBe(true);
+    await expect(dataSource.manager.existsBy(Profile, { id: 1 })).resolves.toBe(true);
+    await expect(dataSource.manager.existsBy(UserMetaData, { id: 1 })).resolves.toBe(true);
+  });
+
+  test("cascade조건을 만족하지 않아 실패하는 테스트", async () => {
+    const profile = {
+      gender: "성별",
+      photo: "photo image",
+    };
+    const userLike = {
+      id: 1,
+      name: "이름",
+      profile,
+    };
+
+    const userEntity = dataSource.manager.create(User, userLike);
+
+    await expect(dataSource.manager.save(User, userEntity)).rejects.toThrow(
+      "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed",
+    );
   });
 });
