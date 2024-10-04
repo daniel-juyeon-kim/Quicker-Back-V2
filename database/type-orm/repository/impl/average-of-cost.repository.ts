@@ -1,9 +1,11 @@
+import { DataSource } from "typeorm";
 import { AverageOfCost, DistanceUnit } from "../../entity/average-of-cost.entity";
 import { AbstractRepository } from "../abstract-repository";
 
 export class AverageOfCostRepository extends AbstractRepository<AverageOfCost> {
-  protected readonly entity = AverageOfCost;
-  protected readonly repository = this.dataSource.getRepository(this.entity);
+  constructor(dataSource: DataSource) {
+    super(dataSource, AverageOfCost);
+  }
 
   async findLastMonthAverageCost(distanceUnit: DistanceUnit) {
     const average = await this.repository.find({
