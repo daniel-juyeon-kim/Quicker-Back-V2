@@ -1,10 +1,12 @@
-import { DataSource, ObjectLiteral, ObjectType, Repository } from "typeorm";
+import { DataSource, ObjectLiteral, Repository } from "typeorm";
 import { isNull } from "../../../util";
 
-export abstract class AbstractRepository<T extends ObjectLiteral> {
-  protected readonly repository: Repository<T>;
+type ClassType<T> = { new (): T };
 
-  constructor(dataSource: DataSource, entity: ObjectType<T>) {
+export abstract class AbstractRepository<Entity extends ObjectLiteral> {
+  protected readonly repository: Repository<Entity>;
+
+  constructor(dataSource: DataSource, entity: ClassType<Entity>) {
     this.repository = dataSource.getRepository(entity);
   }
 
