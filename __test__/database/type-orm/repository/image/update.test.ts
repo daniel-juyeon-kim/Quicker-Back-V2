@@ -10,7 +10,7 @@ const birthDate = {
 };
 const user = {
   id: hash,
-  wallet_address: "지갑주소",
+  walletAddress: "지갑주소",
   name: "이름",
   email: "이메일@gmail.com",
   contact: "연락처",

@@ -1,9 +1,11 @@
+import { DataSource } from "typeorm";
 import { Image } from "../../entity/image.entity";
 import { AbstractRepository } from "../abstract-repository";
 
 export class ImageRepository extends AbstractRepository<Image> {
-  protected readonly repository = this.dataSource.getRepository(Image);
-  protected readonly entity = Image;
+  constructor(dataSource: DataSource) {
+    super(dataSource, Image);
+  }
 
   async findImageIdByUserId(id: string) {
     const imageId = await this.repository.findOne({
