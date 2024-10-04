@@ -18,6 +18,7 @@ export class Destination {
 
   @OneToOne(() => Order, (order) => order.destination, {
     cascade: ["insert"],
+    nullable: false,
     onDelete: "CASCADE",
   })
   @JoinColumn()

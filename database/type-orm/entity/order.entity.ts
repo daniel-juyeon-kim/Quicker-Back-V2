@@ -16,12 +16,14 @@ export class Order {
 
   @ManyToOne(() => User, (user) => user.requestOrder, {
     nullable: false,
+    onDelete: "CASCADE",
   })
   @JoinColumn()
   requester!: User;
 
   @ManyToOne(() => User, (user) => user.deliverOrder, {
     nullable: true,
+    onDelete: "CASCADE",
   })
   @JoinColumn()
   deliver!: User;
@@ -31,13 +33,11 @@ export class Order {
 
   @OneToOne(() => Transportation, (transportation) => transportation.order, {
     cascade: ["insert"],
-    nullable: false,
   })
   transportation!: Transportation;
 
   @OneToOne(() => Product, (product) => product.order, {
     cascade: ["insert"],
-    nullable: false,
   })
   product!: Product;
 

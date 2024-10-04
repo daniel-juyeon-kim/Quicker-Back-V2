@@ -14,6 +14,7 @@ export class Sender {
 
   @OneToOne(() => Departure, (departure) => departure.sender, {
     cascade: ["insert"],
+    nullable: false,
     onDelete: "CASCADE",
   })
   @JoinColumn()

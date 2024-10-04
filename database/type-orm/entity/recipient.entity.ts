@@ -14,6 +14,7 @@ export class Recipient {
 
   @OneToOne(() => Destination, (destination) => destination.recipient, {
     cascade: ["insert"],
+    nullable: false,
     onDelete: "CASCADE",
   })
   @JoinColumn()
