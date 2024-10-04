@@ -14,11 +14,15 @@ export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, (user) => user.requestOrder, { nullable: false })
+  @ManyToOne(() => User, (user) => user.requestOrder, {
+    nullable: false,
+  })
   @JoinColumn()
   requester!: User;
 
-  @ManyToOne(() => User, (user) => user.deliverOrder, { nullable: true })
+  @ManyToOne(() => User, (user) => user.deliverOrder, {
+    nullable: true,
+  })
   @JoinColumn()
   deliver!: User;
 
