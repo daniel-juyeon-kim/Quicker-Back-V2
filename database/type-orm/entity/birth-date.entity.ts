@@ -3,7 +3,7 @@ import { User } from "./user.entity";
 
 export type BasicBirthDate = Omit<BirthDate, "user">;
 
-@Entity("Birth_date")
+@Entity()
 export class BirthDate {
   @PrimaryColumn()
   id!: string;
@@ -11,7 +11,10 @@ export class BirthDate {
   @Column({ type: "date" })
   date!: string;
 
-  @OneToOne(() => User, (user) => user.birthDate)
+  @OneToOne(() => User, (user) => user.birthDate, {
+    onDelete: "CASCADE",
+    nullable: false,
+  })
   @JoinColumn()
   user!: User;
 }

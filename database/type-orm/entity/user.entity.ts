@@ -4,13 +4,13 @@ import { Image } from "./image.entity";
 import { JoinDate } from "./join-date.entity";
 import { Order } from "./order.entity";
 
-@Entity("User")
+@Entity()
 export class User {
   @PrimaryColumn()
   id!: string;
 
   @Column()
-  wallet_address!: string;
+  walletAddress!: string;
 
   @Column()
   name!: string;
@@ -21,22 +21,28 @@ export class User {
   @Column()
   contact!: string;
 
-  @OneToOne(() => Image, (image) => image.user, { cascade: ["insert"], nullable: false, onDelete: "CASCADE" })
+  @OneToOne(() => Image, (image) => image.user, {
+    cascade: ["insert"],
+  })
   image!: Image;
 
-  @OneToOne(() => JoinDate, (joinDate) => joinDate.user, { cascade: ["insert"], nullable: false, onDelete: "CASCADE" })
+  @OneToOne(() => JoinDate, (joinDate) => joinDate.user, {
+    cascade: ["insert"],
+  })
   joinDate!: JoinDate;
 
   @OneToOne(() => BirthDate, (birthDate) => birthDate.user, {
     cascade: ["insert"],
-    nullable: false,
-    onDelete: "CASCADE",
   })
   birthDate!: BirthDate;
 
-  @OneToMany(() => Order, (order) => order.requesterId, { nullable: true, orphanedRowAction: "delete" })
+  @OneToMany(() => Order, (order) => order.requester, {
+    onDelete: "CASCADE",
+  })
   requestOrder!: Order[];
 
-  @OneToMany(() => Order, (order) => order.deliverId, { nullable: true, orphanedRowAction: "delete" })
+  @OneToMany(() => Order, (order) => order.deliver, {
+    onDelete: "CASCADE",
+  })
   deliverOrder!: Order[];
 }
