@@ -2,9 +2,9 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose, { Connection, Model } from "mongoose";
 import {
   CompleteDeliverImage,
+  CompleteDeliverImageRepository,
   CompleteDeliverImageSchema,
-} from "../../../../database/mongoose/models/complete-deliver-image";
-import { CompleteDeliverImageRepository } from "../../../../database/mongoose/repository/impl/complete-deliver-image.repository";
+} from "../../../../database/mongoose";
 
 let mongod: MongoMemoryServer;
 let connector: Connection;

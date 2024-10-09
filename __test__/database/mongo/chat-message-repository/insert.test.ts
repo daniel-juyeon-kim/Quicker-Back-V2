@@ -1,7 +1,6 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose, { Connection, Model } from "mongoose";
-import { ChatMessage, ChatMessageSchema } from "../../../../database/mongoose/models/chat-message";
-import { ChatMessageRepository } from "../../../../database/mongoose/repository/impl/chat-message.repository";
+import { ChatMessage, ChatMessageRepository, ChatMessageSchema } from "../../../../database/mongoose";
 
 let mongod: MongoMemoryServer;
 let connector: Connection;

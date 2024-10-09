@@ -2,9 +2,9 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose, { Connection, Model } from "mongoose";
 import {
   CurrentDeliverLocation,
+  CurrentDeliverLocationRepository,
   CurrentDeliverLocationSchema,
-} from "../../../../database/mongoose/models/current-deliver-location";
-import { CurrentDeliverLocationRepository } from "../../../../database/mongoose/repository/impl/current-deliver-location.repository";
+} from "../../../../database/mongoose";
 
 let mongod: MongoMemoryServer;
 let connector: Connection;

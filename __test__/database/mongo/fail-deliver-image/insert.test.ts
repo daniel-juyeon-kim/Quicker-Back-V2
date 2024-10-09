@@ -1,8 +1,6 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose, { Connection, Model } from "mongoose";
-import { FailDeliverImage, FailDeliverImageSchema } from "../../../../database/mongoose/models/fail-deliver-image";
-
-import { FailDeliverImageRepository } from "../../../../database/mongoose/repository/impl/fail-deliver-image.repository";
+import { FailDeliverImage, FailDeliverImageRepository, FailDeliverImageSchema } from "../../../../database/mongoose";
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
