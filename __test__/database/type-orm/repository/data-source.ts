@@ -11,5 +11,5 @@ export const testAppDataSource = new DataSource({
   entities: [entityPath],
   synchronize: true,
   namingStrategy: new CustomNamingStrategy(),
-  logging: true,
+  logging: false,
 });
