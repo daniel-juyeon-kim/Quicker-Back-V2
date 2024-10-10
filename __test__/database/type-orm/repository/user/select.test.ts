@@ -1,7 +1,6 @@
-import { initializeDataSource } from "../../../../../database/type-orm";
 import { User } from "../../../../../database/type-orm/entity/user.entity";
 import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
-import { testAppDataSource } from "../data-source";
+import { initializeDataSource, testAppDataSource } from "../data-source";
 const userRepository = new UserRepository(testAppDataSource);
 const hash = "아이디";
 const user = {

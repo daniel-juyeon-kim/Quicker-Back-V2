@@ -1,9 +1,8 @@
-import { initializeDataSource } from "../../../../../database/type-orm";
 import { User } from "../../../../../database/type-orm/entity/user.entity";
 import { OrderRepository } from "../../../../../database/type-orm/repository/impl/order.repository";
 import { RecipientRepository } from "../../../../../database/type-orm/repository/impl/recipient.repository";
 import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
-import { testAppDataSource } from "../data-source";
+import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const recipientRepository = new RecipientRepository(testAppDataSource);
 const userRepository = new UserRepository(testAppDataSource);

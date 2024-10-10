@@ -18,7 +18,7 @@ export class CacheOrderRepository extends AbstractRepository<CacheMatchedOrder> 
   async findOrderIdsByBetweenDates(startDate: Date, endDate: Date) {
     const order = await this.repository.find({
       select: { id: true },
-      where: { date: Between(startDate, endDate) },
+      where: { date: Between(startDate.toISOString(), endDate.toISOString()) },
     });
 
     this.validateNull(order);

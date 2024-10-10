@@ -1,1 +1,2 @@
-export { AppDataSource, initializeDataSource } from "./data-source";
+export * from "./custom-naming-strategy";
+export * from "./data-source";

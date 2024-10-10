@@ -1,12 +1,11 @@
-import { initializeDataSource } from "../../../../../database/type-orm";
 import { CacheMatchedOrder } from "../../../../../database/type-orm/entity/cache-matched-order.entity";
 import { CacheOrderRepository } from "../../../../../database/type-orm/repository/impl/cache-order.repository";
-import { testAppDataSource } from "../data-source";
+import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const cacheOrderRepository = new CacheOrderRepository(testAppDataSource);
 
-const startDate = new Date(2000, 0, 1);
-const endDate = new Date(2000, 1, 1);
+const startDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+const endDate = new Date(2000, 0, 31, 23, 59, 9, 999);
 
 beforeAll(async () => {
   await initializeDataSource(testAppDataSource);
@@ -14,10 +13,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await testAppDataSource.manager.save(CacheMatchedOrder, [
-    { id: 1, date: new Date(1999, 11, 31) },
-    { id: 2, date: startDate },
-    { id: 3, date: new Date(2000, 0, 31) },
-    { id: 4, date: endDate },
+    { id: 1, date: new Date(1999, 11, 31, 23, 59, 59, 999).toISOString() },
+    { id: 2, date: startDate.toISOString() },
+    { id: 3, date: endDate.toISOString() },
+    { id: 4, date: new Date(2000, 1, 1, 0, 0, 0, 0).toISOString() },
   ]);
 });
 

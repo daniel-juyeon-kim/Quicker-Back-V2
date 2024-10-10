@@ -1,7 +1,6 @@
-import { initializeDataSource } from "../../../../../database/type-orm";
 import { ImageRepository } from "../../../../../database/type-orm/repository/impl/image.repository";
 import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
-import { testAppDataSource } from "../data-source";
+import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const hash = "아이디";
 const birthDate = {

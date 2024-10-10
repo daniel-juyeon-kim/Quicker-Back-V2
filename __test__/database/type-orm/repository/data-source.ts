@@ -13,3 +13,14 @@ export const testAppDataSource = new DataSource({
   namingStrategy: new CustomNamingStrategy(),
   logging: false,
 });
+
+export const initializeDataSource = async (dataSource: DataSource) => {
+  try {
+    if (dataSource.isInitialized) {
+      return;
+    }
+    await dataSource.initialize();
+  } catch (error) {
+    console.log(error);
+  }
+};

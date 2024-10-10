@@ -1,10 +1,6 @@
 export const createLastMonthRange = (date: Date) => {
-  const start = generateMonth(date.getMonth() - 1);
-  const end = generateMonth(date.getMonth());
+  const start = new Date(date.getFullYear(), date.getMonth() - 1, 1, 0, 0, 0, 0);
+  const end = new Date(date.getFullYear(), date.getMonth(), 0, 23, 59, 59, 999);
 
   return { start, end };
-};
-
-const generateMonth = (month: number) => {
-  return new Date(new Date().getFullYear(), month, 1, 0, 0, 0, 0);
 };

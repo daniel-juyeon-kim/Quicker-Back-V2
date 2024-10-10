@@ -1,7 +1,6 @@
-import { initializeDataSource } from "../../../../../database/type-orm";
 import { CacheMatchedOrder } from "../../../../../database/type-orm/entity/cache-matched-order.entity";
 import { CacheOrderRepository } from "../../../../../database/type-orm/repository/impl/cache-order.repository";
-import { testAppDataSource } from "../data-source";
+import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const cacheOrderRepository = new CacheOrderRepository(testAppDataSource);
 

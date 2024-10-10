@@ -1,7 +1,6 @@
-import { initializeDataSource } from "../../../../../database/type-orm";
 import { AverageOfCost } from "../../../../../database/type-orm/entity/average-of-cost.entity";
 import { AverageOfCostRepository } from "../../../../../database/type-orm/repository/impl/average-of-cost.repository";
-import { testAppDataSource } from "../data-source";
+import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const averageRepository = new AverageOfCostRepository(testAppDataSource);
 
