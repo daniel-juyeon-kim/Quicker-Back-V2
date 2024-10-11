@@ -19,6 +19,7 @@ export const config = {
     user: process.env.DB_USER,
     port: process.env.DB_PORT,
     password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   },
   mongoDB: process.env.MONGO_DB,
   cryptoKey: process.env.CRYPTO_KEY,

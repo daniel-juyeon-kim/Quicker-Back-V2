@@ -1,7 +1,7 @@
 import { findDistanceKey } from "../../util/distance";
 
 describe("findDistanceKey 테스트", () => {
-  test("정상동작", () => {
+  test("통과하는 테스트", () => {
     const testCases = [
       { value: 4, result: "5KM" },
       { value: 5, result: "5KM" },

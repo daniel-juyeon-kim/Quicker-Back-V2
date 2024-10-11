@@ -12,7 +12,7 @@ describe("객체의 속성중 null이 있는지 확인하는 테스트", () => {
     });
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const testCases = ["Infinity", "2,i"];
     const expectErrorMessage = ["Infinity는 유효한 정수가 아닙니다.", "i는 유효한 정수가 아닙니다."];
 

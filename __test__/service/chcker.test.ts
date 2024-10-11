@@ -26,7 +26,7 @@ describe("객체의 속성중 null이 있는지 확인하는 테스트", () => {
     });
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     testCases.forEach(({ actual, result }) => {
       expect(hasAttributeNull(actual)).not.toEqual(!result);
     });

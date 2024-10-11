@@ -7,7 +7,7 @@ describe("isDevelopment 테스트", () => {
     expect(result).toBe(false);
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     ["production", undefined].forEach((value) => {
       const result = isDevelopment(value);
 
@@ -25,7 +25,7 @@ describe("isValidEnv 테스트", () => {
     });
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     [undefined, ""].forEach((value) => {
       const result = isValidEnv(value);
 
@@ -43,7 +43,7 @@ describe("isEnvType 테스트", () => {
     });
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     [1, null, {}].forEach((value) => {
       const result = isEnvType(value);
 
@@ -64,7 +64,7 @@ describe("validateEnv 테스트", () => {
     }).not.toThrow();
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const target = {
       user: undefined,
       password: "password",
@@ -75,7 +75,7 @@ describe("validateEnv 테스트", () => {
     }).toThrow("[WARN] Invalid Env value, user is undefined");
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const target = {
       user: "user",
       password: "",
@@ -94,13 +94,13 @@ describe("validateEnvValue 테스트", () => {
     }).not.toThrow();
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     expect(() => {
       validateEnvValue("user", undefined);
     }).toThrow("[WARN] Invalid Env value, user is undefined");
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     expect(() => {
       validateEnvValue("password", "");
     }).toThrow("[WARN] Invalid Env value, password is empty string");

@@ -30,7 +30,7 @@ describe("슬랙 봇 객체 생성 시 환경 변수 undefined, 비어있는 str
     }).not.toThrow();
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     failureTestCases.forEach((failureTestCase) => {
       expect(() => {
         new SlackBot({ token: failureTestCase.token, channelId: failureTestCase.channelId });

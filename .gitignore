@@ -14,3 +14,9 @@ todo.md
 # docker
 dockerfile.dev
 docker-compose.override.yml
+
+# 테스트용 sqlite db
+**/*.db
+
+# .vscode
+.vscode

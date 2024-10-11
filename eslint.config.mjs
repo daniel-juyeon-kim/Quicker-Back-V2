@@ -5,17 +5,16 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default [
-  { files: ["**/*.{ts}"] },
-  { languageOptions: { globals: globals.browser } },
+  ...tseslint.configs.recommended,
   eslintConfigPrettier,
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  { languageOptions: { globals: globals.node } },
+  { plugins: { "@stylistic/js": stylisticJs } },
+  { ignores: ["**/node_modules/", "/**/tsconfig.json"] },
   {
-    plugins: {
-      "@stylistic/js": stylisticJs,
-    },
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "error",
       "constructor-super": "warn",
       "for-direction": "warn",
       "getter-return": "warn",
@@ -48,6 +47,11 @@ export default [
         { blankLine: "always", prev: "multiline-block-like", next: "class" },
         { blankLine: "always", prev: "class", next: "class" },
       ],
+    },
+  },
+  {
+    files: ["**/*.ts"],
+    rules: {
       "lines-between-class-members": [
         "warn",
         {
@@ -55,11 +59,29 @@ export default [
             { blankLine: "always", prev: "method", next: "method" },
             { blankLine: "always", prev: "method", next: "field" },
             { blankLine: "always", prev: "field", next: "method" },
+            { blankLine: "never", prev: "field", next: "field" },
           ],
         },
         { exceptAfterSingleLine: false },
       ],
     },
-    ignores: ["**/node_modules/", "**/tsconfig.json"],
+  },
+  {
+    files: ["**/*.entity.ts"],
+    rules: {
+      "lines-between-class-members": [
+        "warn",
+        {
+          enforce: [{ blankLine: "always", prev: "*", next: "*" }],
+        },
+        { exceptAfterSingleLine: false },
+      ],
+    },
+  },
+  {
+    files: ["**/*.test.ts"],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.jest },
+    },
   },
 ];

@@ -56,7 +56,7 @@ export const validateNumeric = (value: string | number) => {
   validateNumber(value, ERROR_INVALID_NUMBER);
 };
 
-export const validateNumber = (value: number, errorMessage: string) => {
+const validateNumber = (value: number, errorMessage: string) => {
   if (isNumber(value)) {
     return;
   }
@@ -73,4 +73,8 @@ export const validateNotZero = (value: number) => {
 
 const isZero = (value: number) => {
   return value === ZERO;
+};
+
+export const isEmptyArray = (array: Array<unknown>) => {
+  return isZero(array.length);
 };
