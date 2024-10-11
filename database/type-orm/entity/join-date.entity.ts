@@ -6,8 +6,8 @@ export class JoinDate {
   @PrimaryColumn()
   id!: string;
 
-  @Column("double", { default: Math.floor(Date.now() / 100) })
-  timeStamp!: number;
+  @Column("datetime", { default: new Date().toISOString() })
+  date!: Date;
 
   @OneToOne(() => User, (user) => user.joinDate, {
     onDelete: "CASCADE",

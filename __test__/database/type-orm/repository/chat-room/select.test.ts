@@ -1,29 +1,25 @@
-import { Order } from "../../../../../database/type-orm/entity/order.entity";
-import { User } from "../../../../../database/type-orm/entity/user.entity";
-import { ChatRoomRepository } from "../../../../../database/type-orm/repository/impl/chat-room.repository";
-import { OrderRepository } from "../../../../../database/type-orm/repository/impl/order.repository";
-import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
+import { ChatRoomRepository, Order, OrderRepository, User, UserRepository } from "../../../../../database/type-orm";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const orderRepository = new OrderRepository(testAppDataSource);
-const userRepository = new UserRepository(testAppDataSource);
-const chatRoomRepository = new ChatRoomRepository(testAppDataSource);
+const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
+const userRepository = new UserRepository(testAppDataSource.getRepository(User));
+const chatRoomRepository = new ChatRoomRepository(testAppDataSource.getRepository(Order));
 
 const createUser = async () => {
-  const hash = "아이디";
+  const userId = "아이디";
   const user = {
-    id: hash,
+    id: userId,
     walletAddress: "지갑주소",
     name: "이름",
     email: "이메일",
     contact: "연락처",
   };
   const birthDate = {
-    id: hash,
-    date: new Date(2000, 9, 12).toLocaleDateString(),
+    id: userId,
+    date: new Date(2000, 9, 12),
   };
 
-  await userRepository.createUser({ user, birthDate, hash });
+  await userRepository.createUser({ user, birthDate, id: userId });
 };
 
 const createOrder = async (requester: User) => {
@@ -83,12 +79,28 @@ afterEach(async () => {
   await testAppDataSource.manager.clear(Order);
 });
 
-describe("chatRoomRepository 테스트", () => {
-  test("findChatParticipantByOrderId 테스트", async () => {
-    await expect(chatRoomRepository.findChatParticipantByOrderId(1)).resolves.toEqual({
-      id: 1,
-      departure: { id: 1, sender: { phone: "01012345678" }, x: 0, y: 0 },
-      destination: { id: 1, recipient: { phone: "01012345678" }, x: 37.5, y: 112 },
+describe("findChatParticipantByOrderId 테스트", () => {
+  test("통과하는 테스트", async () => {
+    const orderId = 1;
+
+    await expect(chatRoomRepository.findChatParticipantByOrderId(orderId)).resolves.toEqual({
+      id: orderId,
+      departure: {
+        id: orderId,
+        x: 0,
+        y: 0,
+        sender: { phone: "01012345678" },
+      },
+      destination: {
+        id: orderId,
+        x: 37.5,
+        y: 112,
+        recipient: { phone: "01012345678" },
+      },
     });
+  });
+
+  test("실패하는 테스트, 존재하지 않는 주문 아이디 입력", async () => {
+    await expect(chatRoomRepository.findChatParticipantByOrderId(32)).rejects.toThrow("데이터를 찾지 못했습니다.");
   });
 });

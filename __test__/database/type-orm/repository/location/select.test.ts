@@ -1,32 +1,29 @@
-import { User } from "../../../../../database/type-orm/entity/user.entity";
-import { LocationRepository } from "../../../../../database/type-orm/repository/impl/loaction.repository";
-import { OrderRepository } from "../../../../../database/type-orm/repository/impl/order.repository";
-import { UserRepository } from "../../../../../database/type-orm/repository/impl/user.repository";
+import { LocationRepository, Order, OrderRepository, User, UserRepository } from "../../../../../database/type-orm";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const locationRepository = new LocationRepository(testAppDataSource);
-const userRepository = new UserRepository(testAppDataSource);
-const orderRepository = new OrderRepository(testAppDataSource);
+const locationRepository = new LocationRepository(testAppDataSource.getRepository(Order));
+const userRepository = new UserRepository(testAppDataSource.getRepository(User));
+const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
 
 const createUser = async () => {
-  const hash = "아이디";
+  const userId = "아이디";
   const user = {
-    id: hash,
+    id: userId,
     walletAddress: "지갑주소",
     name: "이름",
     email: "이메일",
     contact: "연락처",
   };
   const birthDate = {
-    id: hash,
-    date: new Date(2000, 9, 12).toLocaleDateString(),
+    id: userId,
+    date: new Date(2000, 9, 12),
   };
 
-  await userRepository.createUser({ user, birthDate, hash });
+  await userRepository.createUser({ user, birthDate, id: userId });
 };
 
 const createOrder = async (requester: User) => {
-  const param = {
+  const orderCreationParameter = {
     order: {
       requester,
       detail: "디테일",
@@ -65,7 +62,7 @@ const createOrder = async (requester: User) => {
     },
   };
 
-  await orderRepository.create(param);
+  await orderRepository.create(orderCreationParameter);
 };
 
 beforeAll(async () => {
@@ -76,16 +73,24 @@ beforeAll(async () => {
   await createOrder(user);
 });
 
-describe("locationRepository 테스트", () => {
-  test("findDestinationDepartureByOrderId 테스트", async () => {
-    await expect(locationRepository.findDestinationDepartureByOrderId(1)).resolves.toEqual({
-      id: 1,
+describe("findDestinationDepartureByOrderId 테스트", () => {
+  test("통과하는 테스트", async () => {
+    const orderId = 1;
+
+    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).resolves.toEqual({
+      id: orderId,
       departure: { x: 127.09, y: 37.527 },
       destination: { x: 127.8494, y: 37.5 },
     });
   });
 
-  test("findDestinationDepartureByOrderId 테스트", async () => {
+  test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
+    await expect(locationRepository.findDestinationDepartureByOrderId(32)).rejects.toThrow("데이터를 찾지 못했습니다.");
+  });
+});
+
+describe("findAllDestinationDepartureByOrderId 테스트", () => {
+  test("통과하는 테스트", async () => {
     await expect(locationRepository.findAllDestinationDepartureByOrderId([1, 2])).resolves.toEqual([
       {
         id: 1,
@@ -98,5 +103,19 @@ describe("locationRepository 테스트", () => {
         destination: { x: 127.8494, y: 37.5 },
       },
     ]);
+  });
+
+  test("실패하는 테스트, 존재하는 값과 존재하지 않는 값이 섞임", async () => {
+    await expect(locationRepository.findAllDestinationDepartureByOrderId([2, 3])).resolves.toEqual([
+      {
+        id: 2,
+        departure: { x: 127.09, y: 37.527 },
+        destination: { x: 127.8494, y: 37.5 },
+      },
+    ]);
+  });
+
+  test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
+    await expect(locationRepository.findAllDestinationDepartureByOrderId([3, 4])).resolves.toEqual([]);
   });
 });

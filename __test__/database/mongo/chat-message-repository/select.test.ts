@@ -4,39 +4,39 @@ import { ChatMessage, ChatMessageRepository, ChatMessageSchema } from "../../../
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let model: Model<ChatMessage>;
+let ChatMessageModel: Model<ChatMessage>;
 let repository: ChatMessageRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  model = connector.model<ChatMessage>("chatMessage", ChatMessageSchema);
-  repository = new ChatMessageRepository(model);
+  ChatMessageModel = connector.model<ChatMessage>("chatMessage", ChatMessageSchema);
+  repository = new ChatMessageRepository(ChatMessageModel);
 });
 
 beforeEach(async () => {
-  const date = new Date(2000, 1, 1);
-  const Model = new model({
+  const CREATED_DATE = new Date(2000, 1, 1);
+  const chatMessage = new ChatMessageModel({
     roomName: "방 식별자",
     messages: [
       {
         _id: "사용자 식별자1",
         message: "메세지1",
-        date,
+        date: CREATED_DATE,
       },
       {
         _id: "사용자 식별자2",
         message: "메세지2",
-        date,
+        date: CREATED_DATE,
       },
       {
         _id: "사용자 식별자1",
         message: "메세지3",
-        date,
+        date: CREATED_DATE,
       },
     ],
   });
-  await Model.save();
+  await chatMessage.save();
 });
 
 afterEach(async () => {
@@ -48,34 +48,43 @@ afterAll(async () => {
   await mongod.stop();
 });
 
-describe("ChatMessageRepository 테스트", () => {
-  const date = new Date(2000, 1, 1);
+describe("find* 테스트", () => {
+  const ORDER_ID = "방 식별자";
+  const NOT_EXIST_ORDER_ID = "존재하지 않는 방 식별자";
+  const ERROR_MESSAGE_NOT_EXIST_DATA = "데이터가 존재하지 않습니다.";
+  const CREATED_DATE = new Date(2000, 1, 1);
 
-  test("findAllMessage 테스트", async () => {
-    const result = await repository.findAllMessage("방 식별자");
+  describe("findAllMessageByOrderId 테스트", () => {
+    test("통과하는 테스트", async () => {
+      await expect(repository.findAllMessageByOrderId(ORDER_ID)).resolves.toEqual({
+        messages: [
+          { _id: "사용자 식별자1", message: "메세지1", date: CREATED_DATE },
+          { _id: "사용자 식별자2", message: "메세지2", date: CREATED_DATE },
+          { _id: "사용자 식별자1", message: "메세지3", date: CREATED_DATE },
+        ],
+      });
+    });
 
-    expect(result?.toJSON()).toEqual({
-      messages: [
-        { _id: "사용자 식별자1", message: "메세지1", date },
-        { _id: "사용자 식별자2", message: "메세지2", date },
-        { _id: "사용자 식별자1", message: "메세지3", date },
-      ],
+    test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
+      await expect(repository.findAllMessageByOrderId(NOT_EXIST_ORDER_ID)).rejects.toThrow(
+        ERROR_MESSAGE_NOT_EXIST_DATA,
+      );
     });
   });
 
-  test("findAllMessage 테스트, 존재하지 않는 값 입력", async () => {
-    await expect(repository.findAllMessage("존재하지 않는 방 식별자")).rejects.toThrow("데이터가 존재하지 않습니다.");
-  });
+  describe("findRecentMessageByOrderId 테스트", () => {
+    test("통과하는 테스트", async () => {
+      await expect(repository.findRecentMessageByOrderId(ORDER_ID)).resolves.toEqual({
+        _id: "사용자 식별자1",
+        message: "메세지3",
+        date: CREATED_DATE,
+      });
+    });
 
-  test("findRecentMessageByOrderId 테스트", async () => {
-    const result = await repository.findRecentMessageByOrderId("방 식별자");
-
-    expect(result).toEqual({ _id: "사용자 식별자1", message: "메세지3", date });
-  });
-
-  test("findRecentMessageByOrderId 테스트, 존재하지 않는 값 입력", async () => {
-    await expect(repository.findRecentMessageByOrderId("존재하지 않는 방 식별자")).rejects.toThrow(
-      "데이터가 존재하지 않습니다.",
-    );
+    test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
+      await expect(repository.findRecentMessageByOrderId(NOT_EXIST_ORDER_ID)).rejects.toThrow(
+        ERROR_MESSAGE_NOT_EXIST_DATA,
+      );
+    });
   });
 });

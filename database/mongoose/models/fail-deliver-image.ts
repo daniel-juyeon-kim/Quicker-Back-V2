@@ -7,7 +7,7 @@ export interface FailDeliverImage {
 }
 
 export const FailDeliverImageSchema = new mongoose.Schema<FailDeliverImage>({
-  _id: { type: String, require: true },
-  image: { type: Buffer, require: true },
-  reason: { type: String, require: true },
+  _id: { type: String, required: true },
+  image: { type: Buffer, required: true },
+  reason: { type: String, required: true },
 });

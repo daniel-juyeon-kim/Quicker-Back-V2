@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 
 import {
+  isEmptyArray,
   isEmptyString,
   isFulfilled,
   isNull,
@@ -21,7 +22,7 @@ describe("isUndefined 테스트", () => {
     expect(result).toBe(true);
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     ["", "env", 3].forEach((value) => {
       const result = isUndefined(value);
 
@@ -37,7 +38,7 @@ describe("isNumber 테스트", () => {
     expect(result).toBe(true);
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const testCases = [-Infinity, NaN, Infinity];
 
     testCases.forEach((value) => expect(isNumber(value)).toBe(false));
@@ -51,7 +52,7 @@ describe("isPositiveNumber 테스트", () => {
     expect(result).toBe(true);
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     [0, NaN].forEach((value) => {
       const result = isPositiveNumber(value);
 
@@ -65,7 +66,7 @@ describe("isString 테스트", () => {
     expect(isString("")).toBe(true);
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     [1, NaN, {}].forEach((value) => {
       const result = isString(value);
 
@@ -79,7 +80,7 @@ describe("isEmptyString 테스트", () => {
     expect(isEmptyString("")).toBe(true);
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     ["asdf", "d"].forEach((value) => {
       const result = isEmptyString(value);
 
@@ -107,7 +108,7 @@ describe("isNull 테스트", () => {
     expect(isNull(null)).toBe(true);
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     [undefined, 0, false, -1, {}, []].forEach((value) => {
       expect(isNull(value)).toBe(false);
     });
@@ -123,7 +124,7 @@ describe("validateResponse 테스트", () => {
     }).not.toThrow();
   });
 
-  test("실패", async () => {
+  test("실패하는 테스트", async () => {
     const json = jest.fn(
       () =>
         new Promise((resolve, reject) => {
@@ -151,7 +152,7 @@ describe("validateNumeric 테스트", () => {
     testCases.forEach((testCase) => expect(() => validateNumeric(testCase)).not.toThrow());
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const testCases = [Infinity, NaN, -Infinity];
 
     testCases.forEach((testCase) => expect(() => validateNumeric(testCase)).toThrow());
@@ -165,7 +166,7 @@ describe("validateNumber 테스트", () => {
     testCases.forEach((testCase) => expect(() => validateNumber(testCase)).not.toThrow());
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const testCases = [Infinity, NaN, -Infinity];
 
     testCases.forEach((testCase) => expect(() => validateNumeric(testCase)).toThrow());
@@ -179,7 +180,17 @@ describe("validateNotZero 테스트", () => {
     testCases.forEach((testCase) => expect(() => validateNotZero(testCase)).not.toThrow());
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     expect(() => validateNotZero(0)).toThrow("값이 0입니다.");
+  });
+});
+
+describe("isEmptyArray 테스트", () => {
+  test("통과하는 테스트", () => {
+    expect(isEmptyArray([1])).toBe(true);
+  });
+
+  test("실패하는 테스트", () => {
+    expect(isEmptyArray([])).toBe(false);
   });
 });

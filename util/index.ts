@@ -74,3 +74,7 @@ export const validateNotZero = (value: number) => {
 const isZero = (value: number) => {
   return value === ZERO;
 };
+
+export const isEmptyArray = (array: Array<unknown>) => {
+  return isZero(array.length);
+};

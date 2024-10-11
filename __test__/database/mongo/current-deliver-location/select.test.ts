@@ -8,18 +8,21 @@ import {
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let model: Model<CurrentDeliverLocation>;
+let CurrentDeliverLocationModel: Model<CurrentDeliverLocation>;
 let repository: CurrentDeliverLocationRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  model = connector.model<CurrentDeliverLocation>("completeDeliverImage", CurrentDeliverLocationSchema);
-  repository = new CurrentDeliverLocationRepository(model);
+  CurrentDeliverLocationModel = connector.model<CurrentDeliverLocation>(
+    "completeDeliverImage",
+    CurrentDeliverLocationSchema,
+  );
+  repository = new CurrentDeliverLocationRepository(CurrentDeliverLocationModel);
 });
 
 beforeEach(async () => {
-  await model.create({
+  await CurrentDeliverLocationModel.create({
     _id: "지갑주소",
     location: [
       { x: 112.1314, y: 37.4 },
@@ -40,14 +43,12 @@ afterAll(async () => {
   await mongod.stop();
 });
 
-describe("CurrentDeliverLocationRepository 테스트", () => {
-  test("findByWalletAddress 테스트", async () => {
-    const result = await repository.findCurrentLocationByWalletAddress("지갑주소");
-
-    expect(result).toEqual({ x: 112.1313, y: 37.3 });
+describe("findByWalletAddress 테스트", () => {
+  test("통과하는 테스트", async () => {
+    await expect(repository.findCurrentLocationByWalletAddress("지갑주소")).resolves.toEqual({ x: 112.1313, y: 37.3 });
   });
 
-  test("findByWalletAddress 테스트, 존재하지 않는 값 입력", async () => {
+  test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
     await expect(repository.findCurrentLocationByWalletAddress("존재하지 않는 지갑주소")).rejects.toThrow(
       "데이터가 존재하지 않습니다.",
     );

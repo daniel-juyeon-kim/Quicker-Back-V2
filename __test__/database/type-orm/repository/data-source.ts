@@ -1,14 +1,14 @@
 import { join } from "node:path";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { CustomNamingStrategy } from "../../../../database/type-orm/connector/custom-naming-strategy";
+import { CustomNamingStrategy } from "../../../../database/type-orm";
 
-const entityPath = join(`${__dirname}/../../../../database/type-orm/**/*.entity.ts`);
+const ENTITY_PATH = join(`${__dirname}/../../../../database/type-orm/**/*.entity.ts`);
 
 export const testAppDataSource = new DataSource({
   type: "sqlite",
   database: ":memory:",
-  entities: [entityPath],
+  entities: [ENTITY_PATH],
   synchronize: true,
   namingStrategy: new CustomNamingStrategy(),
   logging: false,

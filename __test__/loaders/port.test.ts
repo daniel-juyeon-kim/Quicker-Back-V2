@@ -10,7 +10,7 @@ describe("initalizePort 포트 유효성 검사 테스트", () => {
     expect(() => port.init(app, "3000")).not.toThrow();
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const testCases = [
       { value: "", errorMessage: "[WARN] Invalid Env value, port is empty string" },
       { value: undefined, errorMessage: "[WARN] Invalid Env value, port is undefined" },

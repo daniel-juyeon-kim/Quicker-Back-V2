@@ -4,14 +4,14 @@ import { ChatMessage, ChatMessageRepository, ChatMessageSchema } from "../../../
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let model: Model<ChatMessage>;
+let ChatMessageModel: Model<ChatMessage>;
 let repository: ChatMessageRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  model = connector.model<ChatMessage>("chatMessage", ChatMessageSchema);
-  repository = new ChatMessageRepository(model);
+  ChatMessageModel = connector.model<ChatMessage>("chatMessage", ChatMessageSchema);
+  repository = new ChatMessageRepository(ChatMessageModel);
 });
 
 beforeEach(async () => {
@@ -23,40 +23,46 @@ afterAll(async () => {
   await mongod.stop();
 });
 
-describe("ChatMessageRepository 테스트", () => {
-  test("saveMessage 테스트, 채팅방이 생성되지 않았으면 생성후 메시지를 저장", async () => {
-    const date = new Date(2000, 1, 1);
-    await repository.saveMessage("방 식별자", {
-      userId: "사용자 식별자",
-      message: "메시지1",
-      date: date,
+describe("saveMessage 테스트", () => {
+  const ORDER_ID = "방 식별자";
+  const USER_ID = "사용자 식별자";
+
+  test("통과하는 테스트, 채팅방이 생성되지 않았으면 생성후 메시지를 저장", async () => {
+    const createdDate = new Date(2000, 1, 1);
+    const message = "메시지1";
+
+    await repository.saveMessage(ORDER_ID, {
+      userId: USER_ID,
+      message,
+      date: createdDate,
     });
 
-    const result = await model.findOne({ roomName: "방 식별자" }).select(["-__v", "-_id"]);
+    const result = await ChatMessageModel.findOne({ roomName: ORDER_ID }).select(["-__v", "-_id"]);
 
-    expect(result?.toJSON()).toEqual({
-      roomName: "방 식별자",
-      messages: [{ _id: "사용자 식별자", date, message: "메시지1" }],
+    expect(result?.toObject()).toEqual({
+      roomName: ORDER_ID,
+      messages: [{ _id: USER_ID, date: createdDate, message }],
     });
   });
 
-  test("saveMessage 테스트, 여러개의 메시지 저장", async () => {
-    await repository.saveMessage("방 식별자", {
-      userId: "사용자 식별자",
-      message: "메시지1",
-    });
-    await repository.saveMessage("방 식별자", {
-      userId: "사용자 식별자",
-      message: "메시지2",
-    });
+  test("통과하는 테스트, 여러개의 메시지 저장", async () => {
+    const saveMessage = async (message: string) => {
+      await repository.saveMessage(ORDER_ID, {
+        userId: USER_ID,
+        message,
+      });
+    };
 
-    const result = await model.findOne({ roomName: "방 식별자" }).select(["-__v", "-_id", "-messages.date"]);
+    await saveMessage("메시지1");
+    await saveMessage("메시지2");
 
-    expect(result?.toJSON()).toEqual({
-      roomName: "방 식별자",
+    const result = await ChatMessageModel.findOne({ roomName: ORDER_ID }).select(["-__v", "-_id", "-messages.date"]);
+
+    expect(result?.toObject()).toEqual({
+      roomName: ORDER_ID,
       messages: [
-        { _id: "사용자 식별자", message: "메시지1" },
-        { _id: "사용자 식별자", message: "메시지2" },
+        { _id: USER_ID, message: "메시지1" },
+        { _id: USER_ID, message: "메시지2" },
       ],
     });
   });

@@ -1,10 +1,10 @@
-import { DataSource } from "typeorm";
+import { Repository } from "typeorm";
 import { Order } from "../../entity/order.entity";
 import { AbstractRepository } from "../abstract-repository";
 
-export class ChatRoomRepository extends AbstractRepository<Order> {
-  constructor(dataSource: DataSource) {
-    super(dataSource, Order);
+export class ChatRoomRepository extends AbstractRepository {
+  constructor(private readonly repository: Repository<Order>) {
+    super();
   }
 
   async findChatParticipantByOrderId(orderId: number) {
@@ -33,7 +33,7 @@ export class ChatRoomRepository extends AbstractRepository<Order> {
       },
     });
 
-    this.validateNull(order);
+    this.validateNotNull(order);
 
     return order;
   }

@@ -8,18 +8,21 @@ import {
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let model: Model<CurrentDeliverLocation>;
+let CurrentDeliverLocationModel: Model<CurrentDeliverLocation>;
 let repository: CurrentDeliverLocationRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  model = connector.model<CurrentDeliverLocation>("completeDeliverImage", CurrentDeliverLocationSchema);
-  repository = new CurrentDeliverLocationRepository(model);
+  CurrentDeliverLocationModel = connector.model<CurrentDeliverLocation>(
+    "completeDeliverImage",
+    CurrentDeliverLocationSchema,
+  );
+  repository = new CurrentDeliverLocationRepository(CurrentDeliverLocationModel);
 });
 
 beforeEach(async () => {
-  await model.create({
+  await CurrentDeliverLocationModel.create({
     _id: "지갑주소",
     location: [{ x: 112.1314, y: 37.4 }],
   });
@@ -34,14 +37,16 @@ afterAll(async () => {
   await mongod.stop();
 });
 
-describe("CurrentDeliverLocationRepository 테스트", () => {
-  test("updateLocation 테스트", async () => {
-    await repository.updateLocation("지갑주소", { x: 112.1313, y: 37.5 });
+describe("updateLocation 테스트", () => {
+  test("통과하는 테스트", async () => {
+    const walletAddress = "지갑주소";
 
-    const result = await model.findById("지갑주소").select(["-__v", "-location._id"]);
+    await repository.updateLocation(walletAddress, { x: 112.1313, y: 37.5 });
 
-    expect(result?.toJSON()).toEqual({
-      _id: "지갑주소",
+    const result = await CurrentDeliverLocationModel.findById(walletAddress).select(["-__v", "-location._id"]);
+
+    expect(result?.toObject()).toEqual({
+      _id: walletAddress,
       location: [
         { x: 112.1314, y: 37.4 },
         { x: 112.1313, y: 37.5 },

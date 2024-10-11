@@ -9,31 +9,36 @@ import {
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let model: Model<CompleteDeliverImage>;
+let CompleteDeliverImageModel: Model<CompleteDeliverImage>;
 let repository: CompleteDeliverImageRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  model = connector.model<CompleteDeliverImage>("completeDeliverImage", CompleteDeliverImageSchema);
-  repository = new CompleteDeliverImageRepository(model);
+  CompleteDeliverImageModel = connector.model<CompleteDeliverImage>("completeDeliverImage", CompleteDeliverImageSchema);
+  repository = new CompleteDeliverImageRepository(CompleteDeliverImageModel);
+});
+
+afterEach(async () => {
+  await connector.dropDatabase();
 });
 
 afterAll(async () => {
-  await connector.dropDatabase();
   await connector.destroy();
   await mongod.stop();
 });
 
-describe("CompleteDeliverImageRepository 테스트", () => {
-  test("create 테스트", async () => {
-    await repository.create({ orderId: "아이디", bufferImage: Buffer.from("1") });
+describe("create 테스트", () => {
+  test("통과하는 테스트", async () => {
+    const orderId = "아이디";
 
-    const result = await model.findById("아이디");
+    await repository.create({ orderId, bufferImage: Buffer.from("1") });
+
+    const result = await CompleteDeliverImageModel.findById(orderId);
 
     expect(result?.toJSON()).toEqual({
       __v: 0,
-      _id: "아이디",
+      _id: orderId,
       image: { data: [49], type: "Buffer" },
     });
   });

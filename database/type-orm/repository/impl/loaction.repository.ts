@@ -1,10 +1,10 @@
-import { DataSource, In } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Order } from "../../entity/order.entity";
 import { AbstractRepository } from "../abstract-repository";
 
-export class LocationRepository extends AbstractRepository<Order> {
-  constructor(dataSource: DataSource) {
-    super(dataSource, Order);
+export class LocationRepository extends AbstractRepository {
+  constructor(private readonly repository: Repository<Order>) {
+    super();
   }
 
   async findDestinationDepartureByOrderId(orderId: number) {
@@ -18,7 +18,7 @@ export class LocationRepository extends AbstractRepository<Order> {
       },
     });
 
-    this.validateNull(destinationDeparture);
+    this.validateNotNull(destinationDeparture);
 
     return destinationDeparture;
   }
@@ -34,7 +34,7 @@ export class LocationRepository extends AbstractRepository<Order> {
       },
     });
 
-    this.validateNull(orderLocations);
+    this.validateNotNull(orderLocations);
 
     return orderLocations;
   }

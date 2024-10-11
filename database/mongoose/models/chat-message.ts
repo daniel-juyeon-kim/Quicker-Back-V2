@@ -12,12 +12,15 @@ export interface ChatMessage {
 }
 
 export const ChatMessageSchema = new mongoose.Schema<ChatMessage>({
-  roomName: { type: String, require: true },
-  messages: [
-    {
-      _id: { type: String, require: true },
-      message: { type: String, require: true },
-      date: { type: Date, default: Date.now },
-    },
-  ],
+  roomName: { type: String, required: true },
+  messages: {
+    type: [
+      {
+        _id: { type: String, required: true },
+        message: { type: String, required: true },
+        date: { type: Date, default: () => new Date() },
+      },
+    ],
+    default: [],
+  },
 });

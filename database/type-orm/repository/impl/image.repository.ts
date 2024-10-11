@@ -1,24 +1,24 @@
-import { DataSource } from "typeorm";
-import { Image } from "../../entity/image.entity";
+import { Repository } from "typeorm";
+import { ProfileImage } from "../../entity";
 import { AbstractRepository } from "../abstract-repository";
 
-export class ImageRepository extends AbstractRepository<Image> {
-  constructor(dataSource: DataSource) {
-    super(dataSource, Image);
+export class ProfileImageRepository extends AbstractRepository {
+  constructor(private readonly repository: Repository<ProfileImage>) {
+    super();
   }
 
-  async findImageIdByUserId(id: string) {
+  async findProfileImageIdByUserId(id: string) {
     const imageId = await this.repository.findOne({
       select: { imageId: true },
       where: { id },
     });
 
-    this.validateNull(imageId);
+    this.validateNotNull(imageId);
 
     return imageId;
   }
 
-  async updateImageIdByUserId(id: string, imageId: string) {
+  async updateProfileImageIdByUserId(id: string, imageId: string) {
     await this.repository.update({ id }, { imageId });
   }
 }

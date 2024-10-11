@@ -1,17 +1,19 @@
-import { AverageOfCost } from "../../../../../database/type-orm/entity/average-of-cost.entity";
-import { AverageOfCostRepository } from "../../../../../database/type-orm/repository/impl/average-of-cost.repository";
+import { AverageOfCost, AverageOfCostRepository } from "../../../../../database/type-orm";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const averageRepository = new AverageOfCostRepository(testAppDataSource);
-
-const createDate = new Date(1990, 1, 1).toISOString();
+const averageRepository = new AverageOfCostRepository(testAppDataSource.getRepository(AverageOfCost));
 
 beforeAll(async () => {
   await initializeDataSource(testAppDataSource);
 });
 
+afterEach(async () => {
+  await testAppDataSource.manager.clear(AverageOfCost);
+});
+
 describe("createAverage 테스트", () => {
-  test("정상 흐름", async () => {
+  test("통과하는 테스트", async () => {
+    const createDate = new Date(1990, 0, 1, 0, 0, 0, 0);
     const average = {
       date: createDate,
       "5KM": 5,

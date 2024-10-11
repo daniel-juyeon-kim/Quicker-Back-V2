@@ -1,5 +1,5 @@
 import { Model } from "mongoose";
-import { isNull } from "../../../../util";
+import { isNull, isUndefined } from "../../../../util";
 import { ChatMessage } from "../../models/chat-message";
 import { MongoRepository } from "../abstract.repository";
 export class ChatMessageRepository extends MongoRepository {
@@ -7,17 +7,17 @@ export class ChatMessageRepository extends MongoRepository {
     super();
   }
 
-  async saveMessage(roomName: string, { userId, message, date }: { userId: string; message: string; date?: Date }) {
-    const isExistChatRoom = await this.isExistChatRoom(roomName);
+  async saveMessage(orderId: string, { userId, message, date }: { userId: string; message: string; date?: Date }) {
+    const isExistChatRoom = await this.isExistChatRoom(orderId);
 
     if (!isExistChatRoom) {
-      await this.createChatRoom(roomName);
+      await this.createChatRoom(orderId);
     }
-    await this.updateMessage(roomName, { userId, message, date });
+    await this.updateMessage(orderId, { userId, message, date });
   }
 
-  private async isExistChatRoom(roomName: string) {
-    const room = await this.model.exists({ roomName });
+  private async isExistChatRoom(orderId: string) {
+    const room = await this.model.exists({ roomName: orderId });
 
     if (isNull(room)) {
       return false;
@@ -25,9 +25,9 @@ export class ChatMessageRepository extends MongoRepository {
     return true;
   }
 
-  private async createChatRoom(roomName: string) {
+  private async createChatRoom(orderId: string) {
     const userMessage = new this.model({
-      roomName,
+      roomName: orderId,
       messages: [],
     });
 
@@ -35,7 +35,7 @@ export class ChatMessageRepository extends MongoRepository {
   }
 
   private async updateMessage(
-    roomName: string,
+    orderId: string,
     {
       userId,
       message,
@@ -46,22 +46,26 @@ export class ChatMessageRepository extends MongoRepository {
       date?: Date;
     },
   ) {
-    await this.model.updateOne({ roomName }, { $push: { messages: { _id: userId, message, date } } });
+    const createdDate = isUndefined(date) ? new Date() : date;
+    await this.model.updateOne(
+      { roomName: orderId },
+      { $push: { messages: { _id: userId, message, date: createdDate } } },
+    );
   }
 
-  async findAllMessage(roomName: string) {
-    const messages = await this.model.findOne({ roomName }).select(["-_id", "-__v", "-roomName"]);
+  async findAllMessageByOrderId(orderId: string) {
+    const messages = await this.model.findOne({ roomName: orderId }).select(["messages", "-_id"]);
 
     this.validateNull(messages);
 
-    return messages;
+    return messages.toObject();
   }
 
   async findRecentMessageByOrderId(orderId: string) {
-    const recentMessage = await this.model.findOne({ roomName: orderId }).select(["-_id", "-__v", "-roomName"]);
+    const recentMessage = await this.model.findOne({ roomName: orderId }).select("messages");
 
     this.validateNull(recentMessage);
 
-    return recentMessage.toJSON().messages.pop();
+    return recentMessage.toObject().messages.pop();
   }
 }

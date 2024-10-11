@@ -1,19 +1,25 @@
-import { CacheMatchedOrder } from "../../../../../database/type-orm/entity/cache-matched-order.entity";
-import { CacheOrderRepository } from "../../../../../database/type-orm/repository/impl/cache-order.repository";
+import { CacheMatchedOrder, CacheOrderRepository } from "../../../../../database/type-orm";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const cacheOrderRepository = new CacheOrderRepository(testAppDataSource);
+const cacheOrderRepository = new CacheOrderRepository(testAppDataSource.getRepository(CacheMatchedOrder));
 
 beforeAll(async () => {
   await initializeDataSource(testAppDataSource);
 });
 
-describe("cacheOrderRepository 테스트", () => {
-  test("create 테스트", async () => {
-    await cacheOrderRepository.create(1);
+afterEach(async () => {
+  await testAppDataSource.manager.clear(CacheMatchedOrder);
+});
 
-    const order = await testAppDataSource.manager.findOneBy(CacheMatchedOrder, { id: 1 });
-    expect(order?.id).toBe(1);
+describe("create 테스트", () => {
+  test("통과하는 테스트", async () => {
+    const orderId = 1;
+
+    await cacheOrderRepository.create(orderId);
+
+    const order = await testAppDataSource.manager.findOneBy(CacheMatchedOrder, { id: orderId });
+
+    expect(order?.id).toBe(orderId);
     expect(order?.date).not.toBeFalsy();
   });
 });

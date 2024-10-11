@@ -6,8 +6,8 @@ export class CacheMatchedOrder {
   @PrimaryColumn()
   id!: number;
 
-  @Column({ type: "date", default: new Date().toISOString() })
-  date!: string;
+  @Column({ type: "date", default: () => "CURRENT_DATE" })
+  date!: Date;
 
   @OneToOne(() => Order, (order) => order.cacheMatchedOrder, {
     cascade: ["insert"],

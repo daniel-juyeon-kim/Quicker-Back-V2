@@ -9,7 +9,7 @@ export class BirthDate {
   id!: string;
 
   @Column({ type: "date" })
-  date!: string;
+  date!: Date;
 
   @OneToOne(() => User, (user) => user.birthDate, {
     onDelete: "CASCADE",

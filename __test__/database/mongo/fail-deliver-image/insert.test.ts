@@ -4,31 +4,36 @@ import { FailDeliverImage, FailDeliverImageRepository, FailDeliverImageSchema } 
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let model: Model<FailDeliverImage>;
+let FailDeliverImageModel: Model<FailDeliverImage>;
 let repository: FailDeliverImageRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  model = connector.model<FailDeliverImage>("failDeliverImage", FailDeliverImageSchema);
-  repository = new FailDeliverImageRepository(model);
+  FailDeliverImageModel = connector.model<FailDeliverImage>("failDeliverImage", FailDeliverImageSchema);
+  repository = new FailDeliverImageRepository(FailDeliverImageModel);
+});
+
+afterEach(async () => {
+  await connector.dropDatabase();
 });
 
 afterAll(async () => {
-  await connector.dropDatabase();
   await connector.destroy();
   await mongod.stop();
 });
 
-describe("FailDeliverImageRepository 테스트", () => {
-  test("createFailDeliverImage 테스트", async () => {
-    await repository.createFailDeliverImage({ orderId: "아이디", bufferImage: Buffer.from("1"), reason: "이유" });
+describe("createFailDeliverImage 테스트", () => {
+  test("통과하는 테스트", async () => {
+    const orderId = "아이디";
 
-    const result = await model.findById("아이디");
+    await repository.createFailDeliverImage({ orderId, bufferImage: Buffer.from("1"), reason: "이유" });
+
+    const result = await FailDeliverImageModel.findById(orderId);
 
     expect(result?.toJSON()).toEqual({
       __v: 0,
-      _id: "아이디",
+      _id: orderId,
       image: { data: [49], type: "Buffer" },
       reason: "이유",
     });

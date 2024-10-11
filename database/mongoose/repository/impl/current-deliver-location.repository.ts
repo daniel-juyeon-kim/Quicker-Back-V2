@@ -1,4 +1,5 @@
 import { Model } from "mongoose";
+import { isEmptyArray } from "../../../../util";
 import { CurrentDeliverLocation, Location } from "../../models/current-deliver-location";
 import { MongoRepository } from "../abstract.repository";
 export class CurrentDeliverLocationRepository extends MongoRepository {
@@ -15,12 +16,22 @@ export class CurrentDeliverLocationRepository extends MongoRepository {
   }
 
   async findCurrentLocationByWalletAddress(walletAddress: string) {
-    const locations = await this.model.findOne({ _id: walletAddress }).select(["-__v", "-_id", "-location._id"]);
+    const currentLocationDocument = await this.model
+      .findOne({ _id: walletAddress })
+      .select(["-_id", "location.x", "location.y"]);
 
-    this.validateNull(locations);
+    this.validateNull(currentLocationDocument);
 
-    const location = locations.toJSON().location.pop();
+    const location = currentLocationDocument.toObject().location;
 
-    return location;
+    this.validateEmptyArray(location);
+
+    return location[location.length - 1];
+  }
+
+  private validateEmptyArray(location: Location[]) {
+    if (isEmptyArray(location)) {
+      throw new Error("데이터가 존재하지 않습니다.");
+    }
   }
 }

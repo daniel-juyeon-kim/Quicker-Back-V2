@@ -17,6 +17,6 @@ export class CompleteDeliverImageRepository extends MongoRepository {
 
     this.validateNull(image);
 
-    return image;
+    return image.toJSON();
   }
 }

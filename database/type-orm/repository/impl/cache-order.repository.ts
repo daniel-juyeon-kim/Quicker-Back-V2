@@ -1,10 +1,10 @@
-import { Between, DataSource } from "typeorm";
+import { Between, Repository } from "typeorm";
 import { CacheMatchedOrder } from "../../entity/cache-matched-order.entity";
 import { AbstractRepository } from "../abstract-repository";
 
-export class CacheOrderRepository extends AbstractRepository<CacheMatchedOrder> {
-  constructor(dataSource: DataSource) {
-    super(dataSource, CacheMatchedOrder);
+export class CacheOrderRepository extends AbstractRepository {
+  constructor(private readonly repository: Repository<CacheMatchedOrder>) {
+    super();
   }
 
   async create(orderId: number) {
@@ -15,14 +15,14 @@ export class CacheOrderRepository extends AbstractRepository<CacheMatchedOrder> 
     await this.repository.save(order);
   }
 
-  async findOrderIdsByBetweenDates(startDate: Date, endDate: Date) {
-    const order = await this.repository.find({
+  async findAllOrderIdByBetweenDates(startDate: Date, endDate: Date) {
+    const orderIds = await this.repository.find({
       select: { id: true },
-      where: { date: Between(startDate.toISOString(), endDate.toISOString()) },
+      where: { date: Between(startDate, endDate) },
     });
 
-    this.validateNull(order);
+    this.validateNotNull(orderIds);
 
-    return order;
+    return orderIds;
   }
 }

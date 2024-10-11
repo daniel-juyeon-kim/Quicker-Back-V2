@@ -1,17 +1,25 @@
-import { DataSource, In, IsNull, Not } from "typeorm";
-import { BasicDeparture, Departure } from "../../entity/departure.entity";
-import { BasicDestination, Destination } from "../../entity/destination.entity";
-import { BasicOrder, Order } from "../../entity/order.entity";
-import { BasicProduct, Product } from "../../entity/product.entity";
-import { BasicRecipient } from "../../entity/recipient.entity";
-import { BasicSender } from "../../entity/sender.entity";
-import { BasicTransportation, Transportation } from "../../entity/transportation.entity";
-import { User } from "../../entity/user.entity";
+import { In, IsNull, Not, Repository } from "typeorm";
+
+import {
+  BasicDeparture,
+  BasicDestination,
+  BasicOrder,
+  BasicProduct,
+  BasicRecipient,
+  BasicSender,
+  BasicTransportation,
+  Departure,
+  Destination,
+  Order,
+  Product,
+  Transportation,
+  User,
+} from "../../entity";
 import { AbstractRepository } from "../abstract-repository";
 
-export class OrderRepository extends AbstractRepository<Order> {
-  constructor(dataSource: DataSource) {
-    super(dataSource, Order);
+export class OrderRepository extends AbstractRepository {
+  constructor(private readonly repository: Repository<Order>) {
+    super();
   }
 
   async create({
@@ -36,37 +44,38 @@ export class OrderRepository extends AbstractRepository<Order> {
 
       await dataSource.save(Order, orderInstance);
 
-      await dataSource.save(Product, {
-        id: orderInstance.id,
-        ...product,
-        order: orderInstance,
-      });
+      const id = orderInstance.id;
 
-      await dataSource.save(Transportation, {
-        id: orderInstance.id,
-        ...transportation,
-        order: orderInstance,
-      });
-
-      await dataSource.save(Destination, {
-        id: orderInstance.id,
-        ...destination,
-        order: orderInstance,
-        recipient: {
-          id: orderInstance.id,
-          ...recipient,
-        },
-      });
-
-      await dataSource.save(Departure, {
-        id: orderInstance.id,
-        ...departure,
-        order: orderInstance,
-        sender: {
-          id: orderInstance.id,
-          ...sender,
-        },
-      });
+      await Promise.allSettled([
+        dataSource.save(Product, {
+          id,
+          ...product,
+          order: orderInstance,
+        }),
+        dataSource.save(Transportation, {
+          id,
+          ...transportation,
+          order: orderInstance,
+        }),
+        dataSource.save(Destination, {
+          id,
+          ...destination,
+          order: orderInstance,
+          recipient: {
+            id,
+            ...recipient,
+          },
+        }),
+        dataSource.save(Departure, {
+          id,
+          ...departure,
+          order: orderInstance,
+          sender: {
+            id,
+            ...sender,
+          },
+        }),
+      ]);
     });
   }
 
@@ -84,13 +93,13 @@ export class OrderRepository extends AbstractRepository<Order> {
       },
     });
 
-    this.validateNull(requester);
+    this.validateNotNull(requester);
 
     return requester;
   }
 
   async findMatchableOrderByDeliverId(deliverId: string) {
-    const data = await this.repository.findOne({
+    const orderDetails = await this.repository.findOne({
       relations: {
         product: true,
         transportation: true,
@@ -131,12 +140,12 @@ export class OrderRepository extends AbstractRepository<Order> {
       },
     });
 
-    this.validateNull(data);
+    this.validateNotNull(orderDetails);
 
-    return data;
+    return orderDetails;
   }
 
-  async findCreatedOrDeliveredOrderDetailByOrderId(orderIds: number[]) {
+  async findAllCreatedOrDeliveredOrderDetailByOrderId(orderIds: number[]) {
     const order = await this.repository.find({
       relations: {
         product: true,
@@ -178,20 +187,18 @@ export class OrderRepository extends AbstractRepository<Order> {
       },
     });
 
-    this.validateNull(order);
-
     return order;
   }
 
   async updateDeliver(deliverId: string, orderId: number) {
     const deliver = await this.repository.manager.findOne(User, { where: { id: deliverId } });
 
-    this.validateNull(deliver);
+    this.validateNotNull(deliver);
 
     return this.repository.update({ id: orderId }, { deliver });
   }
 
-  async delete(orderId: number) {
+  async deleteByOrderId(orderId: number) {
     await this.repository.delete(orderId);
   }
 }

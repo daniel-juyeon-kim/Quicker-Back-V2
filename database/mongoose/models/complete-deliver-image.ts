@@ -6,6 +6,6 @@ export interface CompleteDeliverImage {
 }
 
 export const CompleteDeliverImageSchema = new mongoose.Schema<CompleteDeliverImage>({
-  _id: { type: String, require: true },
-  image: { type: Buffer, require: true },
+  _id: { type: String, required: true },
+  image: { type: Buffer, required: true },
 });

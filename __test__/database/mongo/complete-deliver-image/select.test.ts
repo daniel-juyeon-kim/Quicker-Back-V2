@@ -8,18 +8,18 @@ import {
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let model: Model<CompleteDeliverImage>;
+let CompleteDeliverImageModel: Model<CompleteDeliverImage>;
 let repository: CompleteDeliverImageRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  model = connector.model<CompleteDeliverImage>("completeDeliverImage", CompleteDeliverImageSchema);
-  repository = new CompleteDeliverImageRepository(model);
+  CompleteDeliverImageModel = connector.model<CompleteDeliverImage>("completeDeliverImage", CompleteDeliverImageSchema);
+  repository = new CompleteDeliverImageRepository(CompleteDeliverImageModel);
 });
 
 beforeEach(async () => {
-  const image = new model({ _id: "아이디", image: Buffer.from("1") });
+  const image = new CompleteDeliverImageModel({ _id: "아이디", image: Buffer.from("1") });
   await image.save();
 });
 
@@ -32,18 +32,18 @@ afterAll(async () => {
   await mongod.stop();
 });
 
-describe("CompleteDeliverImageRepository 테스트", () => {
-  test("findByOrderId 테스트", async () => {
-    const result = (await repository.findByOrderId("아이디")).toJSON();
+describe("findByOrderId 테스트", () => {
+  test("통과하는 테스트", async () => {
+    const orderId = "아이디";
 
-    expect(result).toEqual({
+    await expect(repository.findByOrderId(orderId)).resolves.toEqual({
       __v: 0,
-      _id: "아이디",
+      _id: orderId,
       image: { data: [49], type: "Buffer" },
     });
   });
 
-  test("findByOrderId 테스트, 존재하지 않는 값 입력", async () => {
+  test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
     await expect(repository.findByOrderId("존재하지 않는 아이디")).rejects.toThrow("데이터가 존재하지 않습니다.");
   });
 });

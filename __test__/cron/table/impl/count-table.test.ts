@@ -4,7 +4,7 @@ import { createTable } from "./util";
 const countTable = new CountTable();
 
 describe("CountTable 테스트", () => {
-  test("정상동작", () => {
+  test("통과하는 테스트", () => {
     const orderInfos = [
       { id: 1, price: 10, km: 5 },
       { id: 2, price: 20, km: 15 },

@@ -1,6 +1,6 @@
-import { DataSource } from "typeorm";
+import { Repository } from "typeorm";
 import { BasicBirthDate } from "../../entity/birth-date.entity";
-import { Image } from "../../entity/image.entity";
+import { ProfileImage } from "../../entity/image.entity";
 import { JoinDate } from "../../entity/join-date.entity";
 import { User } from "../../entity/user.entity";
 import { AbstractRepository } from "../abstract-repository";
@@ -8,20 +8,20 @@ import { AbstractRepository } from "../abstract-repository";
 type BasicUserEntityPropertyKeys = "id" | "walletAddress" | "name" | "email" | "contact";
 type BasicUser = Pick<User, BasicUserEntityPropertyKeys>;
 
-export class UserRepository extends AbstractRepository<User> {
-  constructor(dataSource: DataSource) {
-    super(dataSource, User);
+export class UserRepository extends AbstractRepository {
+  constructor(private readonly repository: Repository<User>) {
+    super();
   }
 
   async findIdByWalletAddress(walletAddress: string) {
-    const id = await this.repository.findOne({
+    const userId = await this.repository.findOne({
       where: { walletAddress },
       select: { id: true },
     });
 
-    this.validateNull(id);
+    this.validateNotNull(userId);
 
-    return id;
+    return userId;
   }
 
   async findNameByWalletAddress(walletAddress: string) {
@@ -30,25 +30,23 @@ export class UserRepository extends AbstractRepository<User> {
       select: { name: true },
     });
 
-    this.validateNull(name);
+    this.validateNotNull(name);
 
     return name;
   }
 
-  async createUser({ user, birthDate, hash }: { user: BasicUser; birthDate: BasicBirthDate; hash: string }) {
-    user.id = hash;
-    birthDate.id = hash;
+  async createUser({ user, birthDate, id }: { user: BasicUser; birthDate: BasicBirthDate; id: string }) {
+    user.id = id;
+    birthDate.id = id;
 
-    const image = this.repository.manager.create(Image, { id: hash });
-    const joinDate = this.repository.manager.create(JoinDate, { id: hash });
+    const profileImage = this.repository.manager.create(ProfileImage, { id: id });
+    const joinDate = this.repository.manager.create(JoinDate, { id: id });
 
     await this.repository.manager.save(User, {
       ...user,
+      birthDate,
       joinDate,
-      birthDate: {
-        ...birthDate,
-      },
-      image,
+      profileImage,
     });
   }
 }

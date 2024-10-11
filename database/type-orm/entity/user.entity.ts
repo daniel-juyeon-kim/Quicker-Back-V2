@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { BirthDate } from "./birth-date.entity";
-import { Image } from "./image.entity";
+import { ProfileImage } from "./image.entity";
 import { JoinDate } from "./join-date.entity";
 import { Order } from "./order.entity";
 
@@ -21,10 +21,10 @@ export class User {
   @Column()
   contact!: string;
 
-  @OneToOne(() => Image, (image) => image.user, {
+  @OneToOne(() => ProfileImage, (profileImage) => profileImage.user, {
     cascade: ["insert"],
   })
-  image!: Image;
+  profileImage!: ProfileImage;
 
   @OneToOne(() => JoinDate, (joinDate) => joinDate.user, {
     cascade: ["insert"],
@@ -36,13 +36,9 @@ export class User {
   })
   birthDate!: BirthDate;
 
-  @OneToMany(() => Order, (order) => order.requester, {
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => Order, (order) => order.requester)
   requestOrder!: Order[];
 
-  @OneToMany(() => Order, (order) => order.deliver, {
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => Order, (order) => order.deliver)
   deliverOrder!: Order[];
 }

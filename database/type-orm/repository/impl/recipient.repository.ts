@@ -1,13 +1,13 @@
-import { DataSource } from "typeorm";
+import { Repository } from "typeorm";
 import { Recipient } from "../../entity/recipient.entity";
 import { AbstractRepository } from "../abstract-repository";
 
-export class RecipientRepository extends AbstractRepository<Recipient> {
-  constructor(dataSource: DataSource) {
-    super(dataSource, Recipient);
+export class RecipientRepository extends AbstractRepository {
+  constructor(private readonly repository: Repository<Recipient>) {
+    super();
   }
 
-  async findPhoneNumber(orderId: number) {
+  async findPhoneNumberByOrderId(orderId: number) {
     const phoneNumber = await this.repository.findOne({
       select: {
         id: true,
@@ -16,7 +16,7 @@ export class RecipientRepository extends AbstractRepository<Recipient> {
       where: { id: orderId },
     });
 
-    this.validateNull(phoneNumber);
+    this.validateNotNull(phoneNumber);
 
     return phoneNumber;
   }

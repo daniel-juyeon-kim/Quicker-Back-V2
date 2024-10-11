@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 describe("cronService 테스트", () => {
-  test("정상 흐름", async () => {
+  test("통과하는 테스트", async () => {
     await cronService.run();
 
     expect(errorMessageBot.sendMessage).not.toHaveBeenCalled();

@@ -11,7 +11,7 @@ describe("productionEnvChecker 테스트", () => {
     });
   });
 
-  test("실패", () => {
+  test("실패하는 테스트", () => {
     const testValues = [
       { value: undefined, errorMessage: "[WARN] key is undefined" },
       { value: "", errorMessage: "[WARN] key is empty string" },
