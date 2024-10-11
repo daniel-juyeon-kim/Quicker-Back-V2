@@ -11,7 +11,7 @@ export const testAppDataSource = new DataSource({
   entities: [ENTITY_PATH],
   synchronize: true,
   namingStrategy: new CustomNamingStrategy(),
-  logging: false,
+  logging: true,
 });
 
 export const initializeDataSource = async (dataSource: DataSource) => {

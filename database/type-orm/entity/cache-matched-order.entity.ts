@@ -6,7 +6,7 @@ export class CacheMatchedOrder {
   @PrimaryColumn()
   id!: number;
 
-  @Column({ type: "date", default: () => "CURRENT_DATE" })
+  @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
   date!: Date;
 
   @OneToOne(() => Order, (order) => order.cacheMatchedOrder, {

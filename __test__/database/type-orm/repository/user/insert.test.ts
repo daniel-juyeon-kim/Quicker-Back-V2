@@ -23,6 +23,7 @@ describe("createUser 테스트", () => {
       email: "이메일",
       contact: "연락처",
     };
+
     const birthDate = {
       id: userId,
       date: new Date(2000, 9, 12),

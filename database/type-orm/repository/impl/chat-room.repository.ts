@@ -8,7 +8,7 @@ export class ChatRoomRepository extends AbstractRepository {
   }
 
   async findChatParticipantByOrderId(orderId: number) {
-    const order = await this.repository.manager.findOne(Order, {
+    const order = await this.repository.findOne({
       relations: {
         departure: { sender: true },
         destination: { recipient: true },

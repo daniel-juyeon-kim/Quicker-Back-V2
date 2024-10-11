@@ -46,36 +46,34 @@ export class OrderRepository extends AbstractRepository {
 
       const id = orderInstance.id;
 
-      await Promise.allSettled([
-        dataSource.save(Product, {
+      await dataSource.save(Product, {
+        id,
+        ...product,
+        order: orderInstance,
+      });
+      await dataSource.save(Transportation, {
+        id,
+        ...transportation,
+        order: orderInstance,
+      });
+      await dataSource.save(Destination, {
+        id,
+        ...destination,
+        order: orderInstance,
+        recipient: {
           id,
-          ...product,
-          order: orderInstance,
-        }),
-        dataSource.save(Transportation, {
+          ...recipient,
+        },
+      });
+      await dataSource.save(Departure, {
+        id,
+        ...departure,
+        order: orderInstance,
+        sender: {
           id,
-          ...transportation,
-          order: orderInstance,
-        }),
-        dataSource.save(Destination, {
-          id,
-          ...destination,
-          order: orderInstance,
-          recipient: {
-            id,
-            ...recipient,
-          },
-        }),
-        dataSource.save(Departure, {
-          id,
-          ...departure,
-          order: orderInstance,
-          sender: {
-            id,
-            ...sender,
-          },
-        }),
-      ]);
+          ...sender,
+        },
+      });
     });
   }
 
@@ -191,11 +189,13 @@ export class OrderRepository extends AbstractRepository {
   }
 
   async updateDeliver(deliverId: string, orderId: number) {
-    const deliver = await this.repository.manager.findOne(User, { where: { id: deliverId } });
+    await this.repository.manager.transaction(async (manager) => {
+      const deliver = await manager.findOneBy(User, { id: deliverId });
 
-    this.validateNotNull(deliver);
+      this.validateNotNull(deliver);
 
-    return this.repository.update({ id: orderId }, { deliver });
+      return manager.update(Order, { id: orderId }, { deliver });
+    });
   }
 
   async deleteByOrderId(orderId: number) {

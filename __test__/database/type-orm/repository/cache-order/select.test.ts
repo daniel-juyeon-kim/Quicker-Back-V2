@@ -2,7 +2,7 @@ import { CacheMatchedOrder, CacheOrderRepository } from "../../../../../database
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const START_DATE = new Date(2000, 0, 1, 0, 0, 0, 0);
-const END_DATE = new Date(2000, 0, 31, 23, 59, 9, 999);
+const END_DATE = new Date(2000, 0, 31, 23, 59, 59, 999);
 
 const cacheOrderRepository = new CacheOrderRepository(testAppDataSource.getRepository(CacheMatchedOrder));
 
@@ -12,7 +12,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await testAppDataSource.manager.save(CacheMatchedOrder, [
-    { id: 1, date: new Date(1999, 11, 31, 23, 59, 59, 999) },
+    { id: 1, date: new Date(2000, 0, 0, 23, 59, 59, 999) },
     { id: 2, date: START_DATE },
     { id: 3, date: END_DATE },
     { id: 4, date: new Date(2000, 1, 1, 0, 0, 0, 0) },
@@ -29,5 +29,13 @@ describe("findOrderIdsByBetweenDates 테스트", () => {
       { id: 2 },
       { id: 3 },
     ]);
+  });
+
+  test("통과하는 테스트", async () => {
+    const order = testAppDataSource.manager.create(CacheMatchedOrder, { id: 30 });
+    await testAppDataSource.manager.save(CacheMatchedOrder, order);
+
+    const result = await testAppDataSource.manager.findOneBy(CacheMatchedOrder, { id: 30 });
+    console.log(result);
   });
 });

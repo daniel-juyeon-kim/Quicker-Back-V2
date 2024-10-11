@@ -5,16 +5,15 @@ import { JoinDate } from "../../entity/join-date.entity";
 import { User } from "../../entity/user.entity";
 import { AbstractRepository } from "../abstract-repository";
 
-type BasicUserEntityPropertyKeys = "id" | "walletAddress" | "name" | "email" | "contact";
-type BasicUser = Pick<User, BasicUserEntityPropertyKeys>;
+type BasicUser = Pick<User, "id" | "walletAddress" | "name" | "email" | "contact">;
 
 export class UserRepository extends AbstractRepository {
-  constructor(private readonly repository: Repository<User>) {
+  constructor(private readonly userRepository: Repository<User>) {
     super();
   }
 
   async findIdByWalletAddress(walletAddress: string) {
-    const userId = await this.repository.findOne({
+    const userId = await this.userRepository.findOne({
       where: { walletAddress },
       select: { id: true },
     });
@@ -25,7 +24,7 @@ export class UserRepository extends AbstractRepository {
   }
 
   async findNameByWalletAddress(walletAddress: string) {
-    const name = await this.repository.findOne({
+    const name = await this.userRepository.findOne({
       where: { walletAddress },
       select: { name: true },
     });
@@ -39,10 +38,13 @@ export class UserRepository extends AbstractRepository {
     user.id = id;
     birthDate.id = id;
 
-    const profileImage = this.repository.manager.create(ProfileImage, { id: id });
-    const joinDate = this.repository.manager.create(JoinDate, { id: id });
+    const profileImage = new ProfileImage();
+    profileImage.id = id;
 
-    await this.repository.manager.save(User, {
+    const joinDate = new JoinDate();
+    joinDate.id = id;
+
+    await this.userRepository.save({
       ...user,
       birthDate,
       joinDate,

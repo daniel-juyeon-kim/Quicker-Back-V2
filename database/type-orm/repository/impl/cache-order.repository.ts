@@ -8,11 +8,10 @@ export class CacheOrderRepository extends AbstractRepository {
   }
 
   async create(orderId: number) {
-    const order = this.repository.create({
-      id: orderId,
-    });
+    const cacheMatchedOrder = new CacheMatchedOrder();
+    cacheMatchedOrder.id = orderId;
 
-    await this.repository.save(order);
+    await this.repository.save(cacheMatchedOrder);
   }
 
   async findAllOrderIdByBetweenDates(startDate: Date, endDate: Date) {
