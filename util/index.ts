@@ -56,7 +56,7 @@ export const validateNumeric = (value: string | number) => {
   validateNumber(value, ERROR_INVALID_NUMBER);
 };
 
-export const validateNumber = (value: number, errorMessage: string) => {
+const validateNumber = (value: number, errorMessage: string) => {
   if (isNumber(value)) {
     return;
   }

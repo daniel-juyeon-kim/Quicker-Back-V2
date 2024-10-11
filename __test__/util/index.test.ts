@@ -10,7 +10,6 @@ import {
   isString,
   isUndefined,
   validateNotZero,
-  validateNumber,
   validateNumeric,
   validateResponse,
 } from "../../util";
@@ -159,20 +158,6 @@ describe("validateNumeric 테스트", () => {
   });
 });
 
-describe("validateNumber 테스트", () => {
-  test("통과", () => {
-    const testCases = [-1, 1];
-
-    testCases.forEach((testCase) => expect(() => validateNumber(testCase)).not.toThrow());
-  });
-
-  test("실패하는 테스트", () => {
-    const testCases = [Infinity, NaN, -Infinity];
-
-    testCases.forEach((testCase) => expect(() => validateNumeric(testCase)).toThrow());
-  });
-});
-
 describe("validateNotZero 테스트", () => {
   test("통과", () => {
     const testCases = [-1, 1];
@@ -187,10 +172,10 @@ describe("validateNotZero 테스트", () => {
 
 describe("isEmptyArray 테스트", () => {
   test("통과하는 테스트", () => {
-    expect(isEmptyArray([1])).toBe(true);
+    expect(isEmptyArray([])).toBe(true);
   });
 
   test("실패하는 테스트", () => {
-    expect(isEmptyArray([])).toBe(false);
+    expect(isEmptyArray([1])).toBe(false);
   });
 });
