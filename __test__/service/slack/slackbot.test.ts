@@ -1,4 +1,4 @@
-import { SlackBot } from "../../../service/slack/slack-bot";
+import { SlackBot } from "../../../core/slack/slack-bot";
 
 const failureTestCases = [
   {

@@ -1,7 +1,7 @@
+import { ErrorMessageBot } from "../../core/slack";
 import { CronService } from "../../cron/cron-service";
 import { DataService } from "../../cron/data/data-service";
 import { TableService } from "../../cron/table";
-import { ErrorMessageBot } from "../../service/slack";
 
 const errorMessageBot: jest.Mocked<ErrorMessageBot> = {
   sendMessage: jest.fn(),

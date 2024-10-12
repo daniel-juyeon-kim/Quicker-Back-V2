@@ -1,4 +1,4 @@
-import { ErrorMessage } from "../../../service/slack/error-message";
+import { ErrorMessage } from "../../../core/slack/error-message";
 
 test("슬랙 에러 메시지 테스트", () => {
   const error = {
