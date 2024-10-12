@@ -1,4 +1,4 @@
-import { ErrorMessage, ErrorMessageBot } from "../service/slack";
+import { ErrorMessage, ErrorMessageBot } from "../core/slack";
 import { DataService } from "./data/data-service";
 import { TableService } from "./table";
 

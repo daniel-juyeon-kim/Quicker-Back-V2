@@ -1,4 +1,4 @@
-import { parseNumericsToNumberList } from "../../service/parser";
+import { parseNumericsToNumberList } from "../../core/parser";
 
 describe("객체의 속성중 null이 있는지 확인하는 테스트", () => {
   test("성공", () => {

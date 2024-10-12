@@ -1,4 +1,4 @@
-import { hasAttributeNull } from "../../service/checker";
+import { hasAttributeNull } from "../../core/checker";
 
 describe("객체의 속성중 null이 있는지 확인하는 테스트", () => {
   const testCases = [
