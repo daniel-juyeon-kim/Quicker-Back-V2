@@ -6,7 +6,7 @@ export class KeyCreator {
     return CryptoJS.AES.encrypt(JSON.stringify(phoneNumber), cryptoKey).toString();
   }
 
-  createDbUserPk = (phoneNumber: string, secret: string) => {
+  createDbUserId(phoneNumber: string, secret: string) {
     return crypto.createHmac("sha256", secret).update(phoneNumber).digest("hex");
-  };
+  }
 }
