@@ -51,6 +51,6 @@ describe("findLastMonthAverageCost 테스트", () => {
   test("실패하는 테스트, 값이 존재하지 않음", async () => {
     await testAppDataSource.manager.clear(AverageOfCost);
 
-    await expect(averageRepository.findLastMonthAverageCost("40KM")).rejects.toThrow("데이터를 찾지 못했습니다.");
+    await expect(averageRepository.findLastMonthAverageCost("40KM")).rejects.toThrow("데이터가 존재하지 않습니다.");
   });
 });

@@ -18,7 +18,7 @@ export class User {
   @Column()
   email!: string;
 
-  @Column()
+  @Column({ unique: true })
   contact!: string;
 
   @OneToOne(() => ProfileImage, (profileImage) => profileImage.user, {

@@ -1,6 +1,24 @@
 import { Schema } from "express-validator";
 import { ExpectType, ValidateErrorMessage } from "../../../error-message";
 
+export interface UserControllerRequestData {
+  registerUser: {
+    User: {
+      wallet_address: string;
+      name: string;
+      email: string;
+      contact: string;
+    };
+    Birthday: Date;
+  };
+
+  findUserNameByWalletAddress: { walletAddress: string };
+
+  putUserImageId: { walletAddress: string; imageId: string };
+
+  getUserImageId: { walletAddress: string };
+}
+
 // GET /user/name
 export const getUserNameSchema = {
   walletAddress: {

@@ -1,8 +1,9 @@
-import { ChatRoomRepository, Order, OrderRepository, User, UserRepository } from "../../../../../database/type-orm";
+import { ChatRoomRepository, Order, OrderRepository, User } from "../../../../../database/type-orm";
+import { UserRepositoryImpl } from "../../../../../database/type-orm/repository/impl/user/user.repository.impl";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
-const userRepository = new UserRepository(testAppDataSource.getRepository(User));
+const userRepository = new UserRepositoryImpl(testAppDataSource.getRepository(User));
 const chatRoomRepository = new ChatRoomRepository(testAppDataSource.getRepository(Order));
 
 const createUser = async () => {
@@ -14,10 +15,7 @@ const createUser = async () => {
     email: "이메일",
     contact: "연락처",
   };
-  const birthDate = {
-    id: userId,
-    date: new Date(2000, 9, 12),
-  };
+  const birthDate = new Date(2000, 9, 12);
 
   await userRepository.createUser({ user, birthDate, id: userId });
 };
@@ -101,6 +99,6 @@ describe("findChatParticipantByOrderId 테스트", () => {
   });
 
   test("실패하는 테스트, 존재하지 않는 주문 아이디 입력", async () => {
-    await expect(chatRoomRepository.findChatParticipantByOrderId(32)).rejects.toThrow("데이터를 찾지 못했습니다.");
+    await expect(chatRoomRepository.findChatParticipantByOrderId(32)).rejects.toThrow("데이터가 존재하지 않습니다.");
   });
 });

@@ -1,11 +1,22 @@
 import { ErrorRequestHandler } from "express";
 import { FieldValidationError, Result } from "express-validator";
 
-import { errorMessageBot } from "../service";
-import { ErrorMessage } from "../service/slack/error-message";
+import { errorMessageBot } from "../core";
+import { ErrorMessage } from "../core/slack/error-message";
+import { DataBaseError, DuplicatedDataError, NotExistDataError } from "../database";
 import { HttpErrorResponse } from "../util/http-response";
 
-export const errorController: ErrorRequestHandler = (error, _, res, __) => {
+export const errorController: ErrorRequestHandler = (error, _, res) => {
+  // 데이터 베이스 계층 에러
+  if (error instanceof DataBaseError) {
+    if (isUserInputValidateError(error)) {
+      return res.send(new HttpErrorResponse(404, error));
+    }
+
+    sendSlackMessage(error);
+    return res.send(new HttpErrorResponse(500));
+  }
+
   // 서비스 계층에서 생성된 에러 확인
   if (error instanceof HttpErrorResponse) {
     return res.send(error);
@@ -33,4 +44,8 @@ const sendSlackMessage = (error: any) => {
   } catch (e) {
     console.log(e);
   }
+};
+
+const isUserInputValidateError = (error: DataBaseError) => {
+  return error instanceof NotExistDataError || error instanceof DuplicatedDataError;
 };

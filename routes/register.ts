@@ -23,6 +23,6 @@ const router = express.Router();
 
 // code: 200,
 // message: "OK",
-router.post("/", validate(postRegisterSchema, ["body"]), userController.register);
+router.post("/", validate(postRegisterSchema, ["body"]), userController.registerUser);
 
 export default router;

@@ -126,6 +126,6 @@ describe("findPhoneNumberByOrderId 테스트", () => {
   });
 
   test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-    await expect(recipientRepository.findPhoneNumberByOrderId(32)).rejects.toThrow("데이터를 찾지 못했습니다.");
+    await expect(recipientRepository.findPhoneNumberByOrderId(32)).rejects.toThrow("데이터가 존재하지 않습니다.");
   });
 });

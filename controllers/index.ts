@@ -1,7 +1,8 @@
 import { AdminController } from "./admin";
 import { ChatController } from "./chat";
 import { OrderController } from "./order";
-import { UserController } from "./user";
+import { UserController } from "./user.controller";
+
 export { errorController } from "./error";
 
 export const adminController = new AdminController();

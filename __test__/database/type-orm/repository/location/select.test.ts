@@ -1,23 +1,20 @@
-import { LocationRepository, Order, OrderRepository, User, UserRepository } from "../../../../../database/type-orm";
+import { LocationRepository, Order, OrderRepository, User } from "../../../../../database/type-orm";
+import { UserRepositoryImpl } from "../../../../../database/type-orm/repository/impl/user/user.repository.impl";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const locationRepository = new LocationRepository(testAppDataSource.getRepository(Order));
-const userRepository = new UserRepository(testAppDataSource.getRepository(User));
+const userRepository = new UserRepositoryImpl(testAppDataSource.getRepository(User));
 const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
 
 const createUser = async () => {
   const userId = "아이디";
   const user = {
-    id: userId,
     walletAddress: "지갑주소",
     name: "이름",
     email: "이메일",
     contact: "연락처",
   };
-  const birthDate = {
-    id: userId,
-    date: new Date(2000, 9, 12),
-  };
+  const birthDate = new Date(2000, 9, 12);
 
   await userRepository.createUser({ user, birthDate, id: userId });
 };
@@ -85,7 +82,9 @@ describe("findDestinationDepartureByOrderId 테스트", () => {
   });
 
   test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-    await expect(locationRepository.findDestinationDepartureByOrderId(32)).rejects.toThrow("데이터를 찾지 못했습니다.");
+    await expect(locationRepository.findDestinationDepartureByOrderId(32)).rejects.toThrow(
+      "데이터가 존재하지 않습니다.",
+    );
   });
 });
 

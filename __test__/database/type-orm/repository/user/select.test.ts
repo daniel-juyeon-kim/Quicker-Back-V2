@@ -1,7 +1,8 @@
-import { User, UserRepository } from "../../../../../database/type-orm";
+import { NotExistDataError, User } from "../../../../../database/type-orm";
+import { UserRepositoryImpl } from "../../../../../database/type-orm/repository/impl/user/user.repository.impl";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const userRepository = new UserRepository(testAppDataSource.getRepository(User));
+const userRepository = new UserRepositoryImpl(testAppDataSource.getRepository(User));
 
 const createUser = async () => {
   const user = testAppDataSource.manager.create(User, {
@@ -39,24 +40,34 @@ afterEach(async () => {
   await testAppDataSource.manager.clear(User);
 });
 
-describe("findIdByWalletAddress 테스트", () => {
-  test("통과하는 테스트", async () => {
-    await expect(userRepository.findIdByWalletAddress("지갑주소")).resolves.toEqual({ id: "아이디" });
-  });
-
-  test("존재하지 않는 데이터에 접근", async () => {
-    await expect(userRepository.findIdByWalletAddress("잘못된_지갑주소")).rejects.toThrow("데이터를 찾지 못했습니다.");
-  });
-});
-
 describe("findNameByWalletAddress 테스트", () => {
   test("통과하는 테스트", async () => {
     await expect(userRepository.findNameByWalletAddress("지갑주소")).resolves.toEqual({ name: "이름" });
   });
 
-  test("존재하지 않는 데이터에 접근", async () => {
-    await expect(userRepository.findNameByWalletAddress("잘못된_지갑주소")).rejects.toThrow(
-      "데이터를 찾지 못했습니다.",
+  test("실패하는 테스트, 존재하지 않는 데이터에 접근", async () => {
+    const walletAddress = "잘못된_지갑주소";
+
+    await expect(userRepository.findNameByWalletAddress(walletAddress)).rejects.toBeInstanceOf(NotExistDataError);
+    await expect(userRepository.findNameByWalletAddress(walletAddress)).rejects.toThrow(
+      "지갑주소 잘못된_지갑주소에 대응되는 데이터가 존재하지 않습니다.",
+    );
+  });
+});
+
+describe("findUserProfileImageIdByWalletAddress 테스트", () => {
+  test("통과하는 테스트", async () => {
+    await expect(userRepository.findUserProfileImageIdByWalletAddress("지갑주소")).resolves.toEqual({ imageId: "111" });
+  });
+
+  test("실패하는 테스트, 존재하지 않는 데이터에 접근", async () => {
+    const walletAddress = "잘못된_지갑주소";
+
+    await expect(userRepository.findUserProfileImageIdByWalletAddress(walletAddress)).rejects.toBeInstanceOf(
+      NotExistDataError,
+    );
+    await expect(userRepository.findUserProfileImageIdByWalletAddress(walletAddress)).rejects.toThrow(
+      "지갑주소 잘못된_지갑주소에 대응되는 데이터가 존재하지 않습니다.",
     );
   });
 });
