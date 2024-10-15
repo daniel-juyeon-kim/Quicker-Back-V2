@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { matchedData } from "express-validator";
 
 import { messageInstance } from "../mongo/command";
-import { hasAttributeNull } from "../service/checker";
+
+import { hasAttributeNull } from "../core";
 import { isNull } from "../util";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 

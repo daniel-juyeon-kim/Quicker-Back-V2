@@ -3,7 +3,8 @@ import "reflect-metadata";
 import { join } from "path/posix";
 import { DataSource } from "typeorm";
 import { config } from "../config";
-import { CustomNamingStrategy } from "../database/type-orm";
+
+import { CustomNamingStrategy } from "../database/type-orm/util/custom-naming-strategy";
 import { validateEnv } from "../util/env";
 
 validateEnv(config.mariaDB);

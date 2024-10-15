@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
 import { postRegisterSchema } from "../../../../validator/schema/routes/register";
+import { UserControllerRequestData } from "../../../../validator/schema/routes/user";
 import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
@@ -32,7 +33,7 @@ describe("POST: /register", () => {
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
-      req.body = {
+      const body: UserControllerRequestData["registerUser"] = {
         User: {
           wallet_address: "문자열",
           name: "문자열",
@@ -45,6 +46,7 @@ describe("POST: /register", () => {
           date: 1,
         },
       };
+      req.body = body;
 
       await testTarget(req as Request, res as Response, next);
 
@@ -54,7 +56,7 @@ describe("POST: /register", () => {
 
   describe(TestName.INVALID_REQUSET, () => {
     test("이메일 형식 테스트", async () => {
-      req.body = {
+      const body: UserControllerRequestData["registerUser"] = {
         User: {
           wallet_address: "문자열",
           name: "문자열",
@@ -67,6 +69,7 @@ describe("POST: /register", () => {
           date: 1,
         },
       };
+      req.body = body;
 
       await testTarget(req as Request, res as Response, next);
 

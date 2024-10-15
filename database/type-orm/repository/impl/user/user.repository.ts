@@ -1,5 +1,6 @@
 export interface UserRepository {
   createUser(body: {
+    id: string;
     user: {
       walletAddress: string;
       name: string;
@@ -7,7 +8,6 @@ export interface UserRepository {
       contact: string;
     };
     birthDate: Date;
-    id: string;
   }): Promise<void>;
   updateUserProfileImageIdByWalletAddress(body: { imageId: string; walletAddress: string }): Promise<void>;
   findNameByWalletAddress(walletAddress: string): Promise<{ name: string }>;

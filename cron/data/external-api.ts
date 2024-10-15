@@ -1,6 +1,6 @@
+import { Blockchain, TmapApi } from "../../core";
 import { Location } from "../../maria/commands/location";
-import { Blockchain } from "../../service/blockchain";
-import { TmapApi } from "../../service/tmap-api";
+
 import { isUndefined } from "../../util";
 
 export class ExternalApi {

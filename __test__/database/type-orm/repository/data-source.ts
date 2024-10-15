@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { CustomNamingStrategy } from "../../../../database/type-orm";
+import { CustomNamingStrategy } from "../../../../database/type-orm/util/custom-naming-strategy";
 
 const ENTITY_PATH = join(`${__dirname}/../../../../database/type-orm/**/*.entity.ts`);
 

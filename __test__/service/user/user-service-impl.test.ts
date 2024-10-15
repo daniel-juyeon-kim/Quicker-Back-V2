@@ -21,7 +21,11 @@ describe("UserServiceImpl 테스트", () => {
         email: "이메일",
         contact: "연락처",
       },
-      Birthday: new Date(2000, 0, 1, 0, 0, 0, 0),
+      Birthday: {
+        year: 2000,
+        month: 0,
+        date: 1,
+      },
     };
     const keyCreator = mock<KeyCreator>();
 
@@ -74,11 +78,14 @@ describe("UserServiceImpl 테스트", () => {
           email: "이메일",
           contact: "연락처",
         },
-        Birthday: new Date(2000, 0, 1, 0, 0, 0, 0),
+        Birthday: {
+          year: 2000,
+          month: 0,
+          date: 1,
+        },
       };
 
       const keyCreator = mock<KeyCreator>();
-      // repository.createUser.
       await service.registerUser(body, keyCreator);
 
       expect(repository.createUser).toHaveBeenCalledWith({
@@ -97,8 +104,8 @@ describe("UserServiceImpl 테스트", () => {
 
   describe("findUserNameByWalletAddress 테스트", () => {
     test("통과하는 테스트", async () => {
-      const expectReturnValue = { name: "이름" };
       const walletAddress = "지갑주소";
+      const expectReturnValue = { name: "이름" };
       repository.findNameByWalletAddress.mockResolvedValue(expectReturnValue);
 
       await expect(service.findUserNameByWalletAddress(walletAddress)).resolves.toEqual(expectReturnValue);

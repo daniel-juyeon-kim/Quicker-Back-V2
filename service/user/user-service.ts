@@ -10,7 +10,11 @@ export interface UserService {
         email: string;
         contact: string;
       };
-      Birthday: Date;
+      Birthday: {
+        year: number;
+        month: number;
+        date: number;
+      };
     },
     keyCreator: KeyCreator,
   ): Promise<void>;

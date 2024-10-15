@@ -9,7 +9,11 @@ export interface UserControllerRequestData {
       email: string;
       contact: string;
     };
-    Birthday: Date;
+    Birthday: {
+      year: number;
+      month: number;
+      date: number;
+    };
   };
 
   findUserNameByWalletAddress: { walletAddress: string };

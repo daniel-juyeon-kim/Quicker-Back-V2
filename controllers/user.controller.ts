@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { matchedData } from "express-validator";
+import {} from "express-validator";
 
 import { keyCreator } from "../core";
 import { UserService } from "../service/user/user-service";
 import { HttpResponse } from "../util/http-response";
-import { UserControllerRequestData as RequestData } from "../validator/schema/routes/user";
+import { UserControllerRequestData } from "../validator/schema/routes/user";
 
 export class UserController {
   constructor(private readonly service: UserService) {}
@@ -27,7 +27,7 @@ export class UserController {
 
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const body = matchedData<RequestData["registerUser"]>(req);
+      const body = req.body as UserControllerRequestData["registerUser"];
 
       await this.service.registerUser(body, keyCreator);
 
@@ -47,7 +47,7 @@ export class UserController {
 
   async findUserNameByWalletAddress(req: Request, res: Response, next: NextFunction) {
     try {
-      const { walletAddress } = matchedData<RequestData["findUserNameByWalletAddress"]>(req);
+      const { walletAddress } = req.query as UserControllerRequestData["findUserNameByWalletAddress"];
 
       const name = await this.service.findUserNameByWalletAddress(walletAddress);
 
@@ -66,7 +66,7 @@ export class UserController {
 
   async putUserImageId(req: Request, res: Response, next: NextFunction) {
     try {
-      const { walletAddress, imageId } = matchedData<RequestData["putUserImageId"]>(req);
+      const { walletAddress, imageId } = req.body as UserControllerRequestData["putUserImageId"];
 
       await this.service.putUserImageId({ walletAddress, imageId });
 
@@ -86,7 +86,7 @@ export class UserController {
 
   async getUserImageId(req: Request, res: Response, next: NextFunction) {
     try {
-      const { walletAddress } = matchedData<RequestData["getUserImageId"]>(req);
+      const { walletAddress } = req.query as UserControllerRequestData["getUserImageId"];
 
       const imageId = await this.service.getUserImageId(walletAddress);
 

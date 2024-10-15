@@ -1,16 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 
-import { updateOrder } from "../service/order";
-
 import { matchedData } from "express-validator";
 import { config } from "../config";
 import { averageInstance, locationInstance, orderInstance, roomInstance, userInstance } from "../maria/commands";
 import sequelizeConnector from "../maria/connector/sequelize-connector";
-import { initModels } from "../maria/models/init-models";
+import { initModels, Order } from "../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../mongo/command";
 import connectMongo from "../mongo/connector";
-import { keyCreator, messageSender } from "../service";
-import { parseNumericsToNumberList } from "../service/parser";
+
+import { keyCreator, messageSender, parseNumericsToNumberList, updateOrder } from "../core";
 import { findDistanceKey } from "../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../util/http-response";
 
@@ -243,7 +241,7 @@ export class OrderController {
   async getRoomInfo(req: Request, res: Response, next: NextFunction) {
     try {
       const { orderNum } = matchedData(req);
-      const room = await roomInstance.find(parseInt(orderNum));
+      const room = (await roomInstance.find(parseInt(orderNum))) as Order;
       res.send(new HttpResponse(200, room));
     } catch (error) {
       next(error);

@@ -12,7 +12,7 @@ export class UserServiceImpl implements UserService {
       walletAddress: User.wallet_address,
     };
 
-    const birthDate = Birthday;
+    const birthDate = new Date(Birthday.year, Birthday.month, Birthday.date);
 
     const id = dbUserPkCreator.createDbUserId(user.contact);
 
