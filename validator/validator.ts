@@ -1,5 +1,6 @@
 import { Request, RequestHandler } from "express";
 import { checkSchema, Location, Result, Schema, ValidationError, validationResult } from "express-validator";
+import { ValidationError as ValidationLayerError } from "./error";
 
 export const validate = (schema: Schema, location: Location[]): RequestHandler => {
   return async (req, _, next) => {
@@ -13,7 +14,7 @@ export const validate = (schema: Schema, location: Location[]): RequestHandler =
 
     // 요청값에 검증에러가 있으면 에러를 에러를 처리하는 미들웨어로
     const error = validateResult.array({ onlyFirstError: true })[0];
-    next(error);
+    next(new ValidationLayerError(error));
   };
 };
 

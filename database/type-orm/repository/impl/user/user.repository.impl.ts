@@ -3,7 +3,7 @@ import { BirthDate } from "../../../entity/birth-date.entity";
 import { ProfileImage } from "../../../entity/image.entity";
 import { JoinDate } from "../../../entity/join-date.entity";
 import { User } from "../../../entity/user.entity";
-import { NotExistDataError } from "../../../util";
+import { NotExistDataError, UnknownDataBaseError } from "../../../util";
 import { DuplicatedDataError } from "../../../util/error/duplicated-data.error";
 import { AbstractRepository } from "../../abstract-repository";
 import { UserRepository } from "./user.repository";
@@ -22,39 +22,46 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
     birthDate: Date;
     id: string;
   }) {
-    await this.repository.manager.transaction(async (manager) => {
-      const condition = await manager.existsBy(User, { id });
+    try {
+      await this.repository.manager.transaction(async (manager) => {
+        const condition = await manager.existsBy(User, { id });
 
-      if (condition) {
-        throw new DuplicatedDataError(`${id}에 해당하는 데이터가 이미 존재합니다.`);
+        if (condition) {
+          throw new DuplicatedDataError(`${id}에 해당하는 데이터가 이미 존재합니다.`);
+        }
+
+        const userEntity = manager.create(User, {
+          ...user,
+          id,
+        });
+        await manager.insert(User, userEntity);
+
+        const birthDateEntity = manager.create(BirthDate, {
+          id,
+          date: birthDate,
+          user: userEntity,
+        });
+        await manager.insert(BirthDate, birthDateEntity);
+
+        const profileImage = manager.create(ProfileImage, {
+          id,
+          user: userEntity,
+        });
+        await manager.insert(ProfileImage, profileImage);
+
+        const joinDate = manager.create(JoinDate, {
+          id,
+          date: birthDate,
+          user: userEntity,
+        });
+        await manager.insert(JoinDate, joinDate);
+      });
+    } catch (error) {
+      if (error instanceof DuplicatedDataError) {
+        throw error;
       }
-
-      const userEntity = manager.create(User, {
-        ...user,
-        id,
-      });
-      await manager.insert(User, userEntity);
-
-      const birthDateEntity = manager.create(BirthDate, {
-        id,
-        date: birthDate,
-        user: userEntity,
-      });
-      await manager.insert(BirthDate, birthDateEntity);
-
-      const profileImage = manager.create(ProfileImage, {
-        id,
-        user: userEntity,
-      });
-      await manager.insert(ProfileImage, profileImage);
-
-      const joinDate = manager.create(JoinDate, {
-        id,
-        date: birthDate,
-        user: userEntity,
-      });
-      await manager.insert(JoinDate, joinDate);
-    });
+      throw new UnknownDataBaseError(error);
+    }
   }
 
   async findNameByWalletAddress(walletAddress: string) {
@@ -71,7 +78,7 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
       if (error instanceof NotExistDataError) {
         throw new NotExistDataError(`지갑주소 ${walletAddress}에 대응되는 ${this.ERROR_MESSAGE_NOT_EXIST_DATA}`);
       }
-      throw error;
+      throw new UnknownDataBaseError(error);
     }
   }
 
@@ -90,7 +97,7 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
       if (error instanceof NotExistDataError) {
         throw new NotExistDataError(`지갑주소 ${walletAddress}에 대응되는 ${this.ERROR_MESSAGE_NOT_EXIST_DATA}`);
       }
-      throw error;
+      throw new UnknownDataBaseError(error);
     }
   }
 
@@ -113,7 +120,7 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
       if (error instanceof NotExistDataError) {
         throw new NotExistDataError(`${walletAddress}에 대응되는 ${this.ERROR_MESSAGE_NOT_EXIST_DATA}`);
       }
-      throw error;
+      throw new UnknownDataBaseError(error);
     }
   }
 }

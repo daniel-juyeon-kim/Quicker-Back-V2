@@ -15,7 +15,7 @@ export class SlackBot implements ErrorMessageBot {
     this.channelId = envObject.channelId;
   }
 
-  public async sendMessage(message: ErrorMessage) {
+  public async sendMessage(message: ErrorMessage<unknown>) {
     try {
       const response = await this.client.chat.postMessage({
         text: message.parseToStringForSlack(),

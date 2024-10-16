@@ -26,6 +26,7 @@
     "express-rate-limit": "^7.4.0",
     "express-validator": "^7.2.0",
     "helmet": "^7.1.0",
+    "jest-mock-extended": "^4.0.0-beta1",
     "mariadb": "^3.3.1",
     "mongoose": "^8.5.3",
     "morgan": "^1.10.0",
@@ -38,7 +39,10 @@
     "sequelize-typescript": "^2.1.6",
     "socket.io": "^4.7.5",
     "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.20"
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.20",
+    "winston": "^3.15.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.24.7",
@@ -59,6 +63,7 @@
     "@types/node": "^22.5.4",
     "@types/node-fetch": "^2.6.11",
     "@types/sequelize": "^4.28.20",
+    "@types/swagger-ui-express": "^4.1.6",
     "@types/validator": "^13.12.1",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
