@@ -4,14 +4,14 @@ import { mock, mockClear } from "jest-mock-extended";
 import { ErrorControllerImpl } from "../../controllers";
 import { DataBaseErrorController } from "../../controllers/error/database/database-error.controller";
 import { RouterErrorController } from "../../controllers/error/router/router-error.controller";
-import { UnknownErrorController } from "../../controllers/error/unknwon/unknown-error.controller";
+import { UnknownErrorController } from "../../controllers/error/unknown/unknown-error.controller";
 import { ValidateErrorController } from "../../controllers/error/validation/validae-error.controller";
 import { UrlNotExistError } from "../../controllers/util/url-not-exist-error";
 import { DuplicatedDataError } from "../../database";
 import { ValidationLayerError } from "../../validator";
 
 const routerErrorController = mock<RouterErrorController>();
-const validatorErrorController = mock<ValidateErrorController>();
+const validateErrorController = mock<ValidateErrorController>();
 const databaseErrorController = mock<DataBaseErrorController>();
 const unknownErrorController = mock<UnknownErrorController>();
 
@@ -19,7 +19,7 @@ const controller = new ErrorControllerImpl({
   databaseErrorController,
   unknownErrorController,
   routerErrorController,
-  validateErrorController: validatorErrorController,
+  validateErrorController,
 });
 
 let req = {};
@@ -30,7 +30,7 @@ beforeEach(() => {
   mockClear(databaseErrorController);
   mockClear(unknownErrorController);
   mockClear(routerErrorController);
-  mockClear(validatorErrorController);
+  mockClear(validateErrorController);
 
   req = {};
   res = { send: jest.fn() };
@@ -51,7 +51,7 @@ describe("ErrorControllerImpl 테스트", () => {
       res: res as Response,
       date: fakeDate,
     });
-    expect(validatorErrorController.handle).not.toHaveBeenCalled();
+    expect(validateErrorController.handle).not.toHaveBeenCalled();
     expect(databaseErrorController.handle).not.toHaveBeenCalled();
     expect(unknownErrorController.handle).not.toHaveBeenCalled();
   });
@@ -61,7 +61,7 @@ describe("ErrorControllerImpl 테스트", () => {
 
     await controller.handleError(error, req as Request, res as Response, next);
 
-    expect(validatorErrorController.handle).toHaveBeenCalledWith({
+    expect(validateErrorController.handle).toHaveBeenCalledWith({
       error,
       res: res as Response,
       date: fakeDate,
@@ -81,7 +81,7 @@ describe("ErrorControllerImpl 테스트", () => {
       res: res as Response,
       date: fakeDate,
     });
-    expect(validatorErrorController.handle).not.toHaveBeenCalled();
+    expect(validateErrorController.handle).not.toHaveBeenCalled();
     expect(routerErrorController.handle).not.toHaveBeenCalled();
     expect(unknownErrorController.handle).not.toHaveBeenCalled();
   });
@@ -96,13 +96,13 @@ describe("ErrorControllerImpl 테스트", () => {
       res: res as Response,
       date: fakeDate,
     });
-    expect(validatorErrorController.handle).not.toHaveBeenCalled();
+    expect(validateErrorController.handle).not.toHaveBeenCalled();
     expect(routerErrorController.handle).not.toHaveBeenCalled();
     expect(databaseErrorController.handle).not.toHaveBeenCalled();
   });
 
   test("알 수 없는 에러 발생", async () => {
-    const error = new Error("첫 번째 에러");
+    const error = new Error("예상은 되지만 알 수 없는 에러");
 
     await controller.handleError(error, req as Request, res as Response, next);
 
@@ -111,7 +111,22 @@ describe("ErrorControllerImpl 테스트", () => {
       res: res as Response,
       date: fakeDate,
     });
-    expect(validatorErrorController.handle).not.toHaveBeenCalled();
+    expect(validateErrorController.handle).not.toHaveBeenCalled();
+    expect(routerErrorController.handle).not.toHaveBeenCalled();
+    expect(databaseErrorController.handle).not.toHaveBeenCalled();
+  });
+
+  test("예상 못한 에러 발생", async () => {
+    const error = new Error("예측 불가한 에러");
+
+    await controller.handleError(error, req as Request, res as Response, next);
+
+    expect(unknownErrorController.handle).toHaveBeenCalledWith({
+      error,
+      res: res as Response,
+      date: fakeDate,
+    });
+    expect(validateErrorController.handle).not.toHaveBeenCalled();
     expect(routerErrorController.handle).not.toHaveBeenCalled();
     expect(databaseErrorController.handle).not.toHaveBeenCalled();
   });

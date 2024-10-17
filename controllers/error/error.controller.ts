@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { UnknownError } from "../../core";
 import { DataBaseError } from "../../database";
 import { ValidationLayerError } from "../../validator";
 import { RouterError } from "../util/router-error";
@@ -7,7 +8,7 @@ import { DataBaseErrorController, DataBaseLayerError } from "./database/database
 import { RouterErrorController } from "./router/router-error.controller";
 import { ErrorController } from "./types/error-controller";
 import { ErrorTypes } from "./types/error-types";
-import { UnknownErrorController } from "./unknwon/unknown-error.controller";
+import { UnknownErrorController } from "./unknown/unknown-error.controller";
 import { ValidateErrorController } from "./validation/validae-error.controller";
 
 export class ErrorControllerImpl implements ErrorController {
@@ -46,8 +47,11 @@ export class ErrorControllerImpl implements ErrorController {
       } else if (this.isDataBaseError(error)) {
         // 3. 데이터 베이스 계층 에러
         return this.databaseErrorController.handle({ error, res, date });
+      } else if (this.unknownError(error)) {
+        // 4. 알 수 없는 에러, 예상은 가능한 에러
+        return this.unknownErrorController.handle({ error, res, date });
       }
-      // 4. 기타 에러 (예상 못한 에러)
+      // 5. 기타 에러 (예상 못한 에러)
       this.unknownErrorController.handle({ error, res, date });
     } catch (error) {
       this.unknownErrorController.handle({ error, res, date });
@@ -61,5 +65,8 @@ export class ErrorControllerImpl implements ErrorController {
   };
   protected isRouterError = (error: ErrorTypes): error is RouterError => {
     return error instanceof RouterError;
+  };
+  private unknownError = (error: ErrorTypes): error is UnknownError => {
+    return error instanceof UnknownError;
   };
 }

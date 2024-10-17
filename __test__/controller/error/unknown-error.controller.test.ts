@@ -1,8 +1,7 @@
 import { Response } from "express";
 import { mock, mockClear } from "jest-mock-extended";
-import { UnknownErrorController } from "../../../controllers/error/unknwon/unknown-error.controller";
-import { ErrorFileLogger, ErrorMessage, ErrorMessageBot } from "../../../core";
-import { UnknownDataBaseError } from "../../../database";
+import { UnknownErrorController } from "../../../controllers/error/unknown/unknown-error.controller";
+import { ErrorFileLogger, ErrorMessage, ErrorMessageBot, UnknownDataBaseError } from "../../../core";
 import { HttpErrorResponse } from "../../../util/http-response";
 
 const fakeDate = new Date(2000, 0, 1);

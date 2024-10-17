@@ -1,5 +1,6 @@
 export * from "./blockchain";
 export * from "./checker";
+export * from "./error";
 export * from "./error-file-logger";
 export * from "./instace";
 export * from "./key-creator";

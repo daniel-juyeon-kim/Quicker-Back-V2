@@ -1,10 +1,12 @@
 import { Response } from "express";
-import { DataBaseError, DuplicatedDataError, NotExistDataError, UnknownDataBaseError } from "../../../database";
+
+import { UnknownDataBaseError } from "../../../core";
+import { DataBaseError, DuplicatedDataError, NotExistDataError } from "../../../database";
 import { HttpErrorResponse } from "../../../util/http-response";
 import { AbstractSubErrorController } from "../abstract-sub-error.controller";
 import { ErrorTypes } from "../types/error-types";
 
-export type DataBaseLayerError = UnknownDataBaseError<unknown> | NotExistDataError | DuplicatedDataError;
+export type DataBaseLayerError = UnknownDataBaseError | NotExistDataError | DuplicatedDataError;
 
 export class DataBaseErrorController extends AbstractSubErrorController {
   handle = async ({ error, res, date }: { error: DataBaseError; res: Response; date: Date }) => {

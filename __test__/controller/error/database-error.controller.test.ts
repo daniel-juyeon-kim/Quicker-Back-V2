@@ -1,7 +1,5 @@
 import { Response } from "express";
-import { mock, mockClear } from "jest-mock-extended";
 import { DataBaseErrorController } from "../../../controllers/error/database/database-error.controller";
-import { UnknownErrorController } from "../../../controllers/error/unknwon/unknown-error.controller";
 import { DuplicatedDataError, NotExistDataError } from "../../../database";
 import { HttpErrorResponse } from "../../../util/http-response";
 
@@ -9,11 +7,10 @@ const fakeDate = new Date(2000, 0, 1);
 jest.spyOn(global, "Date").mockImplementation(() => fakeDate);
 
 let res: Partial<Response>;
-const unknownErrorController = mock<UnknownErrorController>();
-const controller = new DataBaseErrorController(unknownErrorController);
+
+const controller = new DataBaseErrorController();
 
 beforeEach(() => {
-  mockClear(unknownErrorController);
   res = { send: jest.fn() };
 });
 

@@ -30,6 +30,3 @@ export class UnknownErrorController extends AbstractSubErrorController {
     }
   };
 }
-class UnknownError extends Error {}
-
-class UnknwonDataBaseError extends UnknownError {}
