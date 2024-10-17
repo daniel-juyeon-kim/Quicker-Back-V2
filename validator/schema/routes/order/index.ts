@@ -1,5 +1,5 @@
 import { Schema } from "express-validator";
-import { ExpectType, ValidateErrorMessage } from "../../../error-message";
+import { DATA, FORMAT, mustBe, TYPE } from "../../../error-message";
 
 // GET /order
 export const getOrderSchema = {
@@ -7,13 +7,13 @@ export const getOrderSchema = {
     trim: true,
     escape: true,
     exists: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };
@@ -21,37 +21,37 @@ export const getOrderSchema = {
 const orderValidateSchema: Schema = {
   Order: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Order.id": {
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
     isString: {
       negated: true,
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Order.ID_REQ": {
     escape: true,
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
   "Order.ID_DVRY": {
     isEmpty: {
-      errorMessage: ValidateErrorMessage.exist,
+      errorMessage: DATA.EXIST,
     },
   },
   "Order.DETAIL": {
     optional: true,
     escape: true,
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };
@@ -59,66 +59,66 @@ const orderValidateSchema: Schema = {
 const transportationSchema: Schema = {
   Transportation: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Transportation.ID": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Transportation.WALKING": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Transportation.BICYCLE": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Transportation.SCOOTER": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Transportation.BIKE": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Transportation.CAR": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Transportation.TRUCK": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };
@@ -126,43 +126,43 @@ const transportationSchema: Schema = {
 const destinationSchema: Schema = {
   Destination: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Destination.id": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Destination.X": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
   "Destination.Y": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
   "Destination.DETAIL": {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };
@@ -170,43 +170,43 @@ const destinationSchema: Schema = {
 const departureSchema: Schema = {
   Departure: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Departure.ID": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Departure.X": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
   "Departure.Y": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
   "Departure.DETAIL": {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };
@@ -214,50 +214,50 @@ const departureSchema: Schema = {
 const productSchema: Schema = {
   Product: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Product.ID": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Product.WIDTH": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
   "Product.LENGTH": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
   "Product.HEIGHT": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
   "Product.WEIGHT": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isFloat: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.FLOAT),
+      errorMessage: mustBe(TYPE.FLOAT),
     },
   },
 };
@@ -265,39 +265,39 @@ const productSchema: Schema = {
 const senderSchema: Schema = {
   Sender: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Sender.ID": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Sender.NAME": {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
   "Sender.PHONE": {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
     isMobilePhone: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.PHONE_NUMBER),
+      errorMessage: mustBe(FORMAT.PHONE_NUMBER),
     },
   },
 };
@@ -305,39 +305,39 @@ const senderSchema: Schema = {
 const recipientSchema: Schema = {
   Recipient: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Recipient.id": {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   "Recipient.NAME": {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
   "Recipient.PHONE": {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
     isMobilePhone: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.PHONE_NUMBER),
+      errorMessage: mustBe(FORMAT.PHONE_NUMBER),
     },
   },
 };
@@ -395,10 +395,10 @@ export const postOrderSchema: Schema = {
   walletAddress: {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
   ...orderValidateSchema,
@@ -420,22 +420,22 @@ export const patchOrderSchema: Schema = {
   userWalletAddress: {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
   orderId: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
     isString: {
       negated: true,
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
+import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../validator";
 import {
   getCurrentDeliverLocationSchema,
   postCurrentDeliverLocationSchema,
@@ -37,13 +37,15 @@ describe("GET: /current-deliver-location", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "quicker",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "quicker",
+          type: "field",
+          value: "",
+        }),
+      );
     });
   });
 });
@@ -75,13 +77,15 @@ describe("POST: /current-deliver-location", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "Y",
-        type: "field",
-        value: "2",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: mustBe(TYPE.INTEGER),
+          path: "Y",
+          type: "field",
+          value: "2",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -92,13 +96,15 @@ describe("POST: /current-deliver-location", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "address",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "address",
+          type: "field",
+          value: "",
+        }),
+      );
     });
   });
 });

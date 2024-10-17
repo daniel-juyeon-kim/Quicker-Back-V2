@@ -1,9 +1,11 @@
 import { Repository } from "typeorm";
+
+import { UnknownDataBaseError } from "../../../../../core";
 import { BirthDate } from "../../../entity/birth-date.entity";
 import { ProfileImage } from "../../../entity/image.entity";
 import { JoinDate } from "../../../entity/join-date.entity";
 import { User } from "../../../entity/user.entity";
-import { NotExistDataError, UnknownDataBaseError } from "../../../util";
+import { NotExistDataError } from "../../../util";
 import { DuplicatedDataError } from "../../../util/error/duplicated-data.error";
 import { AbstractRepository } from "../../abstract-repository";
 import { UserRepository } from "./user.repository";

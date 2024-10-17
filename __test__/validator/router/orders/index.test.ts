@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { validate, ValidateErrorMessage } from "../../../../validator";
+import { DATA, validate, ValidationLayerError } from "../../../../validator";
 import { getOrdersSchema } from "../../../../validator/schema/routes/orders";
 import { TestName } from "../types/test-name";
 
@@ -34,13 +34,15 @@ describe("GET: /orders", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "walletAddress",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "walletAddress",
+          type: "field",
+          value: "",
+        }),
+      );
     });
 
     test(TestName.EMPTY_ATTRIBUTE, async () => {
@@ -50,13 +52,15 @@ describe("GET: /orders", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "walletAddress",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "walletAddress",
+          type: "field",
+          value: "",
+        }),
+      );
     });
   });
 });

@@ -1,15 +1,15 @@
 import { Schema } from "express-validator";
-import { ExpectType, ValidateErrorMessage } from "../../../error-message";
+import { DATA, mustBe, TYPE } from "../../../error-message";
 
 // GET /average/cost
 export const getAverageCostSchema: Schema = {
   distance: {
     trim: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isNumeric: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };

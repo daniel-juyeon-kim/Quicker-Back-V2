@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../../validator";
+import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../validator";
 import { getOrdersDetailSchema } from "../../../../../validator/schema/routes/orders/detail/index";
 import { TestName } from "../../types/test-name";
 
@@ -37,13 +37,15 @@ describe("GET: /orders/detail", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT_ARRAY),
-        path: "orderIds",
-        type: "field",
-        value: "a,2,3,4",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: mustBe(TYPE.INTEGER_ARRAY),
+          path: "orderIds",
+          type: "field",
+          value: "a,2,3,4",
+        }),
+      );
     });
 
     test(TestName.EMPTY_ATTRIBUTE, async () => {
@@ -53,13 +55,15 @@ describe("GET: /orders/detail", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "orderIds",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "orderIds",
+          type: "field",
+          value: "",
+        }),
+      );
     });
   });
 });

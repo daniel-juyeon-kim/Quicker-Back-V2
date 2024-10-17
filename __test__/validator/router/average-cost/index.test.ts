@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
+import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../validator";
 import { getAverageCostSchema } from "../../../../validator/schema/routes/average-cost";
 import { TestName } from "../types/test-name";
 
@@ -34,13 +34,17 @@ describe("GET: /average-cost", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "distance",
-        type: "field",
-        value: "",
-      });
+      // TODO: validationError 클래스로 감싸야함
+
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "distance",
+          type: "field",
+          value: "",
+        }),
+      );
     });
 
     test(TestName.MISS_TYPE, async () => {
@@ -50,13 +54,15 @@ describe("GET: /average-cost", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "distance",
-        type: "field",
-        value: "42d",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: mustBe(TYPE.INTEGER),
+          path: "distance",
+          type: "field",
+          value: "42d",
+        }),
+      );
     });
   });
 });

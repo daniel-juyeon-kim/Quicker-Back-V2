@@ -1,14 +1,13 @@
 import { Schema } from "express-validator";
 
-import { validateStringTypeNumberList } from "../../../..";
-import { ValidateErrorMessage } from "../../../../error-message";
+import { DATA, validateStringTypeNumberList } from "../../../..";
 
 // GET /orders/detail
 export const getOrdersDetailSchema: Schema = {
   orderIds: {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     custom: {
       options: validateStringTypeNumberList,

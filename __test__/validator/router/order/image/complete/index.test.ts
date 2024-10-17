@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../../../validator";
+import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../../validator";
 import {
   getOrderImageCompleteSchema,
   postOrderImageCompleteSchema,
@@ -40,13 +40,15 @@ describe("GET: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "orderNum",
-        type: "field",
-        value: "1d",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: mustBe(TYPE.INTEGER),
+          path: "orderNum",
+          type: "field",
+          value: "1d",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -54,13 +56,15 @@ describe("GET: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "orderNum",
-        type: "field",
-        value: undefined,
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "orderNum",
+          type: "field",
+          value: undefined,
+        }),
+      );
     });
   });
 });
@@ -87,13 +91,15 @@ describe("POST: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "orderNum",
-        type: "field",
-        value: "1d",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: mustBe(TYPE.INTEGER),
+          path: "orderNum",
+          type: "field",
+          value: "1d",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -101,13 +107,15 @@ describe("POST: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "orderNum",
-        type: "field",
-        value: undefined,
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "orderNum",
+          type: "field",
+          value: undefined,
+        }),
+      );
     });
   });
 });

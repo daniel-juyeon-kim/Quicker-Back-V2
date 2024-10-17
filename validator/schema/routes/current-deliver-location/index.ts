@@ -1,15 +1,15 @@
 import { Schema } from "express-validator";
-import { ExpectType, ValidateErrorMessage } from "../../../error-message";
+import { DATA, mustBe, TYPE } from "../../../error-message";
 
 // GET /current-deliver-location
 export const getCurrentDeliverLocationSchema = {
   quicker: {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };
@@ -18,36 +18,36 @@ export const getCurrentDeliverLocationSchema = {
 export const postCurrentDeliverLocationSchema: Schema = {
   X: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
       negated: true,
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   Y: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
       negated: true,
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
   address: {
     trim: true,
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };

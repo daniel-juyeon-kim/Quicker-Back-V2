@@ -1,13 +1,13 @@
-import { ExpectType, ValidateErrorMessage } from "../../../../../error-message";
+import { DATA, mustBe, TYPE } from "../../../../../error-message";
 
 // GET /order/image/complete
 export const getOrderImageCompleteSchema = {
   orderNum: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };
@@ -16,13 +16,13 @@ export const getOrderImageCompleteSchema = {
 export const postOrderImageCompleteSchema = {
   orderNum: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };

@@ -1,0 +1,467 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Quicker Server API",
+    "version": "1.0.0",
+    "description": "Quicker 서버 Api 문서"
+  },
+  "tags": [
+    {
+      "name": "register",
+      "description": "회원가입"
+    },
+    {
+      "name": "user",
+      "description": "사용자 관련"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["register"],
+        "summary": "사용자 회원 가입",
+        "requestBody": {
+          "description": "새로운 회원 가입",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "User": {
+                    "type": "object",
+                    "properties": {
+                      "wallet_address": {
+                        "type": "string",
+                        "description": "사용자 지갑주소"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "사용자 이름"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "사용자 이메일",
+                        "format": "email"
+                      },
+                      "contact": {
+                        "type": "string",
+                        "description": "사용자 연락처"
+                      }
+                    }
+                  },
+                  "Birthday": {
+                    "type": "object",
+                    "properties": {
+                      "year": {
+                        "type": "integer",
+                        "description": "태어난 연도",
+                        "minimum": 1923,
+                        "maximum": 2014
+                      },
+                      "month": {
+                        "type": "integer",
+                        "description": "월",
+                        "minimum": 0,
+                        "maximum": 11
+                      },
+                      "date": {
+                        "type": "integer",
+                        "description": "일",
+                        "minimum": 0,
+                        "maximum": 31
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response200"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "실패 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/name/?walletAddress={walletAddress}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "사용자 이름 가져오기",
+        "parameters": [
+          {
+            "name": "walletAddress",
+            "in": "query",
+            "description": "사용자의 지갑주소",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "실패 요청: 잘못된 요청",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "실패 요청: 존재하지 않는 데이터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "실패 요청: 서버 에러",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/image/id/?walletAddress={walletAddress}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "사용자 프로필 이미지 아이디 가져오기",
+        "parameters": [
+          {
+            "name": "walletAddress",
+            "in": "query",
+            "description": "사용자의 지갑주소",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "imageId": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "실패 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/image/id/": {
+      "put": {
+        "tags": ["user"],
+        "summary": "사용자 프로필 이미지 아이디 업데이트",
+        "description": "사용자 프로필 이미지 아이디 업데이트",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "walletAddress": {
+                    "type": "string"
+                  },
+                  "imageId": {
+                    "type": "string",
+                    "description": "문자열타입 숫자여야 함",
+                    "example": "100"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response200"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "실패 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "response200": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "OK"
+          }
+        }
+      },
+      "response400": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad Request"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "value": {
+                "type": "any"
+              },
+              "msg": {
+                "type": "any"
+              }
+            }
+          }
+        }
+      },
+      "response404": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "Not Found"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "value": {
+                "type": "any"
+              },
+              "msg": {
+                "type": "any"
+              }
+            }
+          }
+        }
+      },
+      "response409": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 409
+          },
+          "message": {
+            "type": "string",
+            "example": "Conflict"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "value": {
+                "type": "any"
+              },
+              "msg": {
+                "type": "any"
+              }
+            }
+          }
+        }
+      },
+      "response500": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

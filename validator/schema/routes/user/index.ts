@@ -1,5 +1,5 @@
 import { Schema } from "express-validator";
-import { ExpectType, ValidateErrorMessage } from "../../../error-message";
+import { DATA, mustBe, TYPE } from "../../../error-message";
 
 export interface UserControllerRequestData {
   registerUser: {
@@ -27,10 +27,10 @@ export interface UserControllerRequestData {
 export const getUserNameSchema = {
   walletAddress: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };
@@ -39,10 +39,10 @@ export const getUserNameSchema = {
 export const getUserImageIdSchema: Schema = {
   walletAddress: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };
@@ -53,23 +53,23 @@ export const putUserImageIdSchema: Schema = {
     escape: true,
     trim: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
   imageId: {
     escape: true,
     trim: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isNumeric: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
     isString: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+      errorMessage: mustBe(TYPE.STRING),
     },
   },
 };

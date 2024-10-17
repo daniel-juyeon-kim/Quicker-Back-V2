@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { validate, ValidateErrorMessage } from "../../../../../validator";
+import { DATA, validate, ValidationLayerError } from "../../../../../validator";
 import { getUserNameSchema } from "../../../../../validator/schema/routes/user";
 import { TestName } from "../../types/test-name";
 
@@ -36,13 +36,15 @@ describe("GET: /user/name", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "walletAddress",
-        type: "field",
-        value: undefined,
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "walletAddress",
+          type: "field",
+          value: undefined,
+        }),
+      );
     });
   });
 });

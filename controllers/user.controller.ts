@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import {} from "express-validator";
 
 import { keyCreator } from "../core";
 import { UserService } from "../service/user/user-service";
@@ -25,7 +24,7 @@ export class UserController {
 
   // response : 200
 
-  async registerUser(req: Request, res: Response, next: NextFunction) {
+  registerUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body as UserControllerRequestData["registerUser"];
 
@@ -35,7 +34,7 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // query : {
   //   walletAddress : string
@@ -45,7 +44,7 @@ export class UserController {
   //   name : string
   // }
 
-  async findUserNameByWalletAddress(req: Request, res: Response, next: NextFunction) {
+  findUserNameByWalletAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { walletAddress } = req.query as UserControllerRequestData["findUserNameByWalletAddress"];
 
@@ -55,7 +54,7 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // body : {
   //   walletAddress: string,
@@ -64,7 +63,7 @@ export class UserController {
 
   // response 200
 
-  async putUserImageId(req: Request, res: Response, next: NextFunction) {
+  putUserImageId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { walletAddress, imageId } = req.body as UserControllerRequestData["putUserImageId"];
 
@@ -74,7 +73,7 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // query: {
   //   walletAddress: string
@@ -84,7 +83,7 @@ export class UserController {
   //   imageId: string
   // }
 
-  async getUserImageId(req: Request, res: Response, next: NextFunction) {
+  getUserImageId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { walletAddress } = req.query as UserControllerRequestData["getUserImageId"];
 
@@ -94,5 +93,5 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }

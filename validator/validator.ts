@@ -1,6 +1,6 @@
 import { Request, RequestHandler } from "express";
 import { checkSchema, Location, Result, Schema, ValidationError, validationResult } from "express-validator";
-import { ValidationError as ValidationLayerError } from "./error";
+import { ValidationLayerError } from "./error";
 
 export const validate = (schema: Schema, location: Location[]): RequestHandler => {
   return async (req, _, next) => {

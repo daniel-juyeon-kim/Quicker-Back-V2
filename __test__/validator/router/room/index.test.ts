@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
+import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../validator";
 import { getRoomSchema } from "../../../../validator/schema/routes/room";
 import { TestName } from "../types/test-name";
 
@@ -34,13 +34,15 @@ describe("GET: /room", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "orderNum",
-        type: "field",
-        value: undefined,
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "orderNum",
+          type: "field",
+          value: undefined,
+        }),
+      );
     });
 
     test(TestName.MISS_TYPE, async () => {
@@ -50,13 +52,15 @@ describe("GET: /room", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "orderNum",
-        type: "field",
-        value: "문자열",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: mustBe(TYPE.INTEGER),
+          path: "orderNum",
+          type: "field",
+          value: "문자열",
+        }),
+      );
     });
   });
 });

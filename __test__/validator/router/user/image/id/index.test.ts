@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../../../validator";
+
+import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../../validator";
 import { getUserImageIdSchema, putUserImageIdSchema } from "../../../../../../validator/schema/routes/user";
 import { TestName } from "../../../types/test-name";
 
@@ -35,13 +36,15 @@ describe("GET: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "walletAddress",
-        type: "field",
-        value: undefined,
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "walletAddress",
+          type: "field",
+          value: undefined,
+        }),
+      );
     });
   });
 });
@@ -70,13 +73,15 @@ describe("PUT: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "imageId",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "imageId",
+          type: "field",
+          value: "",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -87,13 +92,15 @@ describe("PUT: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "walletAddress",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "walletAddress",
+          type: "field",
+          value: "",
+        }),
+      );
     });
 
     test(TestName.MISS_TYPE, async () => {
@@ -104,13 +111,15 @@ describe("PUT: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "imageId",
-        type: "field",
-        value: "문자열",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: mustBe(TYPE.INTEGER),
+          path: "imageId",
+          type: "field",
+          value: "문자열",
+        }),
+      );
     });
   });
 });

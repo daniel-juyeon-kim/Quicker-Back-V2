@@ -1,66 +1,79 @@
-import { ExpectType, ValidateErrorMessage } from "../../../error-message";
+import { Schema } from "express-validator";
+import { DATA, mustBe, TYPE } from "../../../error-message";
 
-const existAndString = {
+const MAX_AGE = 100;
+const MIN_AGE = 10;
+const ERROR_MESSAGE_OUT_OF_REGISTRABLE_AGE_RANGE = "10세 이상 100세 이하만 가입 가능합니다.";
+
+const mustBeExistAndString = {
   notEmpty: {
-    errorMessage: ValidateErrorMessage.notExist,
+    errorMessage: DATA.NOT_EXIST,
   },
   isString: {
-    errorMessage: ValidateErrorMessage.mustBe(ExpectType.STRING),
+    errorMessage: mustBe(TYPE.STRING),
   },
 };
 
-const existAndInt = {
+const mustBeExistAndInteger = {
   notEmpty: {
-    errorMessage: ValidateErrorMessage.notExist,
+    errorMessage: DATA.NOT_EXIST,
   },
   isInt: {
-    errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+    errorMessage: mustBe(TYPE.INTEGER),
   },
 };
 
 // POST /register
-export const postRegisterSchema = {
+
+export const postRegisterSchema: Schema = {
   User: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "User.name": {
-    ...existAndString,
+    ...mustBeExistAndString,
   },
   "User.wallet_address": {
-    ...existAndString,
+    ...mustBeExistAndString,
   },
   "User.email": {
-    ...existAndString,
+    ...mustBeExistAndString,
     isEmail: {
       errorMessage: "이메일 형식이 아닙니다.",
     },
   },
   "User.contact": {
-    ...existAndString,
+    ...mustBeExistAndString,
     isMobilePhone: {
       errorMessage: "전화번호 형식이 아닙니다.",
     },
   },
   Birthday: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isObject: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.OBJECT),
+      errorMessage: mustBe(TYPE.OBJECT),
     },
   },
   "Birthday.year": {
-    ...existAndInt,
+    ...mustBeExistAndInteger,
+    isInt: {
+      options: {
+        min: new Date().getFullYear() - MAX_AGE,
+        max: new Date().getFullYear() - MIN_AGE,
+      },
+      errorMessage: ERROR_MESSAGE_OUT_OF_REGISTRABLE_AGE_RANGE,
+    },
   },
   "Birthday.month": {
-    ...existAndInt,
+    ...mustBeExistAndInteger,
   },
   "Birthday.date": {
-    ...existAndInt,
+    ...mustBeExistAndInteger,
   },
 };

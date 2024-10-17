@@ -1,13 +1,13 @@
-import { ExpectType, ValidateErrorMessage } from "../../../error-message";
+import { DATA, mustBe, TYPE } from "../../../error-message";
 
 // GET /room
 export const getRoomSchema = {
   orderNum: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };
@@ -16,10 +16,10 @@ export const getRoomSchema = {
 export const getRoomMessageSchema = {
   orderNum: {
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     isInt: {
-      errorMessage: ValidateErrorMessage.mustBe(ExpectType.INT),
+      errorMessage: mustBe(TYPE.INTEGER),
     },
   },
 };

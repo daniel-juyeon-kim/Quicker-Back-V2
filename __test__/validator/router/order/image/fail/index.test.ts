@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../../../validator";
+import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../../validator";
 import {
   getOrderImageFailSchema,
   postOrderImageFailSchema,
@@ -40,13 +40,15 @@ describe("GET: /order/image/fail", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "orderId",
-        type: "field",
-        value: "1d",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: mustBe(TYPE.INTEGER),
+          path: "orderId",
+          type: "field",
+          value: "1d",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -54,13 +56,15 @@ describe("GET: /order/image/fail", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "orderId",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "orderId",
+          type: "field",
+          value: "",
+        }),
+      );
     });
   });
 });
@@ -90,13 +94,15 @@ describe("POST: /order/image/fail", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "reason",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "reason",
+          type: "field",
+          value: "",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -106,13 +112,15 @@ describe("POST: /order/image/fail", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "reason",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "reason",
+          type: "field",
+          value: "",
+        }),
+      );
     });
   });
 });

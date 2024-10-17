@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ExpectType, validate, ValidateErrorMessage } from "../../../../validator";
+import { DATA, FORMAT, mustBe, TYPE, validate, ValidationLayerError } from "../../../../validator";
 import { getOrderSchema, patchOrderSchema, postOrderSchema } from "../../../../validator/schema/routes/order";
 import { TestName } from "../types/test-name";
 
@@ -36,13 +36,15 @@ describe("GET: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "orderId",
-        type: "field",
-        value: "1d",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: mustBe(TYPE.INTEGER),
+          path: "orderId",
+          type: "field",
+          value: "1d",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -50,13 +52,15 @@ describe("GET: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "query",
-        msg: ValidateErrorMessage.notExist,
-        path: "orderId",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "query",
+          msg: DATA.NOT_EXIST,
+          path: "orderId",
+          type: "field",
+          value: "",
+        }),
+      );
     });
   });
 });
@@ -131,13 +135,15 @@ describe("POST: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "Destination.id",
-        type: "field",
-        value: "문자열",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: mustBe(TYPE.INTEGER),
+          path: "Destination.id",
+          type: "field",
+          value: "문자열",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -145,13 +151,15 @@ describe("POST: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "Departure.X",
-        type: "field",
-        value: "",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "Departure.X",
+          type: "field",
+          value: "",
+        }),
+      );
     });
 
     test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
@@ -159,13 +167,15 @@ describe("POST: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.notExist,
-        path: "Product.ID",
-        type: "field",
-        value: undefined,
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: DATA.NOT_EXIST,
+          path: "Product.ID",
+          type: "field",
+          value: undefined,
+        }),
+      );
     });
 
     test(TestName.MISS_TYPE, async () => {
@@ -173,13 +183,15 @@ describe("POST: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.mustBe(ExpectType.PHONE_NUMBER),
-        path: "Sender.PHONE",
-        type: "field",
-        value: "39fj20",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: mustBe(FORMAT.PHONE_NUMBER),
+          path: "Sender.PHONE",
+          type: "field",
+          value: "39fj20",
+        }),
+      );
     });
   });
 });
@@ -212,13 +224,15 @@ describe("PATCH: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "orderId",
-        type: "field",
-        value: "3e4",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: mustBe(TYPE.INTEGER),
+          path: "orderId",
+          type: "field",
+          value: "3e4",
+        }),
+      );
     });
 
     test(TestName.FAIL, async () => {
@@ -226,13 +240,15 @@ describe("PATCH: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith({
-        location: "body",
-        msg: ValidateErrorMessage.mustBe(ExpectType.INT),
-        path: "orderId",
-        type: "field",
-        value: "3",
-      });
+      expect(next).toHaveBeenCalledWith(
+        new ValidationLayerError({
+          location: "body",
+          msg: mustBe(TYPE.INTEGER),
+          path: "orderId",
+          type: "field",
+          value: "3",
+        }),
+      );
     });
   });
 });
