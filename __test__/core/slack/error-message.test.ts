@@ -9,7 +9,7 @@ test("슬랙 에러 메시지 테스트", () => {
   const occurDate = new Date(1995, 11, 17, 3, 24, 0);
   const errorMessage = new ErrorMessage({ error, date: occurDate });
 
-  const expectMessage = `*에러 발생 [ ${occurDate.toLocaleString()} ]* \n\n${JSON.stringify(error)}`;
+  const expectMessage = `*에러 발생 [ ${occurDate.toLocaleString("ko-KR")} ]* \n\n${JSON.stringify(error)}`;
 
   expect(errorMessage.parseToStringForSlack()).toBe(expectMessage);
 });

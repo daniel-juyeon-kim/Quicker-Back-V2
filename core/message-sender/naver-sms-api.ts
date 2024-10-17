@@ -34,7 +34,7 @@ export class NaverSmsApi implements SmsApi {
 
       validateResponse(response);
     } catch (e) {
-      const errorMessage = new ErrorMessage(e as Error, new Date());
+      const errorMessage = new ErrorMessage({ error: e as Error, date: new Date() });
       this.slackBot.sendMessage(errorMessage);
     }
   }

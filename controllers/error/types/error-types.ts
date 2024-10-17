@@ -1,4 +1,5 @@
 import { DataBaseError } from "../../../database";
-import { ValidationError } from "../../../validator";
+import { ValidationLayerError } from "../../../validator";
+import { RouterError } from "../../util/router-error";
 
-export type ErrorTypes = DataBaseError | ValidationError | unknown;
+export type ErrorTypes = RouterError | ValidationLayerError | DataBaseError | unknown;

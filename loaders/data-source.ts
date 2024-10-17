@@ -16,6 +16,6 @@ export const AppDataSource = new DataSource({
   username: config.mariaDB.user,
   password: config.mariaDB.password,
   database: config.mariaDB.database,
-  entities: [join(__dirname, "/../entity/*.ts")],
+  entities: [join(__dirname, "/../database/type-orm/entity/*.ts")],
   namingStrategy: new CustomNamingStrategy(),
 });

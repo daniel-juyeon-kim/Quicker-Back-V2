@@ -5,6 +5,7 @@ const status = {
   401: "Unauthorized",
   403: "Forbidden",
   404: "NotFound",
+  409: "Conflict",
 
   500: "InternalServerError",
   501: "NotImplemented",

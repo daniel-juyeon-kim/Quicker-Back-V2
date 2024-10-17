@@ -1,93 +1,65 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-import { ErrorFileLogger, ErrorMessageBot } from "../../core";
-import { ErrorMessage } from "../../core/slack/error-message";
-import { DataBaseError, UnknownDataBaseError } from "../../database";
-import { HttpErrorResponse } from "../../util/http-response";
-import { ValidationError } from "../../validator";
+import { DataBaseError } from "../../database";
+import { ValidationLayerError } from "../../validator";
+import { RouterError } from "../util/router-error";
+import { DataBaseErrorController, DataBaseLayerError } from "./database/database-error.controller";
+import { RouterErrorController } from "./router/router-error.controller";
 import { ErrorController } from "./types/error-controller";
 import { ErrorTypes } from "./types/error-types";
+import { UnknownErrorController } from "./unknwon/unknown-error.controller";
+import { ValidateErrorController } from "./validation/validae-error.controller";
 
 export class ErrorControllerImpl implements ErrorController {
-  private readonly messageBot;
-  private readonly logger;
+  private readonly databaseErrorController;
+  private readonly unknownErrorController;
+  private readonly routerErrorController;
+  private readonly validatorErrorController;
 
-  constructor({ messageBot, logger }: { messageBot: ErrorMessageBot; logger: ErrorFileLogger }) {
-    this.messageBot = messageBot;
-    this.logger = logger;
+  constructor({
+    databaseErrorController,
+    unknownErrorController,
+    routerErrorController,
+    validateErrorController: validatorErrorController,
+  }: {
+    databaseErrorController: DataBaseErrorController;
+    unknownErrorController: UnknownErrorController;
+    routerErrorController: RouterErrorController;
+    validateErrorController: ValidateErrorController;
+  }) {
+    this.databaseErrorController = databaseErrorController;
+    this.unknownErrorController = unknownErrorController;
+    this.routerErrorController = routerErrorController;
+    this.validatorErrorController = validatorErrorController;
   }
 
-  async handleError(error: ErrorTypes, _: Request, res: Response) {
+  handleError = async (error: ErrorTypes, _: Request, res: Response, next: NextFunction) => {
     const date = new Date();
 
-    // 1. 유효성검사 express-validator 에러 확인, 유효성 검사에 실패한 요청
-    this.handleExpressValidationError({ error, res });
-
-    // 2. 데이터 베이스 계층 에러
-    this.handleDataBaseError({ error, res, date });
-
-    // 3. 기타 에러 (예상 못한 에러)
-    await this.handleOtherError({ error, res, date });
-  }
-
-  private handleExpressValidationError({ error, res }: { error: ErrorTypes; res: Response }) {
-    if (this.isExpressValidationError(error)) {
-      return res.send(new HttpErrorResponse(400, error.expressValidationError));
-    }
-  }
-
-  private isExpressValidationError(error: ErrorTypes): error is ValidationError {
-    return error instanceof ValidationError;
-  }
-
-  private async handleDataBaseError({
-    error,
-    res,
-    date,
-  }: {
-    error: DataBaseError | unknown;
-    res: Response;
-    date: Date;
-  }) {
-    if (this.isDataBaseError(error)) {
-      // 알 수 없는 DB 에러
-      if (this.isUnknownDataBaseError(error)) {
-        const unknownError = error.unknownError;
-
-        await this.sendSlackMessage({ error: unknownError, date });
-        this.logger.log({ error: unknownError, date });
-        return res.send(new HttpErrorResponse(500));
-      }
-
-      // DB 유효성 검사 실패, ex 데이터 중복, 존재하지 않는 데이터
-      return res.send(new HttpErrorResponse(404, error));
-    }
-  }
-
-  private isUnknownDataBaseError(error: DataBaseError): error is UnknownDataBaseError<unknown> {
-    return error instanceof UnknownDataBaseError;
-  }
-
-  private isDataBaseError(error: DataBaseError | unknown): error is DataBaseError {
-    return error instanceof DataBaseError;
-  }
-
-  private async handleOtherError({ error, res, date }: { error: unknown; res: Response; date: Date }) {
-    if (!this.isDataBaseError(error) && !this.isExpressValidationError(error)) {
-      await this.sendSlackMessage({ error, date });
-      this.logger.log({ error, date });
-
-      res.send(new HttpErrorResponse(500));
-    }
-  }
-
-  private async sendSlackMessage({ error, date }: { error: ErrorTypes; date: Date }) {
     try {
-      const errorMessage = new ErrorMessage({ date, error });
-
-      await this.messageBot.sendMessage(errorMessage);
+      // 1. 라우터 계층 에러
+      if (this.isRouterError(error)) {
+        return this.routerErrorController.handle({ error, res, date });
+      } else if (this.isValidationLayerError(error)) {
+        // 2. 유효성검사 express-validator 에러 확인, 유효성 검사에 실패한 요청
+        return this.validatorErrorController.handle({ error, res, date });
+      } else if (this.isDataBaseError(error)) {
+        // 3. 데이터 베이스 계층 에러
+        return this.databaseErrorController.handle({ error, res, date });
+      }
+      // 4. 기타 에러 (예상 못한 에러)
+      this.unknownErrorController.handle({ error, res, date });
     } catch (error) {
-      this.logger.log({ error, date });
+      this.unknownErrorController.handle({ error, res, date });
     }
-  }
+  };
+  protected isValidationLayerError = (error: ErrorTypes): error is ValidationLayerError => {
+    return error instanceof ValidationLayerError;
+  };
+  protected isDataBaseError = (error: ErrorTypes): error is DataBaseLayerError => {
+    return error instanceof DataBaseError;
+  };
+  protected isRouterError = (error: ErrorTypes): error is RouterError => {
+    return error instanceof RouterError;
+  };
 }

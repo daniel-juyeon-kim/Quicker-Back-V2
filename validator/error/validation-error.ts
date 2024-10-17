@@ -1,7 +1,5 @@
-import { ValidationError as ExpressValidatorError } from "express-validator";
+import { ValidationError } from "express-validator";
 
-export class ValidationError extends Error {
-  constructor(public expressValidationError: ExpressValidatorError) {
-    super();
-  }
+export class ValidationLayerError {
+  constructor(public error: ValidationError) {}
 }

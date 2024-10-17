@@ -53,7 +53,7 @@ export class TmapApi {
       return responseBody.features[0].properties.totalDistance / this.KM;
     } catch (e) {
       const error = new Error((e as ErrorResponseBody).toString());
-      const errorMessage = new ErrorMessage(error, new Date());
+      const errorMessage = new ErrorMessage({ error, date: new Date() });
       this.slackbot.sendMessage(errorMessage);
       return null;
     }
