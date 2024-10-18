@@ -13,6 +13,8 @@ export enum DATA {
 
 export enum FORMAT {
   PHONE_NUMBER = "전화번호 형식",
+  DATE = "날자 형식",
+  EMAIL = "이메일 형식",
 }
 
-export const mustBe = (type: TYPE | FORMAT) => `${type} 여야 합니다.`;
+export const mustBe = (target: TYPE | FORMAT) => `${target} 이어야 합니다.`;

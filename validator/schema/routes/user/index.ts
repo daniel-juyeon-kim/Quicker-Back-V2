@@ -1,19 +1,14 @@
 import { Schema } from "express-validator";
-import { DATA, mustBe, TYPE } from "../../../error-message";
+import { DATA, FORMAT, mustBe, TYPE } from "../../../error-message";
+import { customBirthDateValidator } from "./custom-birth-date-validator";
 
 export interface UserControllerRequestData {
-  registerUser: {
-    User: {
-      wallet_address: string;
-      name: string;
-      email: string;
-      contact: string;
-    };
-    Birthday: {
-      year: number;
-      month: number;
-      date: number;
-    };
+  postUser: {
+    walletAddress: string;
+    name: string;
+    email: string;
+    contact: string;
+    birthDate: string;
   };
 
   findUserNameByWalletAddress: { walletAddress: string };
@@ -22,6 +17,45 @@ export interface UserControllerRequestData {
 
   getUserImageId: { walletAddress: string };
 }
+
+const mustBeExistAndString = {
+  notEmpty: {
+    errorMessage: DATA.NOT_EXIST,
+  },
+  isString: {
+    errorMessage: mustBe(TYPE.STRING),
+  },
+};
+
+// POST /user
+export const postUserSchema: Schema = {
+  walletAddress: mustBeExistAndString,
+  name: mustBeExistAndString,
+  email: {
+    ...mustBeExistAndString,
+    isEmail: {
+      errorMessage: mustBe(FORMAT.EMAIL),
+    },
+  },
+  contact: {
+    ...mustBeExistAndString,
+    isMobilePhone: {
+      errorMessage: mustBe(FORMAT.PHONE_NUMBER),
+    },
+  },
+  birthDate: {
+    notEmpty: {
+      errorMessage: DATA.NOT_EXIST,
+    },
+    isDate: {
+      errorMessage: mustBe(FORMAT.DATE),
+    },
+    custom: {
+      options: customBirthDateValidator,
+      errorMessage: mustBe(FORMAT.DATE),
+    },
+  },
+};
 
 // GET /user/name
 export const getUserNameSchema = {

@@ -38,13 +38,9 @@ describe("GET: /orders/detail", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: mustBe(TYPE.INTEGER_ARRAY),
-          path: "orderIds",
-          type: "field",
-          value: "a,2,3,4",
-        }),
+        new ValidationLayerError([
+          { location: "query", msg: mustBe(TYPE.INTEGER_ARRAY), path: "orderIds", type: "field", value: "a,2,3,4" },
+        ]),
       );
     });
 
@@ -56,13 +52,10 @@ describe("GET: /orders/detail", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "orderIds",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          { location: "query", msg: DATA.NOT_EXIST, path: "orderIds", type: "field", value: "" },
+          { location: "query", msg: "정수 배열 이어야 합니다.", path: "orderIds", type: "field", value: "" },
+        ]),
       );
     });
   });

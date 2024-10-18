@@ -37,13 +37,15 @@ describe("GET: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: mustBe(TYPE.INTEGER),
-          path: "orderId",
-          type: "field",
-          value: "1d",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: mustBe(TYPE.INTEGER),
+            path: "orderId",
+            type: "field",
+            value: "1d",
+          },
+        ]),
       );
     });
 
@@ -53,13 +55,22 @@ describe("GET: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "orderId",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: DATA.NOT_EXIST,
+            path: "orderId",
+            type: "field",
+            value: "",
+          },
+          {
+            location: "query",
+            msg: "정수 이어야 합니다.",
+            path: "orderId",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
   });
@@ -136,13 +147,15 @@ describe("POST: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: mustBe(TYPE.INTEGER),
-          path: "Destination.id",
-          type: "field",
-          value: "문자열",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: mustBe(TYPE.INTEGER),
+            path: "Destination.id",
+            type: "field",
+            value: "문자열",
+          },
+        ]),
       );
     });
 
@@ -152,13 +165,22 @@ describe("POST: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: DATA.NOT_EXIST,
-          path: "Departure.X",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: DATA.NOT_EXIST,
+            path: "Departure.X",
+            type: "field",
+            value: "",
+          },
+          {
+            location: "body",
+            msg: "실수 이어야 합니다.",
+            path: "Departure.X",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
 
@@ -168,13 +190,44 @@ describe("POST: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: DATA.NOT_EXIST,
-          path: "Product.ID",
-          type: "field",
-          value: undefined,
-        }),
+        new ValidationLayerError([
+          { location: "body", msg: DATA.NOT_EXIST, path: "Product.ID", type: "field", value: undefined },
+          { location: "body", msg: "정수 이어야 합니다.", path: "Product.ID", type: "field", value: undefined },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "Product.WIDTH",
+            type: "field",
+            value: undefined,
+          },
+          { location: "body", msg: "실수 이어야 합니다.", path: "Product.WIDTH", type: "field", value: undefined },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "Product.LENGTH",
+            type: "field",
+            value: undefined,
+          },
+          { location: "body", msg: "실수 이어야 합니다.", path: "Product.LENGTH", type: "field", value: undefined },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "Product.HEIGHT",
+            type: "field",
+            value: undefined,
+          },
+          { location: "body", msg: "실수 이어야 합니다.", path: "Product.HEIGHT", type: "field", value: undefined },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "Product.WEIGHT",
+            type: "field",
+            value: undefined,
+          },
+          { location: "body", msg: "실수 이어야 합니다.", path: "Product.WEIGHT", type: "field", value: undefined },
+          { location: "body", msg: "데이터가 존재하지 않습니다.", path: "Product", type: "field", value: undefined },
+          { location: "body", msg: "객체 이어야 합니다.", path: "Product", type: "field", value: undefined },
+        ]),
       );
     });
 
@@ -184,13 +237,15 @@ describe("POST: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: mustBe(FORMAT.PHONE_NUMBER),
-          path: "Sender.PHONE",
-          type: "field",
-          value: "39fj20",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: mustBe(FORMAT.PHONE_NUMBER),
+            path: "Sender.PHONE",
+            type: "field",
+            value: "39fj20",
+          },
+        ]),
       );
     });
   });
@@ -225,13 +280,22 @@ describe("PATCH: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: mustBe(TYPE.INTEGER),
-          path: "orderId",
-          type: "field",
-          value: "3e4",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: mustBe(TYPE.INTEGER),
+            path: "orderId",
+            type: "field",
+            value: "3e4",
+          },
+          {
+            location: "body",
+            msg: "정수 이어야 합니다.",
+            path: "orderId",
+            type: "field",
+            value: "3e4",
+          },
+        ]),
       );
     });
 
@@ -241,13 +305,15 @@ describe("PATCH: /order", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: mustBe(TYPE.INTEGER),
-          path: "orderId",
-          type: "field",
-          value: "3",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: mustBe(TYPE.INTEGER),
+            path: "orderId",
+            type: "field",
+            value: "3",
+          },
+        ]),
       );
     });
   });

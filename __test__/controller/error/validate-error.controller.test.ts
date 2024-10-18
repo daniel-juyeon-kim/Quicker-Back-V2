@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { ValidateErrorController } from "../../../controllers/error/validation/validae-error.controller";
+import { ValidateErrorController } from "../../../controllers/error/validation/validate-error.controller";
 import { HttpErrorResponse } from "../../../util/http-response";
 import { ValidationLayerError } from "../../../validator";
 

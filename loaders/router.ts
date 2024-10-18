@@ -3,9 +3,8 @@ import swaggerUi from "swagger-ui-express";
 
 import { errorController } from "../controllers";
 import notFound from "../routes/not-found";
-import register from "../routes/register";
-import user from "../routes/user";
 
+import user from "../routes/user";
 import swaggerDocumentV1 from "../swagger.v1.json";
 import swaggerDocumentV2 from "../swagger.v2.json";
 import { AppDataSource } from "./data-source";
@@ -28,7 +27,7 @@ export const router = {
     app.use("/user", user);
     // app.use("/order", order);
     // app.use("/orders", orders);
-    app.use("/register", register);
+
     // app.use("/current-deliver-location", currentLocation);
     // app.use("/average", averageCost);
 

@@ -27,9 +27,9 @@ beforeEach(() => {
 describe("UserController 테스트", () => {
   describe("registerUser 테스트", () => {
     test("성공하는 테스트", async () => {
-      const body: UserControllerRequestData["registerUser"] = {
-        User: {
-          wallet_address: "문자열",
+      const body: UserControllerRequestData["postUser"] = {
+        user: {
+          walletAddress: "문자열",
           name: "문자열",
           email: "temp@gmail.com",
           contact: "01012341234",
@@ -41,18 +41,18 @@ describe("UserController 테스트", () => {
         },
       };
       req.body = body;
-      service.registerUser.mockResolvedValue(undefined);
+      service.postUser.mockResolvedValue(undefined);
 
-      await userController.registerUser(req as Request, res as Response, next);
+      await userController.postUser(req as Request, res as Response, next);
 
-      expect(service.registerUser).toHaveBeenCalledTimes(1);
+      expect(service.postUser).toHaveBeenCalledTimes(1);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200));
     });
 
     test("실패하는 테스트, DuplicatedDataError 던짐", async () => {
-      const body: UserControllerRequestData["registerUser"] = {
-        User: {
-          wallet_address: "문자열",
+      const body: UserControllerRequestData["postUser"] = {
+        user: {
+          walletAddress: "문자열",
           name: "문자열",
           email: "temp@gmail.com",
           contact: "01012341234",
@@ -66,11 +66,11 @@ describe("UserController 테스트", () => {
       req.body = body;
 
       const error = new DuplicatedDataError("이미 존재하는 데이터입니다.");
-      service.registerUser.mockRejectedValueOnce(error);
+      service.postUser.mockRejectedValueOnce(error);
 
-      await userController.registerUser(req as Request, res as Response, next);
+      await userController.postUser(req as Request, res as Response, next);
 
-      expect(service.registerUser).toHaveBeenCalledTimes(1);
+      expect(service.postUser).toHaveBeenCalledTimes(1);
       expect(next).toHaveBeenCalledWith(error);
     });
   });

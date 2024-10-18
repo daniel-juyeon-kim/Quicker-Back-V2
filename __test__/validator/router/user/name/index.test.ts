@@ -37,13 +37,10 @@ describe("GET: /user/name", () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "walletAddress",
-          type: "field",
-          value: undefined,
-        }),
+        new ValidationLayerError([
+          { location: "query", msg: DATA.NOT_EXIST, path: "walletAddress", type: "field", value: undefined },
+          { location: "query", msg: "문자열 이어야 합니다.", path: "walletAddress", type: "field", value: undefined },
+        ]),
       );
     });
   });

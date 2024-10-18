@@ -7,18 +7,14 @@
   },
   "tags": [
     {
-      "name": "register",
-      "description": "회원가입"
-    },
-    {
       "name": "user",
       "description": "사용자 관련"
     }
   ],
   "paths": {
-    "/register": {
+    "/user": {
       "post": {
-        "tags": ["register"],
+        "tags": ["user"],
         "summary": "사용자 회원 가입",
         "requestBody": {
           "description": "새로운 회원 가입",
@@ -27,50 +23,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "User": {
-                    "type": "object",
-                    "properties": {
-                      "wallet_address": {
-                        "type": "string",
-                        "description": "사용자 지갑주소"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "사용자 이름"
-                      },
-                      "email": {
-                        "type": "string",
-                        "description": "사용자 이메일",
-                        "format": "email"
-                      },
-                      "contact": {
-                        "type": "string",
-                        "description": "사용자 연락처"
-                      }
-                    }
+                  "walletAddress": {
+                    "type": "string",
+                    "description": "사용자 지갑주소"
                   },
-                  "Birthday": {
-                    "type": "object",
-                    "properties": {
-                      "year": {
-                        "type": "integer",
-                        "description": "태어난 연도",
-                        "minimum": 1923,
-                        "maximum": 2014
-                      },
-                      "month": {
-                        "type": "integer",
-                        "description": "월",
-                        "minimum": 0,
-                        "maximum": 11
-                      },
-                      "date": {
-                        "type": "integer",
-                        "description": "일",
-                        "minimum": 0,
-                        "maximum": 31
-                      }
-                    }
+                  "name": {
+                    "type": "string",
+                    "description": "사용자 이름"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "사용자 이메일",
+                    "format": "email"
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "사용자 연락처"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "example": "2000/01/01",
+                    "description": "10 ~ 99세 까지 가능"
                   }
                 }
               }

@@ -41,13 +41,15 @@ describe("GET: /order/image/fail", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: mustBe(TYPE.INTEGER),
-          path: "orderId",
-          type: "field",
-          value: "1d",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: mustBe(TYPE.INTEGER),
+            path: "orderId",
+            type: "field",
+            value: "1d",
+          },
+        ]),
       );
     });
 
@@ -57,13 +59,22 @@ describe("GET: /order/image/fail", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "orderId",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: DATA.NOT_EXIST,
+            path: "orderId",
+            type: "field",
+            value: "",
+          },
+          {
+            location: "query",
+            msg: "정수 이어야 합니다.",
+            path: "orderId",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
   });
@@ -95,13 +106,15 @@ describe("POST: /order/image/fail", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: DATA.NOT_EXIST,
-          path: "reason",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: DATA.NOT_EXIST,
+            path: "reason",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
 
@@ -113,13 +126,15 @@ describe("POST: /order/image/fail", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: DATA.NOT_EXIST,
-          path: "reason",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: DATA.NOT_EXIST,
+            path: "reason",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
   });

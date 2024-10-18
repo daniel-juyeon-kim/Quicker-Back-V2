@@ -5,7 +5,7 @@ import { ErrorControllerImpl } from "../../controllers";
 import { DataBaseErrorController } from "../../controllers/error/database/database-error.controller";
 import { RouterErrorController } from "../../controllers/error/router/router-error.controller";
 import { UnknownErrorController } from "../../controllers/error/unknown/unknown-error.controller";
-import { ValidateErrorController } from "../../controllers/error/validation/validae-error.controller";
+import { ValidateErrorController } from "../../controllers/error/validation/validate-error.controller";
 import { UrlNotExistError } from "../../controllers/util/url-not-exist-error";
 import { DuplicatedDataError } from "../../database";
 import { ValidationLayerError } from "../../validator";

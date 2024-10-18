@@ -35,13 +35,10 @@ describe("GET: /room", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "orderNum",
-          type: "field",
-          value: undefined,
-        }),
+        new ValidationLayerError([
+          { location: "query", msg: DATA.NOT_EXIST, path: "orderNum", type: "field", value: undefined },
+          { location: "query", msg: "정수 이어야 합니다.", path: "orderNum", type: "field", value: undefined },
+        ]),
       );
     });
 
@@ -53,13 +50,9 @@ describe("GET: /room", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: mustBe(TYPE.INTEGER),
-          path: "orderNum",
-          type: "field",
-          value: "문자열",
-        }),
+        new ValidationLayerError([
+          { location: "query", msg: mustBe(TYPE.INTEGER), path: "orderNum", type: "field", value: "문자열" },
+        ]),
       );
     });
   });

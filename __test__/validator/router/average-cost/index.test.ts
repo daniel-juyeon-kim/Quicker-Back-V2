@@ -34,16 +34,23 @@ describe("GET: /average-cost", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      // TODO: validationError 클래스로 감싸야함
-
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "distance",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: DATA.NOT_EXIST,
+            path: "distance",
+            type: "field",
+            value: "",
+          },
+          {
+            location: "query",
+            msg: "정수 이어야 합니다.",
+            path: "distance",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
 
@@ -55,13 +62,15 @@ describe("GET: /average-cost", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: mustBe(TYPE.INTEGER),
-          path: "distance",
-          type: "field",
-          value: "42d",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: mustBe(TYPE.INTEGER),
+            path: "distance",
+            type: "field",
+            value: "42d",
+          },
+        ]),
       );
     });
   });

@@ -8,42 +8,17 @@ import { UserControllerRequestData } from "../validator/schema/routes/user";
 export class UserController {
   constructor(private readonly service: UserService) {}
 
-  // body {
-  //   User: {
-  //     wallet_address: string,
-  //     name: string,
-  //     email: string,
-  //     contact: string
-  //   },
-  //   Birthday: {
-  //     year: number,
-  //     month: number,
-  //     date: number
-  //   }
-  // }
-
-  // response : 200
-
-  registerUser = async (req: Request, res: Response, next: NextFunction) => {
+  postUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body = req.body as UserControllerRequestData["registerUser"];
+      const body = req.body as UserControllerRequestData["postUser"];
 
-      await this.service.registerUser(body, keyCreator);
+      await this.service.postUser(body, keyCreator);
 
       res.send(new HttpResponse(200));
     } catch (error) {
       next(error);
     }
   };
-
-  // query : {
-  //   walletAddress : string
-  // }
-
-  // {
-  //   name : string
-  // }
-
   findUserNameByWalletAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { walletAddress } = req.query as UserControllerRequestData["findUserNameByWalletAddress"];
@@ -55,14 +30,6 @@ export class UserController {
       next(error);
     }
   };
-
-  // body : {
-  //   walletAddress: string,
-  //   imageId: string
-  // }
-
-  // response 200
-
   putUserImageId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { walletAddress, imageId } = req.body as UserControllerRequestData["putUserImageId"];
@@ -74,15 +41,6 @@ export class UserController {
       next(error);
     }
   };
-
-  // query: {
-  //   walletAddress: string
-  // }
-
-  // Image : {
-  //   imageId: string
-  // }
-
   getUserImageId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { walletAddress } = req.query as UserControllerRequestData["getUserImageId"];

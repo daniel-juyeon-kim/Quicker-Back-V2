@@ -15,88 +15,71 @@ beforeEach(async () => {
 describe("UserServiceImpl 테스트", () => {
   describe("registerUser 테스트", () => {
     const body = {
-      User: {
-        wallet_address: "지갑주소",
-        name: "이름",
-        email: "이메일",
-        contact: "연락처",
-      },
-      Birthday: {
-        year: 2000,
-        month: 0,
-        date: 1,
-      },
+      walletAddress: "지갑주소",
+      name: "이름",
+      email: "이메일",
+      contact: "연락처",
+      birthDate: "2000/01/01",
     };
     const keyCreator = mock<KeyCreator>();
 
     test("통과하는 테스트", async () => {
-      await service.registerUser(body, keyCreator);
+      await service.postUser(body, keyCreator);
 
       expect(repository.createUser).toHaveBeenCalledWith({
         id: undefined,
-        birthDate: new Date(2000, 0, 1, 0, 0, 0, 0),
+        birthDate: new Date(2000, 0, 1),
         user: {
           contact: "연락처",
           email: "이메일",
           name: "이름",
           walletAddress: "지갑주소",
-          wallet_address: "지갑주소",
         },
       });
     });
 
     test("실패하는 테스트, 중복 회원 가입", async () => {
-      await service.registerUser(body, keyCreator);
+      await service.postUser(body, keyCreator);
 
       expect(repository.createUser).toHaveBeenCalledWith({
         id: undefined,
-        birthDate: new Date(2000, 0, 1, 0, 0, 0, 0),
+        birthDate: new Date(2000, 0, 1),
         user: {
           contact: "연락처",
           email: "이메일",
           name: "이름",
           walletAddress: "지갑주소",
-          wallet_address: "지갑주소",
         },
       });
 
       const ERROR_MESSAGE = `에 해당하는 데이터가 이미 존재합니다.`;
       repository.createUser.mockRejectedValue(new DuplicatedDataError(ERROR_MESSAGE));
 
-      await expect(service.registerUser(body, keyCreator)).rejects.toBeInstanceOf(DuplicatedDataError);
-      expect(repository.createUser).toHaveBeenCalledTimes(2);
-
-      await expect(service.registerUser(body, keyCreator)).rejects.toThrow(ERROR_MESSAGE);
+      await expect(service.postUser(body, keyCreator)).rejects.toBeInstanceOf(DuplicatedDataError);
+      await expect(service.postUser(body, keyCreator)).rejects.toThrow(ERROR_MESSAGE);
       expect(repository.createUser).toHaveBeenCalledTimes(3);
     });
 
     test("실패하는 테스트", async () => {
       const body = {
-        User: {
-          wallet_address: "지갑주소",
-          name: "이름",
-          email: "이메일",
-          contact: "연락처",
-        },
-        Birthday: {
-          year: 2000,
-          month: 0,
-          date: 1,
-        },
+        walletAddress: "지갑주소",
+        name: "이름",
+        email: "이메일",
+        contact: "연락처",
+        birthDate: "2000/01/01",
       };
 
       const keyCreator = mock<KeyCreator>();
-      await service.registerUser(body, keyCreator);
+      await service.postUser(body, keyCreator);
 
       expect(repository.createUser).toHaveBeenCalledWith({
         id: undefined,
-        birthDate: new Date(2000, 0, 1, 0, 0, 0, 0),
+        birthDate: new Date(2000, 0, 1),
         user: {
           contact: "연락처",
           email: "이메일",
           name: "이름",
           walletAddress: "지갑주소",
-          wallet_address: "지갑주소",
         },
       });
     });

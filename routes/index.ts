@@ -6,6 +6,5 @@ export * from "./home";
 export * from "./not-found";
 export * from "./order";
 export * from "./orders";
-export * from "./register";
 export * from "./room";
 export * from "./user";

@@ -6,17 +6,22 @@ import { UserService } from "./user-service";
 export class UserServiceImpl implements UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async registerUser({ User, Birthday }: RequestData["registerUser"], dbUserPkCreator: KeyCreator) {
+  async postUser(
+    { walletAddress, name, email, contact, birthDate }: RequestData["postUser"],
+    dbUserPkCreator: KeyCreator,
+  ) {
     const user = {
-      ...User,
-      walletAddress: User.wallet_address,
+      walletAddress,
+      name,
+      email,
+      contact,
     };
 
-    const birthDate = new Date(Birthday.year, Birthday.month, Birthday.date);
+    const userBirthDateObject = new Date(birthDate);
 
     const id = dbUserPkCreator.createDbUserId(user.contact);
 
-    await this.repository.createUser({ user, birthDate, id });
+    await this.repository.createUser({ user, birthDate: userBirthDateObject, id });
   }
 
   async findUserNameByWalletAddress(walletAddress: string) {

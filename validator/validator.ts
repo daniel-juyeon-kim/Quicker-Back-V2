@@ -13,7 +13,7 @@ export const validate = (schema: Schema, location: Location[]): RequestHandler =
     }
 
     // 요청값에 검증에러가 있으면 에러를 에러를 처리하는 미들웨어로
-    const error = validateResult.array({ onlyFirstError: true })[0];
+    const error = validateResult.array();
     next(new ValidationLayerError(error));
   };
 };

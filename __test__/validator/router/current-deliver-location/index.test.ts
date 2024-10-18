@@ -38,13 +38,15 @@ describe("GET: /current-deliver-location", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "quicker",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: DATA.NOT_EXIST,
+            path: "quicker",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
   });
@@ -78,13 +80,15 @@ describe("POST: /current-deliver-location", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: mustBe(TYPE.INTEGER),
-          path: "Y",
-          type: "field",
-          value: "2",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: mustBe(TYPE.INTEGER),
+            path: "Y",
+            type: "field",
+            value: "2",
+          },
+        ]),
       );
     });
 
@@ -97,13 +101,15 @@ describe("POST: /current-deliver-location", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: DATA.NOT_EXIST,
-          path: "address",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: DATA.NOT_EXIST,
+            path: "address",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
   });

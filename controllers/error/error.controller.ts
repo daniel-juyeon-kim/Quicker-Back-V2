@@ -9,7 +9,7 @@ import { RouterErrorController } from "./router/router-error.controller";
 import { ErrorController } from "./types/error-controller";
 import { ErrorTypes } from "./types/error-types";
 import { UnknownErrorController } from "./unknown/unknown-error.controller";
-import { ValidateErrorController } from "./validation/validae-error.controller";
+import { ValidateErrorController } from "./validation/validate-error.controller";
 
 export class ErrorControllerImpl implements ErrorController {
   private readonly databaseErrorController;

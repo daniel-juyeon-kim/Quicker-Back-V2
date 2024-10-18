@@ -37,13 +37,10 @@ describe("GET: /user/image/id", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "walletAddress",
-          type: "field",
-          value: undefined,
-        }),
+        new ValidationLayerError([
+          { location: "query", msg: DATA.NOT_EXIST, path: "walletAddress", type: "field", value: undefined },
+          { location: "query", msg: "문자열 이어야 합니다.", path: "walletAddress", type: "field", value: undefined },
+        ]),
       );
     });
   });
@@ -74,13 +71,10 @@ describe("PUT: /user/image/id", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: DATA.NOT_EXIST,
-          path: "imageId",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          { location: "body", msg: DATA.NOT_EXIST, path: "imageId", type: "field", value: "" },
+          { location: "body", msg: "정수 이어야 합니다.", path: "imageId", type: "field", value: "" },
+        ]),
       );
     });
 
@@ -93,13 +87,15 @@ describe("PUT: /user/image/id", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: DATA.NOT_EXIST,
-          path: "walletAddress",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "body",
+            msg: DATA.NOT_EXIST,
+            path: "walletAddress",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
 
@@ -112,13 +108,9 @@ describe("PUT: /user/image/id", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "body",
-          msg: mustBe(TYPE.INTEGER),
-          path: "imageId",
-          type: "field",
-          value: "문자열",
-        }),
+        new ValidationLayerError([
+          { location: "body", msg: mustBe(TYPE.INTEGER), path: "imageId", type: "field", value: "문자열" },
+        ]),
       );
     });
   });

@@ -4,7 +4,7 @@ import { ErrorControllerImpl } from "./error";
 import { DataBaseErrorController } from "./error/database/database-error.controller";
 import { RouterErrorController } from "./error/router/router-error.controller";
 import { UnknownErrorController } from "./error/unknown/unknown-error.controller";
-import { ValidateErrorController } from "./error/validation/validae-error.controller";
+import { ValidateErrorController } from "./error/validation/validate-error.controller";
 import { UserController } from "./user.controller";
 
 export const userController = new UserController(userService);

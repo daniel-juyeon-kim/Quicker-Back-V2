@@ -35,13 +35,15 @@ describe("GET: /orders", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "walletAddress",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: DATA.NOT_EXIST,
+            path: "walletAddress",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
 
@@ -53,13 +55,15 @@ describe("GET: /orders", () => {
       await testTarget(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError({
-          location: "query",
-          msg: DATA.NOT_EXIST,
-          path: "walletAddress",
-          type: "field",
-          value: "",
-        }),
+        new ValidationLayerError([
+          {
+            location: "query",
+            msg: DATA.NOT_EXIST,
+            path: "walletAddress",
+            type: "field",
+            value: "",
+          },
+        ]),
       );
     });
   });
