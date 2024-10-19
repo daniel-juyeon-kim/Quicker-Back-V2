@@ -3,9 +3,9 @@ import { mock, mockClear } from "jest-mock-extended";
 
 import { UserController } from "../../controllers/user.controller";
 import { DuplicatedDataError, NotExistDataError } from "../../database";
-import { UserService } from "../../service/user/user-service";
+import { UserService } from "../../service/user/user.service";
 import { HttpResponse } from "../../util/http-response";
-import { UserControllerRequestData } from "../../validator/schema/routes/user";
+import { UserControllerRequestData } from "../../validator/schema/routes/user/user-controller-request-data";
 
 const service = mock<UserService>();
 const userController = new UserController(service);
@@ -25,124 +25,111 @@ beforeEach(() => {
 });
 
 describe("UserController 테스트", () => {
-  describe("registerUser 테스트", () => {
+  describe("createUser 테스트", () => {
     test("성공하는 테스트", async () => {
-      const body: UserControllerRequestData["postUser"] = {
-        user: {
-          walletAddress: "문자열",
-          name: "문자열",
-          email: "temp@gmail.com",
-          contact: "01012341234",
-        },
-        Birthday: {
-          year: 1999,
-          month: 1,
-          date: 1,
-        },
+      const body: UserControllerRequestData["createUser"] = {
+        walletAddress: "문자열",
+        name: "문자열",
+        email: "temp@gmail.com",
+        contact: "01012341234",
+        birthDate: "1999/01/01",
       };
       req.body = body;
-      service.postUser.mockResolvedValue(undefined);
+      service.createUser.mockResolvedValue(undefined);
 
-      await userController.postUser(req as Request, res as Response, next);
+      await userController.createUser(req as Request, res as Response, next);
 
-      expect(service.postUser).toHaveBeenCalledTimes(1);
+      expect(service.createUser).toHaveBeenCalledTimes(1);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200));
     });
 
     test("실패하는 테스트, DuplicatedDataError 던짐", async () => {
-      const body: UserControllerRequestData["postUser"] = {
-        user: {
-          walletAddress: "문자열",
-          name: "문자열",
-          email: "temp@gmail.com",
-          contact: "01012341234",
-        },
-        Birthday: {
-          year: 1999,
-          month: 1,
-          date: 1,
-        },
+      const body: UserControllerRequestData["createUser"] = {
+        walletAddress: "문자열",
+        name: "문자열",
+        email: "temp@gmail.com",
+        contact: "01012341234",
+        birthDate: "1999/01/01",
       };
       req.body = body;
 
       const error = new DuplicatedDataError("이미 존재하는 데이터입니다.");
-      service.postUser.mockRejectedValueOnce(error);
+      service.createUser.mockRejectedValueOnce(error);
 
-      await userController.postUser(req as Request, res as Response, next);
+      await userController.createUser(req as Request, res as Response, next);
 
-      expect(service.postUser).toHaveBeenCalledTimes(1);
+      expect(service.createUser).toHaveBeenCalledTimes(1);
       expect(next).toHaveBeenCalledWith(error);
     });
   });
 
-  describe("findUserNameByWalletAddress 테스트", () => {
+  describe("getUserName 테스트", () => {
     test("통과하는 테스트", async () => {
-      const query: UserControllerRequestData["findUserNameByWalletAddress"] = { walletAddress: "0x123" };
+      const query: UserControllerRequestData["getUserName"] = { walletAddress: "0x123" };
       req.query = query;
       const mockReturnData = { name: "John Doe" };
       service.findUserNameByWalletAddress.mockResolvedValueOnce(mockReturnData);
 
-      await userController.findUserNameByWalletAddress(req as Request, res as Response, next);
+      await userController.getUserName(req as Request, res as Response, next);
 
       expect(service.findUserNameByWalletAddress).toHaveBeenCalledWith(req.query.walletAddress);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200, mockReturnData));
     });
 
     test("실패하는 테스트, 존재하지 않는 지갑주소일 경우 NotExistDataError를 호출해야 한다", async () => {
-      const query: UserControllerRequestData["findUserNameByWalletAddress"] = { walletAddress: "0x123" };
+      const query: UserControllerRequestData["getUserName"] = { walletAddress: "0x123" };
       req.query = query;
       const error = new NotExistDataError("데이터가 존재하지 않습니다.");
       service.findUserNameByWalletAddress.mockRejectedValueOnce(error);
 
-      await userController.findUserNameByWalletAddress(req as Request, res as Response, next);
+      await userController.getUserName(req as Request, res as Response, next);
 
       expect(service.findUserNameByWalletAddress).toHaveBeenCalledWith(req.query.walletAddress);
       expect(next).toHaveBeenCalledWith(error);
     });
   });
 
-  describe("putUserImageId 테스트", () => {
+  describe("updateUserImageId 테스트", () => {
     test("통과하는 테스트", async () => {
-      const body: UserControllerRequestData["putUserImageId"] = {
+      const body: UserControllerRequestData["updateUserImageId"] = {
         walletAddress: "0x123",
         imageId: "image123",
       };
       req.body = body;
-      service.putUserImageId.mockResolvedValueOnce(undefined);
+      service.updateUserImageId.mockResolvedValueOnce(undefined);
 
-      await userController.putUserImageId(req as Request, res as Response, next);
+      await userController.updateUserImageId(req as Request, res as Response, next);
 
-      expect(service.putUserImageId).toHaveBeenCalledWith(req.body);
+      expect(service.updateUserImageId).toHaveBeenCalledWith(req.body);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200));
     });
 
     test("실패하는 테스트, 존재하지 않는 유저일 경우 NotExistDataError를 호출해야 한다", async () => {
-      const body: UserControllerRequestData["putUserImageId"] = {
+      const body: UserControllerRequestData["updateUserImageId"] = {
         walletAddress: "0x123",
         imageId: "image123",
       };
       req.body = body;
       const error = new NotExistDataError("유저가 존재하지 않습니다.");
-      service.putUserImageId.mockRejectedValueOnce(error);
+      service.updateUserImageId.mockRejectedValueOnce(error);
 
-      await userController.putUserImageId(req as Request, res as Response, next);
+      await userController.updateUserImageId(req as Request, res as Response, next);
 
-      expect(service.putUserImageId).toHaveBeenCalledWith(req.body);
+      expect(service.updateUserImageId).toHaveBeenCalledWith(req.body);
       expect(next).toHaveBeenCalledWith(error);
     });
   });
 
-  // 성공 테스트
   describe("getUserImageId 테스트", () => {
     test("통과하는 테스트", async () => {
       const query: UserControllerRequestData["getUserImageId"] = { walletAddress: "0x123" };
       req.query = query;
       const mockImageId = { imageId: "image123" };
-      service.getUserImageId.mockResolvedValueOnce(mockImageId);
+      service.findUserImageId.mockResolvedValueOnce(mockImageId);
 
       await userController.getUserImageId(req as Request, res as Response, next);
 
-      expect(service.getUserImageId).toHaveBeenCalledWith(req.query.walletAddress);
+      expect(service.findUserImageId).toHaveBeenCalledWith(req.query.walletAddress);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200, mockImageId));
     });
 
@@ -150,11 +137,11 @@ describe("UserController 테스트", () => {
       const query: UserControllerRequestData["getUserImageId"] = { walletAddress: "0x123" };
       req.query = query;
       const error = new NotExistDataError("이미지 데이터가 존재하지 않습니다.");
-      service.getUserImageId.mockRejectedValueOnce(error);
+      service.findUserImageId.mockRejectedValueOnce(error);
 
       await userController.getUserImageId(req as Request, res as Response, next);
 
-      expect(service.getUserImageId).toHaveBeenCalledWith(req.query.walletAddress);
+      expect(service.findUserImageId).toHaveBeenCalledWith(req.query.walletAddress);
       expect(next).toHaveBeenCalledWith(error);
     });
   });

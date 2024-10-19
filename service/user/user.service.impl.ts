@@ -1,13 +1,13 @@
 import { KeyCreator } from "../../core/key-creator";
 import { UserRepository } from "../../database/type-orm/repository/impl/user/user.repository";
-import { UserControllerRequestData as RequestData } from "../../validator/schema/routes/user";
-import { UserService } from "./user-service";
+import { UserControllerRequestData as RequestData } from "../../validator/schema/routes/user/user-controller-request-data";
+import { UserService } from "./user.service";
 
 export class UserServiceImpl implements UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async postUser(
-    { walletAddress, name, email, contact, birthDate }: RequestData["postUser"],
+  async createUser(
+    { walletAddress, name, email, contact, birthDate }: RequestData["createUser"],
     dbUserPkCreator: KeyCreator,
   ) {
     const user = {
@@ -21,20 +21,18 @@ export class UserServiceImpl implements UserService {
 
     const id = dbUserPkCreator.createDbUserId(user.contact);
 
-    await this.repository.createUser({ user, birthDate: userBirthDateObject, id });
+    await this.repository.create({ user, birthDate: userBirthDateObject, id });
   }
 
   async findUserNameByWalletAddress(walletAddress: string) {
-    const name = await this.repository.findNameByWalletAddress(walletAddress);
-    return name;
+    return await this.repository.findNameByWalletAddress(walletAddress);
   }
 
-  async getUserImageId(walletAddress: string) {
-    const image = await this.repository.findUserProfileImageIdByWalletAddress(walletAddress);
-    return image;
+  async findUserImageId(walletAddress: string) {
+    return await this.repository.findUserProfileImageIdByWalletAddress(walletAddress);
   }
 
-  async putUserImageId({ imageId, walletAddress }: RequestData["putUserImageId"]) {
+  async updateUserImageId({ imageId, walletAddress }: RequestData["updateUserImageId"]) {
     await this.repository.updateUserProfileImageIdByWalletAddress({ imageId, walletAddress });
   }
 }

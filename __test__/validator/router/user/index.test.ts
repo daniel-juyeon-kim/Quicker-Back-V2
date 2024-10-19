@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { validate, ValidationLayerError } from "../../../../validator";
-import { postUserSchema, UserControllerRequestData } from "../../../../validator/schema/routes/user";
+import {
+  createUserSchema,
+  UserControllerRequestData,
+} from "../../../../validator/schema/routes/user/user-controller-request-data";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -12,12 +15,12 @@ beforeEach(() => {
   next.mockClear();
 });
 
-describe("POST: /register", () => {
-  const runValidate = validate(postUserSchema, ["body"]);
+describe("POST: /user", () => {
+  const runValidate = validate(createUserSchema, ["body"]);
 
   describe("통과하는 테스트", () => {
     test("유효한 요청", async () => {
-      const body: UserControllerRequestData["postUser"] = {
+      const body: UserControllerRequestData["createUser"] = {
         walletAddress: "0xABC123",
         name: "John Doe",
         email: "john@example.com",
@@ -34,7 +37,7 @@ describe("POST: /register", () => {
 
   describe("실패하는 테스트", () => {
     test("잘못된 이메일 형식", async () => {
-      const body: UserControllerRequestData["postUser"] = {
+      const body: UserControllerRequestData["createUser"] = {
         walletAddress: "0xABC123",
         name: "John Doe",
         email: "invalid-email",
@@ -87,7 +90,7 @@ describe("POST: /register", () => {
     });
 
     test("빈 문자열 필드", async () => {
-      const body: UserControllerRequestData["postUser"] = {
+      const body: UserControllerRequestData["createUser"] = {
         walletAddress: "0xABC123",
         name: "",
         email: "invalid-email",
@@ -107,7 +110,7 @@ describe("POST: /register", () => {
     });
 
     test("잘못된 전화번호 형식", async () => {
-      const body: UserControllerRequestData["postUser"] = {
+      const body: UserControllerRequestData["createUser"] = {
         walletAddress: "0xABC123",
         name: "",
         email: "invalid-email",
@@ -134,7 +137,7 @@ describe("POST: /register", () => {
     });
 
     test("경계값: 태어난 연도 최소값", async () => {
-      const body: UserControllerRequestData["postUser"] = {
+      const body: UserControllerRequestData["createUser"] = {
         walletAddress: "0xABC123",
         name: "이름",
         email: "valid-email@email.com",

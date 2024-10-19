@@ -15,7 +15,7 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
     super();
   }
 
-  async createUser({
+  async create({
     user,
     birthDate,
     id,

@@ -250,7 +250,7 @@
       }
     },
     "/user/image/id/": {
-      "put": {
+      "patch": {
         "tags": ["user"],
         "summary": "사용자 프로필 이미지 아이디 업데이트",
         "description": "사용자 프로필 이미지 아이디 업데이트",

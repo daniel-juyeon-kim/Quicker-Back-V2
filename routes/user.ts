@@ -3,24 +3,20 @@ import express from "express";
 import { userController } from "../controllers";
 import { validate } from "../validator";
 import {
+  createUserSchema,
   getUserImageIdSchema,
   getUserNameSchema,
-  postUserSchema,
-  putUserImageIdSchema,
-} from "../validator/schema/routes/user";
+  updateUserImageIdSchema,
+} from "../validator/schema/routes/user/user-controller-request-data";
 
 const router = express.Router();
 
-// POST /user
-router.post("/", validate(postUserSchema, ["body"]), userController.postUser);
+router.post("/", validate(createUserSchema, ["body"]), userController.createUser);
 
-// GET /user/name
-router.get("/name", validate(getUserNameSchema, ["query"]), userController.findUserNameByWalletAddress);
+router.get("/name", validate(getUserNameSchema, ["query"]), userController.getUserName);
 
-// GET /user/image/id
 router.get("/image/id", validate(getUserImageIdSchema, ["query"]), userController.getUserImageId);
 
-// PUT /user/image/id
-router.put("/image/id", validate(putUserImageIdSchema, ["body"]), userController.putUserImageId);
+router.patch("/image/id", validate(updateUserImageIdSchema, ["body"]), userController.updateUserImageId);
 
 export default router;

@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
 import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../../validator";
-import { getUserImageIdSchema, putUserImageIdSchema } from "../../../../../../validator/schema/routes/user";
-import { TestName } from "../../../types/test-name";
+import {
+  getUserImageIdSchema,
+  updateUserImageIdSchema,
+} from "../../../../../../validator/schema/routes/user/user-controller-request-data";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -17,21 +19,19 @@ beforeEach(() => {
 describe("GET: /user/image/id", () => {
   const testTarget = validate(getUserImageIdSchema, ["query"]);
 
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
-      req.query = {
-        walletAddress: "3f39sl3sef091dfwn",
-      };
+  test("통과하는 테스트", async () => {
+    req.query = {
+      walletAddress: "3f39sl3sef091dfwn",
+    };
 
-      await testTarget(req as Request, res as Response, next);
+    await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledTimes(1);
-      expect(next).toHaveBeenCalledWith();
-    });
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(next).toHaveBeenCalledWith();
   });
 
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
+  describe("실패하는 테스트", () => {
+    test("속성 누락", async () => {
       req.query = {};
 
       await testTarget(req as Request, res as Response, next);
@@ -46,26 +46,24 @@ describe("GET: /user/image/id", () => {
   });
 });
 
-describe("PUT: /user/image/id", () => {
-  const testTarget = validate(putUserImageIdSchema, ["body"]);
+describe("PATCH: /user/image/id", () => {
+  const testTarget = validate(updateUserImageIdSchema, ["body"]);
 
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
-      req.body = {
-        walletAddress: "1",
-        imageId: "300",
-      };
+  test("통과하는 테스트", async () => {
+    req.body = {
+      walletAddress: "3f39sl3sef091dfwn",
+      imageId: "300",
+    };
 
-      await testTarget(req as Request, res as Response, next);
+    await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith();
-    });
+    expect(next).toHaveBeenCalledWith();
   });
 
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
+  describe("실패하는 테스트", () => {
+    test("속성 누락", async () => {
       req.body = {
-        walletAddress: "1",
+        walletAddress: "3f39sl3sef091dfwn",
       };
 
       await testTarget(req as Request, res as Response, next);
@@ -78,7 +76,7 @@ describe("PUT: /user/image/id", () => {
       );
     });
 
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
+    test("빈 문자열", async () => {
       req.body = {
         walletAddress: "",
         imageId: "300",
@@ -99,7 +97,7 @@ describe("PUT: /user/image/id", () => {
       );
     });
 
-    test(TestName.MISS_TYPE, async () => {
+    test("올바르지 않은 타입", async () => {
       req.body = {
         walletAddress: "0x3o2343i21248",
         imageId: "문자열",

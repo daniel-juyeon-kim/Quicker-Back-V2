@@ -3,7 +3,7 @@ import { KeyCreator } from "../../../core/key-creator";
 
 import { DuplicatedDataError, NotExistDataError } from "../../../database";
 import { UserRepository } from "../../../database/type-orm/repository/impl/user/user.repository";
-import { UserServiceImpl } from "../../../service/user/user-service-impl";
+import { UserServiceImpl } from "../../../service/user/user.service.impl";
 
 const repository = mock<UserRepository>();
 const service = new UserServiceImpl(repository);
@@ -13,7 +13,7 @@ beforeEach(async () => {
 });
 
 describe("UserServiceImpl 테스트", () => {
-  describe("registerUser 테스트", () => {
+  describe("createUser 테스트", () => {
     const body = {
       walletAddress: "지갑주소",
       name: "이름",
@@ -24,9 +24,9 @@ describe("UserServiceImpl 테스트", () => {
     const keyCreator = mock<KeyCreator>();
 
     test("통과하는 테스트", async () => {
-      await service.postUser(body, keyCreator);
+      await service.createUser(body, keyCreator);
 
-      expect(repository.createUser).toHaveBeenCalledWith({
+      expect(repository.create).toHaveBeenCalledWith({
         id: undefined,
         birthDate: new Date(2000, 0, 1),
         user: {
@@ -39,9 +39,9 @@ describe("UserServiceImpl 테스트", () => {
     });
 
     test("실패하는 테스트, 중복 회원 가입", async () => {
-      await service.postUser(body, keyCreator);
+      await service.createUser(body, keyCreator);
 
-      expect(repository.createUser).toHaveBeenCalledWith({
+      expect(repository.create).toHaveBeenCalledWith({
         id: undefined,
         birthDate: new Date(2000, 0, 1),
         user: {
@@ -53,11 +53,11 @@ describe("UserServiceImpl 테스트", () => {
       });
 
       const ERROR_MESSAGE = `에 해당하는 데이터가 이미 존재합니다.`;
-      repository.createUser.mockRejectedValue(new DuplicatedDataError(ERROR_MESSAGE));
+      repository.create.mockRejectedValue(new DuplicatedDataError(ERROR_MESSAGE));
 
-      await expect(service.postUser(body, keyCreator)).rejects.toBeInstanceOf(DuplicatedDataError);
-      await expect(service.postUser(body, keyCreator)).rejects.toThrow(ERROR_MESSAGE);
-      expect(repository.createUser).toHaveBeenCalledTimes(3);
+      await expect(service.createUser(body, keyCreator)).rejects.toBeInstanceOf(DuplicatedDataError);
+      await expect(service.createUser(body, keyCreator)).rejects.toThrow(ERROR_MESSAGE);
+      expect(repository.create).toHaveBeenCalledTimes(3);
     });
 
     test("실패하는 테스트", async () => {
@@ -70,9 +70,9 @@ describe("UserServiceImpl 테스트", () => {
       };
 
       const keyCreator = mock<KeyCreator>();
-      await service.postUser(body, keyCreator);
+      await service.createUser(body, keyCreator);
 
-      expect(repository.createUser).toHaveBeenCalledWith({
+      expect(repository.create).toHaveBeenCalledWith({
         id: undefined,
         birthDate: new Date(2000, 0, 1),
         user: {
@@ -109,13 +109,13 @@ describe("UserServiceImpl 테스트", () => {
     });
   });
 
-  describe("getUserImageId 테스트", () => {
+  describe("findUserImageId 테스트", () => {
     test("통과하는 테스트", async () => {
       const walletAddress = "지갑주소";
       const expectReturnValue = { imageId: "300" };
       repository.findUserProfileImageIdByWalletAddress.mockResolvedValue(expectReturnValue);
 
-      const imageId = await service.getUserImageId(walletAddress);
+      const imageId = await service.findUserImageId(walletAddress);
 
       expect(imageId).toEqual(expectReturnValue);
       expect(repository.findUserProfileImageIdByWalletAddress).toHaveBeenCalledWith(walletAddress);
@@ -125,15 +125,15 @@ describe("UserServiceImpl 테스트", () => {
       const walletAddress = "존재하지 않는 지갑주소";
       repository.findUserProfileImageIdByWalletAddress.mockRejectedValue(new NotExistDataError(""));
 
-      await expect(service.getUserImageId(walletAddress)).rejects.toThrow(NotExistDataError);
+      await expect(service.findUserImageId(walletAddress)).rejects.toThrow(NotExistDataError);
     });
   });
 
-  describe("putUserImageId 테스트", () => {
+  describe("updateUserImageId 테스트", () => {
     test("통과하는 테스트", async () => {
       const body = { walletAddress: "지갑주소", imageId: "100" };
 
-      await service.putUserImageId(body);
+      await service.updateUserImageId(body);
 
       expect(repository.updateUserProfileImageIdByWalletAddress).toHaveBeenCalledWith(body);
     });
@@ -142,7 +142,7 @@ describe("UserServiceImpl 테스트", () => {
       const body = { walletAddress: "존재하지 않는 지갑주소", imageId: "100" };
       repository.updateUserProfileImageIdByWalletAddress.mockRejectedValue(new NotExistDataError(""));
 
-      await expect(service.putUserImageId(body)).rejects.toThrow(NotExistDataError);
+      await expect(service.updateUserImageId(body)).rejects.toThrow(NotExistDataError);
     });
   });
 });

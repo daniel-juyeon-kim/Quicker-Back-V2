@@ -1,5 +1,5 @@
 export interface UserRepository {
-  createUser(body: {
+  create(body: {
     id: string;
     user: {
       walletAddress: string;
