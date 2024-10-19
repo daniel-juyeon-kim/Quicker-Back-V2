@@ -13,6 +13,10 @@
     {
       "name": "user",
       "description": "사용자 관련"
+    },
+    {
+      "name": "order",
+      "description": "주문 관련"
     }
   ],
   "paths": {
@@ -84,7 +88,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/response200"
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "done"
+                    }
+                  }
                 }
               }
             }
@@ -94,27 +108,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/response400"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "요청 실패: 유효성 검사 실패",
-            "content": {
-              "application/json": {
-                "schema": {
                   "$ref": "#/components/schemas/response404"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "실패 흐름",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response500"
                 }
               }
             }
@@ -122,7 +116,7 @@
         }
       }
     },
-    "/user/name/?walletAddress={walletAddress}": {
+    "/user/name": {
       "get": {
         "tags": ["user"],
         "summary": "사용자 이름 가져오기",
@@ -145,33 +139,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "code": {
-                      "type": "number",
-                      "example": 200
-                    },
-                    "msg": {
-                      "type": "string",
-                      "example": "OK"
-                    },
-                    "body": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        }
-                      }
+                    "name": {
+                      "type": "string"
                     }
                   }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "실패 요청: 잘못된 요청",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response400"
                 }
               }
             }
@@ -185,21 +156,11 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "실패 요청: 서버 에러",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response500"
-                }
-              }
-            }
           }
         }
       }
     },
-    "/user/image/id/?walletAddress={walletAddress}": {
+    "/user/image/id": {
       "get": {
         "tags": ["user"],
         "summary": "사용자 프로필 이미지 아이디 가져오기",
@@ -222,33 +183,11 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "code": {
-                      "type": "number",
-                      "example": 200
-                    },
-                    "msg": {
+                    "imageId": {
                       "type": "string",
-                      "example": "OK"
-                    },
-                    "body": {
-                      "type": "object",
-                      "properties": {
-                        "imageId": {
-                          "type": "string"
-                        }
-                      }
+                      "example": "100"
                     }
                   }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "유효성 검사 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response400"
                 }
               }
             }
@@ -259,16 +198,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/response404"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "실패 흐름",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response500"
                 }
               }
             }
@@ -306,7 +235,366 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/response200"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "done"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order": {
+      "get": {
+        "tags": ["order"],
+        "summary": "주문에 기록된 출발지와 도착지 조회",
+        "parameters": [
+          {
+            "name": "orderid",
+            "in": "query",
+            "description": "주문 아이디",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "Destination": {
+                      "type": "object",
+                      "properties": {
+                        "X": {
+                          "type": "number",
+                          "example": 37.12345
+                        },
+                        "Y": {
+                          "type": "number",
+                          "example": 127.12345
+                        }
+                      }
+                    },
+                    "Departure": {
+                      "type": "object",
+                      "properties": {
+                        "X": {
+                          "type": "number",
+                          "example": 36.54321
+                        },
+                        "Y": {
+                          "type": "number",
+                          "example": 126.54321
+                        }
+                      },
+                      "required": ["X", "Y"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["order"],
+        "summary": "주문 생성",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "walletAddress": {
+                    "type": "string",
+                    "example": "0x123456789abcdef"
+                  },
+                  "Order": {
+                    "type": "object",
+                    "properties": {
+                      "ID_REQ": {
+                        "type": "string",
+                        "example": "REQ123"
+                      },
+                      "DETAIL": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "Order detail here"
+                      }
+                    },
+                    "required": ["id", "ID_REQ"]
+                  },
+                  "Transportation": {
+                    "type": "object",
+                    "properties": {
+                      "WALKING": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "BICYCLE": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "SCOOTER": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "BIKE": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "CAR": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "TRUCK": {
+                        "type": "number",
+                        "example": 0
+                      }
+                    },
+                    "required": ["ID", "WALKING", "BICYCLE", "SCOOTER", "BIKE", "CAR", "TRUCK"]
+                  },
+                  "Destination": {
+                    "type": "object",
+                    "properties": {
+                      "X": {
+                        "type": "number",
+                        "example": 37.12345
+                      },
+                      "Y": {
+                        "type": "number",
+                        "example": 127.12345
+                      },
+                      "DETAIL": {
+                        "type": "string",
+                        "example": "Destination detail here"
+                      }
+                    },
+                    "required": ["id", "X", "Y", "DETAIL"]
+                  },
+                  "Departure": {
+                    "type": "object",
+                    "properties": {
+                      "X": {
+                        "type": "number",
+                        "example": 36.54321
+                      },
+                      "Y": {
+                        "type": "number",
+                        "example": 126.54321
+                      },
+                      "DETAIL": {
+                        "type": "string",
+                        "example": "Departure detail here"
+                      }
+                    },
+                    "required": ["ID", "X", "Y", "DETAIL"]
+                  },
+                  "Product": {
+                    "type": "object",
+                    "properties": {
+                      "WIDTH": {
+                        "type": "number",
+                        "example": 50
+                      },
+                      "LENGTH": {
+                        "type": "number",
+                        "example": 100
+                      },
+                      "HEIGHT": {
+                        "type": "number",
+                        "example": 30
+                      },
+                      "WEIGHT": {
+                        "type": "number",
+                        "example": 10
+                      }
+                    },
+                    "required": ["ID", "WIDTH", "LENGTH", "HEIGHT", "WEIGHT"]
+                  },
+                  "Sender": {
+                    "type": "object",
+                    "properties": {
+                      "NAME": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "PHONE": {
+                        "type": "string",
+                        "example": "+1234567890"
+                      }
+                    },
+                    "required": ["ID", "NAME", "PHONE"]
+                  },
+                  "Recipient": {
+                    "type": "object",
+                    "properties": {
+                      "NAME": {
+                        "type": "string",
+                        "example": "Jane Smith"
+                      },
+                      "PHONE": {
+                        "type": "string",
+                        "example": "+0987654321"
+                      }
+                    },
+                    "required": ["id", "NAME", "PHONE"]
+                  }
+                },
+                "required": [
+                  "userWalletAddress",
+                  "Order",
+                  "Transportation",
+                  "Destination",
+                  "Departure",
+                  "Product",
+                  "Sender",
+                  "Recipient"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "done"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["order"],
+        "summary": "배송원이 주문을 수락하고 주문 정보에 배송원 정보를 업데이트",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userWalletAddress": {
+                    "type": "string",
+                    "example": "0x123456789abcdef"
+                  },
+                  "orderId": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                },
+                "required": ["userWalletAddress", "orderId"]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "done"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/image/fail": {
+      "get": {
+        "tags": ["order"],
+        "summary": "배송이 실패한 사유와 이미지를 가지고 온다.",
+        "parameters": [
+          {
+            "name": "orderNum",
+            "in": "query",
+            "description": "주문 아이디",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "imageBuffer": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "example": "Reason for providing the image"
+                    }
+                  }
                 }
               }
             }
@@ -320,13 +608,153 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "실패 흐름",
+          }
+        }
+      },
+      "post": {
+        "tags": ["order"],
+        "summary": "배송 실패 정보 생성",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "Reason for file upload"
+                  }
+                },
+                "required": ["file", "reason"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/response500"
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "done"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/image/complete": {
+      "get": {
+        "tags": ["order"],
+        "summary": "배송 완료된 정보 가지고 오기",
+        "parameters": [
+          {
+            "name": "orderNum",
+            "in": "query",
+            "description": "주문 아이디",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "imageBuffer": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["order"],
+        "summary": "배송 완료 정보 생성",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "orderNum": {
+                    "type": "integer",
+                    "example": 12345
+                  }
+                },
+                "required": ["file", "orderNum"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "done"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
                 }
               }
             }
@@ -337,128 +765,11 @@
   },
   "components": {
     "schemas": {
-      "response200": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "number",
-            "example": 200
-          },
-          "message": {
-            "type": "string",
-            "example": "OK"
-          }
-        }
-      },
-      "response400": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "number",
-            "example": 400
-          },
-          "message": {
-            "type": "string",
-            "example": "Bad Request"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string"
-              },
-              "location": {
-                "type": "string"
-              },
-              "path": {
-                "type": "string"
-              },
-              "value": {
-                "type": "any"
-              },
-              "msg": {
-                "type": "any"
-              }
-            }
-          }
-        }
-      },
       "response404": {
         "type": "object",
         "properties": {
-          "code": {
-            "type": "number",
-            "example": 404
-          },
-          "message": {
-            "type": "string",
-            "example": "Not Found"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string"
-              },
-              "location": {
-                "type": "string"
-              },
-              "path": {
-                "type": "string"
-              },
-              "value": {
-                "type": "any"
-              },
-              "msg": {
-                "type": "any"
-              }
-            }
-          }
-        }
-      },
-      "response409": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "number",
-            "example": 409
-          },
-          "message": {
-            "type": "string",
-            "example": "Conflict"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string"
-              },
-              "location": {
-                "type": "string"
-              },
-              "path": {
-                "type": "string"
-              },
-              "value": {
-                "type": "any"
-              },
-              "msg": {
-                "type": "any"
-              }
-            }
-          }
-        }
-      },
-      "response500": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "number",
-            "example": 500
-          },
-          "message": {
-            "type": "string",
-            "example": "Internal Server Error"
+          "error_message": {
+            "type": "string"
           }
         }
       }
