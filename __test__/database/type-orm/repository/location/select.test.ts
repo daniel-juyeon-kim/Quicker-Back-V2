@@ -1,22 +1,31 @@
 import { LocationRepository, Order, OrderRepository, User } from "../../../../../database/type-orm";
-import { UserRepositoryImpl } from "../../../../../database/type-orm/repository/impl/user/user.repository.impl";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
 const locationRepository = new LocationRepository(testAppDataSource.getRepository(Order));
-const userRepository = new UserRepositoryImpl(testAppDataSource.getRepository(User));
 const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
 
 const createUser = async () => {
-  const userId = "아이디";
-  const user = {
+  const user = testAppDataSource.manager.create(User, {
+    id: "아이디",
     walletAddress: "지갑주소",
     name: "이름",
     email: "이메일",
     contact: "연락처",
-  };
-  const birthDate = new Date(2000, 9, 12);
+    birthDate: {
+      id: "아이디",
+      date: new Date(2000, 9, 12).toISOString(),
+    },
+    profileImage: {
+      id: "아이디",
+      imageId: "111",
+    },
+    joinDate: {
+      id: "아이디",
+      date: new Date(2023, 9, 12).toISOString(),
+    },
+  });
 
-  await userRepository.createUser({ user, birthDate, id: userId });
+  await testAppDataSource.manager.save(User, user);
 };
 
 const createOrder = async (requester: User) => {
