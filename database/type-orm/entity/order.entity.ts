@@ -26,7 +26,7 @@ export class Order {
   deliver!: User;
 
   @Column({ nullable: true })
-  detail!: string;
+  detail?: string;
 
   @OneToOne(() => Transportation, (transportation) => transportation.order, {
     cascade: ["insert"],

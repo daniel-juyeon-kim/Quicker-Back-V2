@@ -1,9 +1,11 @@
 export enum TYPE {
   INTEGER = "정수",
+  BOOLEAN = "불리언",
   FLOAT = "실수",
   STRING = "문자열",
   OBJECT = "객체",
   INTEGER_ARRAY = "정수 배열",
+  ARRAY = "배열",
 }
 
 export enum DATA {

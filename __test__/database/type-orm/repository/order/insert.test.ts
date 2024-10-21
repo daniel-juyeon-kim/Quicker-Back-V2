@@ -1,8 +1,9 @@
 import { DataSource } from "typeorm";
-import { Order, OrderRepository, User } from "../../../../../database/type-orm";
+import { Order, User } from "../../../../../database";
+import { OrderRepositoryImpl } from "../../../../../database/type-orm/repository/order/order.repository.impl";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
+const orderRepository = new OrderRepositoryImpl(testAppDataSource.getRepository(Order));
 
 const createUser = async (dataSource: DataSource) => {
   const userId = "아이디";
@@ -40,8 +41,8 @@ afterEach(async () => {
 
 describe("orderRepository 테스트", () => {
   test("create 테스트", async () => {
-    const user = (await testAppDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
-
+    const walletAddress = "지갑주소";
+    const detail = "디테일";
     const product = {
       width: 0,
       length: 0,
@@ -55,7 +56,7 @@ describe("orderRepository 테스트", () => {
       bike: 0,
       car: 0,
       truck: 0,
-    };
+    } as const;
     const destination = {
       x: 37.5,
       y: 112,
@@ -74,20 +75,19 @@ describe("orderRepository 테스트", () => {
       name: "이름",
       phone: "01012345678",
     };
-    const orderCreationParameter = {
-      order: {
-        requester: user,
-        detail: "디테일",
-      },
+
+    await orderRepository.create({
+      walletAddress,
+      detail,
+      recipient,
+      destination,
+      sender,
+      departure,
       product,
       transportation,
-      destination,
-      recipient,
-      departure,
-      sender,
-    };
+    });
 
-    await orderRepository.create(orderCreationParameter);
+    const user = (await testAppDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
 
     const order = await testAppDataSource.manager.findOne(Order, {
       relations: {

@@ -32,5 +32,3 @@ export class Transportation {
   @JoinColumn()
   order!: Order;
 }
-
-export type BasicTransportation = Omit<Transportation, "id" | "order">;

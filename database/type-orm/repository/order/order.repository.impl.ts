@@ -1,80 +1,75 @@
 import { In, IsNull, Not, Repository } from "typeorm";
-
-import {
-  BasicDeparture,
-  BasicDestination,
-  BasicOrder,
-  BasicProduct,
-  BasicRecipient,
-  BasicSender,
-  BasicTransportation,
-  Departure,
-  Destination,
-  Order,
-  Product,
-  Transportation,
-  User,
-} from "../../entity";
+import { UnknownDataBaseError } from "../../../../core";
+import { Departure, Destination, Order, Product, Transportation, User } from "../../entity";
+import { NotExistDataError } from "../../util";
 import { AbstractRepository } from "../abstract-repository";
+import { OrderRepository } from "./order.repository";
 
-export class OrderRepository extends AbstractRepository {
+export class OrderRepositoryImpl extends AbstractRepository implements OrderRepository {
   constructor(private readonly repository: Repository<Order>) {
     super();
   }
 
   async create({
-    order,
+    walletAddress,
+    detail,
     recipient,
     destination,
     sender,
     departure,
     product,
     transportation,
-  }: {
-    order: BasicOrder;
-    recipient: BasicRecipient;
-    destination: BasicDestination;
-    sender: BasicSender;
-    departure: BasicDeparture;
-    product: BasicProduct;
-    transportation: BasicTransportation;
-  }) {
-    await this.repository.manager.transaction(async (dataSource) => {
-      const orderInstance = dataSource.create(Order, order);
+  }: Parameters<OrderRepository["create"]>[0]) {
+    try {
+      await this.repository.manager.transaction(async (manager) => {
+        const requester = await manager.findOneBy(User, { walletAddress });
 
-      await dataSource.save(Order, orderInstance);
+        this.validateNotNull(requester);
 
-      const id = orderInstance.id;
+        const order = manager.create(Order, {
+          detail,
+          requester,
+        });
 
-      await dataSource.save(Product, {
-        id,
-        ...product,
-        order: orderInstance,
-      });
-      await dataSource.save(Transportation, {
-        id,
-        ...transportation,
-        order: orderInstance,
-      });
-      await dataSource.save(Destination, {
-        id,
-        ...destination,
-        order: orderInstance,
-        recipient: {
+        await manager.save(Order, order);
+
+        const id = order.id;
+
+        await manager.save(Product, {
           id,
-          ...recipient,
-        },
-      });
-      await dataSource.save(Departure, {
-        id,
-        ...departure,
-        order: orderInstance,
-        sender: {
+          ...product,
+          order: order,
+        });
+        await manager.save(Transportation, {
           id,
-          ...sender,
-        },
+          ...transportation,
+          order: order,
+        });
+        await manager.save(Destination, {
+          id,
+          ...destination,
+          order: order,
+          recipient: {
+            id,
+            ...recipient,
+          },
+        });
+        await manager.save(Departure, {
+          id,
+          ...departure,
+          order: order,
+          sender: {
+            id,
+            ...sender,
+          },
+        });
       });
-    });
+    } catch (error) {
+      if (error instanceof NotExistDataError) {
+        throw new NotExistDataError(`${walletAddress} 에 해당되는 사용자를 찾지 못했습니다.`);
+      }
+      throw new UnknownDataBaseError(error);
+    }
   }
 
   async findRequesterIdByOrderId(orderId: number) {

@@ -3,16 +3,16 @@ import {
   Departure,
   Destination,
   Order,
-  OrderRepository,
   Product,
   Recipient,
   Sender,
   Transportation,
   User,
 } from "../../../../../database/type-orm";
+import { OrderRepositoryImpl } from "../../../../../database/type-orm/repository/order/order.repository.impl";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
+const orderRepository = new OrderRepositoryImpl(testAppDataSource.getRepository(Order));
 
 const createUser = async (dataSource: DataSource) => {
   const userId = "아이디";
