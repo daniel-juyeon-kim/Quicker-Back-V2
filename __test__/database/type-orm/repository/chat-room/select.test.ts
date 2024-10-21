@@ -1,7 +1,14 @@
-import { ChatRoomRepository, Order, OrderRepository, User } from "../../../../../database/type-orm";
+import {
+  ChatRoomRepository,
+  Departure,
+  Destination,
+  Order,
+  Product,
+  Transportation,
+  User,
+} from "../../../../../database/type-orm";
 import { initializeDataSource, testAppDataSource } from "../data-source";
 
-const orderRepository = new OrderRepository(testAppDataSource.getRepository(Order));
 const chatRoomRepository = new ChatRoomRepository(testAppDataSource.getRepository(Order));
 
 const createUser = async () => {
@@ -29,46 +36,78 @@ const createUser = async () => {
 };
 
 const createOrder = async (requester: User) => {
-  const orderParameter = {
-    order: {
-      requester,
-      detail: "디테일",
-    },
-    product: {
-      width: 0,
-      length: 0,
-      height: 0,
-      weight: 0,
-    },
-    transportation: {
-      walking: 0,
-      bicycle: 0,
-      scooter: 0,
-      bike: 0,
-      car: 0,
-      truck: 0,
-    },
-    destination: {
-      x: 37.5,
-      y: 112,
-      detail: "디테일",
-    },
-    recipient: {
-      name: "이름",
-      phone: "01012345678",
-    },
-    departure: {
-      x: 0,
-      y: 0,
-      detail: "디테일",
-    },
-    sender: {
-      name: "이름",
-      phone: "01012345678",
-    },
+  const detail = "디테일";
+  const product = {
+    width: 0,
+    length: 0,
+    height: 0,
+    weight: 0,
   };
+  const transportation = {
+    walking: 0,
+    bicycle: 0,
+    scooter: 0,
+    bike: 0,
+    car: 0,
+    truck: 0,
+  };
+  const destination = {
+    x: 37.5,
+    y: 112,
+    detail: "디테일",
+  };
+  const recipient = {
+    name: "이름",
+    phone: "01012345678",
+  };
+  const departure = {
+    x: 0,
+    y: 0,
+    detail: "디테일",
+  };
+  const sender = {
+    name: "이름",
+    phone: "01012345678",
+  };
+  await testAppDataSource.transaction(async (manager) => {
+    const order = manager.create(Order, {
+      detail,
+      requester,
+    });
 
-  await orderRepository.create(orderParameter);
+    await manager.save(Order, order);
+
+    const id = order.id;
+
+    await manager.save(Product, {
+      id,
+      ...product,
+      order: order,
+    });
+    await manager.save(Transportation, {
+      id,
+      ...transportation,
+      order: order,
+    });
+    await manager.save(Destination, {
+      id,
+      ...destination,
+      order: order,
+      recipient: {
+        id,
+        ...recipient,
+      },
+    });
+    await manager.save(Departure, {
+      id,
+      ...departure,
+      order: order,
+      sender: {
+        id,
+        ...sender,
+      },
+    });
+  });
 };
 
 beforeAll(async () => {
