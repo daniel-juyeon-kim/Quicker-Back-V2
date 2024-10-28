@@ -39,8 +39,10 @@ export const router = {
     app.use("/api-docs/v1", swaggerUi.serveFiles(swaggerDocumentV1), swaggerUi.setup(swaggerDocumentV1));
     app.use("/api-docs/v2", swaggerUi.serveFiles(swaggerDocumentV2), swaggerUi.setup(swaggerDocumentV2));
 
-    // 에러 컨트롤러
+    // 존재하지 않는 라우트
     app.use("*", notFound);
+
+    // 에러 컨트롤러
     app.use(errorController.handleError);
   },
 } as const;
