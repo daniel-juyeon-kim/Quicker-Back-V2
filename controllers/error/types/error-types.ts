@@ -1,5 +1,4 @@
+import { ExternalApiError, UnknownError } from "../../../core";
 import { DataBaseError } from "../../../database";
-import { ValidationLayerError } from "../../../validator";
-import { RouterError } from "../../util/router-error";
 
-export type ErrorTypes = RouterError | ValidationLayerError | DataBaseError | unknown;
+export type ErrorTypes = DataBaseError | ExternalApiError | UnknownError;

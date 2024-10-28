@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { DataBaseErrorController } from "../../../controllers/error/database/database-error.controller";
-import { DuplicatedDataError, NotExistDataError } from "../../../database";
+import { UnknownDataBaseError } from "../../../core";
+import { BusinessRuleConflictDataError, DuplicatedDataError, NotExistDataError } from "../../../database";
 import { HttpErrorResponse } from "../../../util/http-response";
 
 const fakeDate = new Date(2000, 0, 1);
@@ -28,6 +29,22 @@ describe("DataBaseErrorController 테스트", () => {
 
     await controller.handle({ error, res: res as Response, date: fakeDate });
 
-    expect(res.send).toHaveBeenCalledWith(new HttpErrorResponse(404));
+    expect(res.send).toHaveBeenCalledWith(new HttpErrorResponse(404, error.message));
+  });
+
+  test("BusinessRuleConflictDataError 처리", async () => {
+    const error = new BusinessRuleConflictDataError("비지니스 규칙에 어긋나는 요청");
+
+    await controller.handle({ error, res: res as Response, date: fakeDate });
+
+    expect(res.send).toHaveBeenCalledWith(new HttpErrorResponse(422, error.message));
+  });
+
+  test("UnknownDataBaseError 처리", async () => {
+    const error = new UnknownDataBaseError("알 수 없는 데이터 베이스 에러");
+
+    await controller.handle({ error, res: res as Response, date: fakeDate });
+
+    expect(res.send).not.toHaveBeenCalled();
   });
 });

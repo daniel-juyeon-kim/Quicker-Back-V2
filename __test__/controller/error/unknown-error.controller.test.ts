@@ -1,14 +1,15 @@
 import { Response } from "express";
 import { mock, mockClear } from "jest-mock-extended";
 import { UnknownErrorController } from "../../../controllers/error/unknown/unknown-error.controller";
-import { ErrorFileLogger, ErrorMessage, ErrorMessageBot, UnknownDataBaseError } from "../../../core";
+import { ErrorLogger, ErrorMessage, ErrorMessageBot, UnknownDataBaseError } from "../../../core";
+import { DataBaseError } from "../../../database";
 import { HttpErrorResponse } from "../../../util/http-response";
 
 const fakeDate = new Date(2000, 0, 1);
 jest.spyOn(global, "Date").mockImplementation(() => fakeDate);
 
 const messageBot = mock<ErrorMessageBot>();
-const logger = mock<ErrorFileLogger>();
+const logger = mock<ErrorLogger>();
 
 const controller = new UnknownErrorController({ messageBot, logger });
 
@@ -45,5 +46,13 @@ describe("UnknownErrorController 테스트", () => {
     expect(errorMessage).toStrictEqual(new ErrorMessage({ error, date: fakeDate }));
     expect(logger.log).toHaveBeenCalledTimes(2); // Slack error + original error
     expect(res.send).toHaveBeenCalledWith(new HttpErrorResponse(500));
+  });
+
+  test("다른 에러 처리", async () => {
+    const error = new DataBaseError("데이터가 존재하지 않습니다.");
+
+    await controller.handle({ error, res: res as Response, date: fakeDate });
+
+    expect(res.send).not.toHaveBeenCalled();
   });
 });
