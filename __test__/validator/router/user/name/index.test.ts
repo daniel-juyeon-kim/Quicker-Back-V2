@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { DATA, validate, ValidationLayerError } from "../../../../../validator";
+import { HttpErrorResponse } from "../../../../../util/http-response";
+import { DATA, validate } from "../../../../../validator";
 import { getUserNameSchema } from "../../../../../validator/schema/routes/user/user-controller-request-data";
 
 let req: Partial<Request>;
@@ -8,7 +9,7 @@ let next: NextFunction;
 
 beforeEach(() => {
   req = {};
-  res = {};
+  res = { send: jest.fn() };
   next = jest.fn();
 });
 
@@ -22,7 +23,7 @@ describe("GET: /user/name", () => {
 
     await testTarget(req as Request, res as Response, next);
 
-    expect(next).toHaveBeenCalledTimes(1);
+    expect(res.send).toHaveBeenCalledTimes(0);
     expect(next).toHaveBeenCalledWith();
   });
 
@@ -32,9 +33,9 @@ describe("GET: /user/name", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledTimes(1);
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledTimes(1);
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "query", msg: DATA.NOT_EXIST, path: "walletAddress", type: "field", value: undefined },
           { location: "query", msg: "문자열 이어야 합니다.", path: "walletAddress", type: "field", value: undefined },
         ]),

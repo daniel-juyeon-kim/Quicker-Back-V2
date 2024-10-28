@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { DATA, validate, ValidationLayerError } from "../../../../validator";
+import { HttpErrorResponse } from "../../../../util/http-response";
+import { DATA, validate } from "../../../../validator";
 import { getOrdersSchema } from "../../../../validator/schema/routes/orders";
 import { TestName } from "../types/test-name";
 
@@ -9,7 +10,7 @@ let next: NextFunction;
 
 beforeEach(() => {
   req = { query: {}, body: {} };
-  res = {};
+  res = { send: jest.fn() };
   next = jest.fn();
 });
 
@@ -34,8 +35,8 @@ describe("GET: /orders", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "query",
             msg: DATA.NOT_EXIST,
@@ -54,8 +55,8 @@ describe("GET: /orders", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "query",
             msg: DATA.NOT_EXIST,

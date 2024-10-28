@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../validator";
+import { HttpErrorResponse } from "../../../../../util/http-response";
+import { DATA, mustBe, TYPE, validate } from "../../../../../validator";
 import { getRoomSchema } from "../../../../../validator/schema/routes/room/";
 import { TestName } from "../../types/test-name";
 
@@ -9,7 +10,7 @@ let next: NextFunction;
 
 beforeEach(() => {
   req = {};
-  res = {};
+  res = { send: jest.fn() };
   next = jest.fn();
 });
 
@@ -34,8 +35,8 @@ describe("GET: /room/ValidateErrorMessage", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "query", msg: DATA.NOT_EXIST, path: "orderNum", type: "field", value: undefined },
           { location: "query", msg: "정수 이어야 합니다.", path: "orderNum", type: "field", value: undefined },
         ]),
@@ -49,8 +50,8 @@ describe("GET: /room/ValidateErrorMessage", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "query", msg: mustBe(TYPE.INTEGER), path: "orderNum", type: "field", value: "문자열" },
         ]),
       );

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { validate, ValidationLayerError } from "../../../../validator";
+import { HttpErrorResponse } from "../../../../util/http-response";
+import { validate } from "../../../../validator";
 import {
   createUserSchema,
   UserControllerRequestData,
@@ -11,7 +12,7 @@ const next = jest.fn();
 
 beforeEach(() => {
   req = { query: {}, body: {} };
-  res = {};
+  res = { send: jest.fn() };
   next.mockClear();
 });
 
@@ -48,8 +49,8 @@ describe("POST: /user", () => {
 
       await runValidate(req as Request, res as Response, next);
 
-      expect(next.mock.calls[0][0]).toStrictEqual(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "body",
             msg: "이메일 형식 이어야 합니다.",
@@ -69,8 +70,8 @@ describe("POST: /user", () => {
 
       await runValidate(req as Request, res as Response, next);
 
-      expect(next.mock.calls[0][0]).toStrictEqual(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "body",
             msg: "데이터가 존재하지 않습니다.",
@@ -101,8 +102,8 @@ describe("POST: /user", () => {
 
       await runValidate(req as Request, res as Response, next);
 
-      expect(next.mock.calls[0][0]).toStrictEqual(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "body", msg: "데이터가 존재하지 않습니다.", path: "name", type: "field", value: "" },
           { location: "body", msg: "이메일 형식 이어야 합니다.", path: "email", type: "field", value: "invalid-email" },
         ]),
@@ -121,8 +122,8 @@ describe("POST: /user", () => {
 
       await runValidate(req as Request, res as Response, next);
 
-      expect(next.mock.calls[0][0]).toStrictEqual(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "body", msg: "데이터가 존재하지 않습니다.", path: "name", type: "field", value: "" },
           { location: "body", msg: "이메일 형식 이어야 합니다.", path: "email", type: "field", value: "invalid-email" },
           {
@@ -150,8 +151,8 @@ describe("POST: /user", () => {
 
       // 가정: 연도에 대한 최소값 검증 실패 시의 처리
 
-      expect(next.mock.calls[0][0]).toStrictEqual(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "body",
             msg: "날자 형식 이어야 합니다.",

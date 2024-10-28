@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../../validator";
+import { HttpErrorResponse } from "../../../../../../util/http-response";
+import { DATA, mustBe, TYPE, validate } from "../../../../../../validator";
 import {
   getOrderImageCompleteSchema,
   postOrderImageCompleteSchema,
@@ -13,7 +14,7 @@ let next: NextFunction;
 
 beforeEach(() => {
   req = { query: {}, body: {} };
-  res = {};
+  res = { send: jest.fn() };
   next = jest.fn();
 });
 
@@ -40,8 +41,8 @@ describe("GET: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "query",
             msg: mustBe(TYPE.INTEGER),
@@ -58,8 +59,8 @@ describe("GET: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "query",
             msg: DATA.NOT_EXIST,
@@ -102,8 +103,8 @@ describe("POST: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "body",
             msg: mustBe(TYPE.INTEGER),
@@ -120,8 +121,8 @@ describe("POST: /order/image/complete", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "body",
             msg: DATA.NOT_EXIST,

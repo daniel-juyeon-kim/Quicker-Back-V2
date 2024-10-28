@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../../../validator";
+import { HttpErrorResponse } from "../../../../../../util/http-response";
+import { DATA, mustBe, TYPE, validate } from "../../../../../../validator";
 import {
   getUserImageIdSchema,
   updateUserImageIdSchema,
@@ -12,7 +13,7 @@ let next: NextFunction;
 
 beforeEach(() => {
   req = {};
-  res = {};
+  res = { send: jest.fn() };
   next = jest.fn();
 });
 
@@ -26,7 +27,7 @@ describe("GET: /user/image/id", () => {
 
     await testTarget(req as Request, res as Response, next);
 
-    expect(next).toHaveBeenCalledTimes(1);
+    expect(res.send).toHaveBeenCalledTimes(0);
     expect(next).toHaveBeenCalledWith();
   });
 
@@ -36,8 +37,8 @@ describe("GET: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "query", msg: DATA.NOT_EXIST, path: "walletAddress", type: "field", value: undefined },
           { location: "query", msg: "문자열 이어야 합니다.", path: "walletAddress", type: "field", value: undefined },
         ]),
@@ -68,8 +69,8 @@ describe("PATCH: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "body", msg: DATA.NOT_EXIST, path: "imageId", type: "field", value: "" },
           { location: "body", msg: "정수 이어야 합니다.", path: "imageId", type: "field", value: "" },
         ]),
@@ -84,8 +85,8 @@ describe("PATCH: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "body",
             msg: DATA.NOT_EXIST,
@@ -105,8 +106,8 @@ describe("PATCH: /user/image/id", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           { location: "body", msg: mustBe(TYPE.INTEGER), path: "imageId", type: "field", value: "문자열" },
         ]),
       );
