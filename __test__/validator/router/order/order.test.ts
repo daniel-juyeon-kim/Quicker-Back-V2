@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
-import { validate, ValidationLayerError } from "../../../../validator";
-import { postOrderSchema } from "../../../../validator/schema/routes/order/order-controller-request-data";
+import { HttpErrorResponse } from "../../../../util/http-response";
+import { validate } from "../../../../validator";
+import {
+  patchOrderDeliveryPersonSchema,
+  postOrderSchema,
+} from "../../../../validator/schema/routes/order/order-controller-request-data";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -8,7 +12,7 @@ const next = jest.fn();
 
 beforeEach(() => {
   req = { query: {}, body: {} };
-  res = {};
+  res = { send: jest.fn() };
   next.mockClear();
 });
 
@@ -92,8 +96,8 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
 
       await runValidate(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             type: "field",
             value: undefined,
@@ -409,8 +413,8 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
 
       await runValidate(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "body",
             msg: "정수 이어야 합니다.",
@@ -484,5 +488,77 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
         ]),
       );
     });
+  });
+});
+
+describe("PATCH: /order/delivery-person", () => {
+  const testTarget = validate(patchOrderDeliveryPersonSchema, ["body"]);
+
+  test("통과하는 테스트", async () => {
+    req.body = {
+      orderId: 1,
+      walletAddress: "0xe829h129k480dflj289308",
+    };
+
+    await testTarget(req as Request, res as Response, next);
+
+    expect(next).toHaveBeenCalled();
+  });
+
+  test("실패하는 테스트, 주문 아이디 타입 불일치", async () => {
+    req.body.orderId = "3e4";
+
+    await testTarget(req as Request, res as Response, next);
+
+    expect(res.send).toHaveBeenCalledWith(
+      new HttpErrorResponse(400, [
+        {
+          location: "body",
+          msg: "정수 이어야 합니다.",
+          path: "orderId",
+          type: "field",
+          value: "3e4",
+        },
+        {
+          location: "body",
+          msg: "데이터가 존재하지 않습니다.",
+          path: "walletAddress",
+          type: "field",
+          value: undefined,
+        },
+        {
+          location: "body",
+          msg: "문자열 이어야 합니다.",
+          path: "walletAddress",
+          type: "field",
+          value: undefined,
+        },
+      ]),
+    );
+  });
+
+  test("실패하는 테스트, 지갑주소 필드 누락", async () => {
+    req.body.orderId = "3";
+
+    await testTarget(req as Request, res as Response, next);
+
+    expect(res.send).toHaveBeenCalledWith(
+      new HttpErrorResponse(400, [
+        {
+          location: "body",
+          msg: "데이터가 존재하지 않습니다.",
+          path: "walletAddress",
+          type: "field",
+          value: undefined,
+        },
+        {
+          location: "body",
+          msg: "문자열 이어야 합니다.",
+          path: "walletAddress",
+          type: "field",
+          value: undefined,
+        },
+      ]),
+    );
   });
 });

@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { DATA, mustBe, TYPE, validate, ValidationLayerError } from "../../../../validator";
-import {
-  getOrderSchema,
-  patchOrderSchema,
-} from "../../../../validator/schema/routes/order/order-controller-request-data";
+import { HttpErrorResponse } from "../../../../util/http-response";
+import { DATA, mustBe, TYPE, validate } from "../../../../validator";
+import { getOrderSchema } from "../../../../validator/schema/routes/order/order-controller-request-data";
 import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
@@ -13,7 +11,7 @@ let next: NextFunction;
 describe("GET: /order", () => {
   beforeEach(() => {
     req = { query: {}, body: {} };
-    res = {};
+    res = { send: jest.fn() };
     next = jest.fn();
   });
 
@@ -39,8 +37,8 @@ describe("GET: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "query",
             msg: mustBe(TYPE.INTEGER),
@@ -57,8 +55,8 @@ describe("GET: /order", () => {
 
       await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
           {
             location: "query",
             msg: DATA.NOT_EXIST,
@@ -72,74 +70,6 @@ describe("GET: /order", () => {
             path: "orderId",
             type: "field",
             value: "",
-          },
-        ]),
-      );
-    });
-  });
-});
-
-describe("PATCH: /order", () => {
-  beforeEach(() => {
-    req = {
-      body: {
-        userWalletAddress: "0xe829h129k480dflj289308",
-        orderId: 1,
-      },
-    };
-    res = {};
-    next = jest.fn();
-  });
-
-  const testTarget = validate(patchOrderSchema, ["body"]);
-
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
-      await testTarget(req as Request, res as Response, next);
-
-      expect(next).toHaveBeenCalledWith();
-    });
-  });
-
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.FAIL, async () => {
-      req.body.orderId = "3e4";
-
-      await testTarget(req as Request, res as Response, next);
-
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
-          {
-            location: "body",
-            msg: mustBe(TYPE.INTEGER),
-            path: "orderId",
-            type: "field",
-            value: "3e4",
-          },
-          {
-            location: "body",
-            msg: "정수 이어야 합니다.",
-            path: "orderId",
-            type: "field",
-            value: "3e4",
-          },
-        ]),
-      );
-    });
-
-    test(TestName.FAIL, async () => {
-      req.body.orderId = "3";
-
-      await testTarget(req as Request, res as Response, next);
-
-      expect(next).toHaveBeenCalledWith(
-        new ValidationLayerError([
-          {
-            location: "body",
-            msg: mustBe(TYPE.INTEGER),
-            path: "orderId",
-            type: "field",
-            value: "3",
           },
         ]),
       );

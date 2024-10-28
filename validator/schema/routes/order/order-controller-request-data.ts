@@ -19,7 +19,11 @@ export interface OrderControllerRequestData {
     destination: Coordinate;
     departure: Coordinate;
     sender: DeliverParticipant;
-    recipient: DeliverParticipant;
+    receiver: DeliverParticipant;
+  };
+  updateOrderDeliveryPerson: {
+    walletAddress: string;
+    orderId: number;
   };
 }
 
@@ -195,27 +199,8 @@ export const postOrderSchema: Schema = {
 //   orderId: number
 // }
 
-// PATCH /order
-export const patchOrderSchema: Schema = {
-  userWalletAddress: {
-    escape: true,
-    notEmpty: {
-      errorMessage: DATA.NOT_EXIST,
-    },
-    isString: {
-      errorMessage: mustBe(TYPE.STRING),
-    },
-  },
-  orderId: {
-    notEmpty: {
-      errorMessage: DATA.NOT_EXIST,
-    },
-    isInt: {
-      errorMessage: mustBe(TYPE.INTEGER),
-    },
-    isString: {
-      negated: true,
-      errorMessage: mustBe(TYPE.INTEGER),
-    },
-  },
+// PATCH /order/delivery-person
+export const patchOrderDeliveryPersonSchema: Schema = {
+  walletAddress: existAndString,
+  orderId: existAndInteger,
 };
