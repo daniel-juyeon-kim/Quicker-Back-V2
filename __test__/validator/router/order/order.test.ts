@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../util/http-response";
 import { validate } from "../../../../validator";
 import {
+  getOrderCoordinatesSchema,
   patchOrderDeliveryPersonSchema,
   postOrderSchema,
 } from "../../../../validator/schema/routes/order/order-controller-request-data";
@@ -16,7 +17,7 @@ beforeEach(() => {
   next.mockClear();
 });
 
-describe("POST /order 요청 데이터 검증 테스트", () => {
+describe("POST /order", () => {
   const runValidate = validate(postOrderSchema, ["body"]);
 
   describe("통과하는 테스트", () => {
@@ -45,7 +46,7 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
           name: "John Doe",
           phone: "01012341234",
         },
-        recipient: {
+        receiver: {
           name: "Jane Doe",
           phone: "01098765432",
         },
@@ -78,7 +79,7 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
           name: "John Doe",
           phone: "01012341234",
         },
-        recipient: {
+        receiver: {
           name: "Jane Doe",
           phone: "01098765432",
         },
@@ -99,284 +100,137 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
       expect(res.send).toHaveBeenCalledWith(
         new HttpErrorResponse(400, [
           {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "product.width",
             location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "정수 이어야 합니다.",
-            path: "product.width",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "product.length",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "정수 이어야 합니다.",
-            path: "product.length",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "product.height",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "정수 이어야 합니다.",
-            path: "product.height",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "product.weight",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "정수 이어야 합니다.",
-            path: "product.weight",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
             msg: "데이터가 존재하지 않습니다.",
             path: "walletAddress",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "문자열 이어야 합니다.",
-            path: "walletAddress",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
+            location: "body",
             msg: "데이터가 존재하지 않습니다.",
             path: "destination",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "객체 이어야 합니다.",
-            path: "destination",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
+            location: "body",
             msg: "데이터가 존재하지 않습니다.",
             path: "departure",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "객체 이어야 합니다.",
-            path: "departure",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
+            location: "body",
             msg: "데이터가 존재하지 않습니다.",
             path: "product",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "객체 이어야 합니다.",
-            path: "product",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
+            location: "body",
             msg: "데이터가 존재하지 않습니다.",
             path: "sender",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "객체 이어야 합니다.",
-            path: "sender",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
+            location: "body",
             msg: "데이터가 존재하지 않습니다.",
             path: "sender.name",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "문자열 이어야 합니다.",
-            path: "sender.name",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
+            location: "body",
             msg: "데이터가 존재하지 않습니다.",
-            path: "recipient",
-            location: "body",
-          },
-          {
+            path: "receiver",
             type: "field",
             value: undefined,
-            msg: "객체 이어야 합니다.",
-            path: "recipient",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
+            location: "body",
             msg: "데이터가 존재하지 않습니다.",
-            path: "recipient.name",
-            location: "body",
-          },
-          {
+            path: "receiver.name",
             type: "field",
             value: undefined,
-            msg: "문자열 이어야 합니다.",
-            path: "recipient.name",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "destination.x",
             location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "실수 이어야 합니다.",
-            path: "destination.x",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "destination.y",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "실수 이어야 합니다.",
-            path: "destination.y",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "departure.x",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "실수 이어야 합니다.",
-            path: "departure.x",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "데이터가 존재하지 않습니다.",
-            path: "departure.y",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
-            msg: "실수 이어야 합니다.",
-            path: "departure.y",
-            location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
             msg: "데이터가 존재하지 않습니다.",
             path: "sender.phone",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "문자열 이어야 합니다.",
-            path: "sender.phone",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
-            msg: "전화번호 형식 이어야 합니다.",
-            path: "sender.phone",
             location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
             msg: "데이터가 존재하지 않습니다.",
-            path: "recipient.phone",
-            location: "body",
-          },
-          {
+            path: "receiver.phone",
             type: "field",
             value: undefined,
-            msg: "문자열 이어야 합니다.",
-            path: "recipient.phone",
-            location: "body",
           },
           {
-            type: "field",
-            value: undefined,
-            msg: "전화번호 형식 이어야 합니다.",
-            path: "recipient.phone",
             location: "body",
-          },
-          {
-            type: "field",
-            value: undefined,
             msg: "데이터가 존재하지 않습니다.",
             path: "transportation",
-            location: "body",
-          },
-          {
             type: "field",
             value: undefined,
-            msg: "배열 이어야 합니다.",
-            path: "transportation",
+          },
+          {
             location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "destination.x",
+            type: "field",
+            value: undefined,
+          },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "destination.y",
+            type: "field",
+            value: undefined,
+          },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "departure.x",
+            type: "field",
+            value: undefined,
+          },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "departure.y",
+            type: "field",
+            value: undefined,
+          },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "product.width",
+            type: "field",
+            value: undefined,
+          },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "product.length",
+            type: "field",
+            value: undefined,
+          },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "product.height",
+            type: "field",
+            value: undefined,
+          },
+          {
+            location: "body",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "product.weight",
+            type: "field",
+            value: undefined,
           },
         ]),
       );
@@ -392,7 +246,7 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
         },
         departure: {
           x: 37.5665,
-          y: "invalidType", // 숫자이어야 함
+          y: "126.978", // 숫자이어야 함
           detail: 12345, // 문자열이어야 함
         },
         product: {
@@ -405,7 +259,7 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
           name: "John Doe",
           phone: "invalidPhoneNumber", // 전화번호 형식이어야 함
         },
-        recipient: {
+        receiver: {
           name: "Jane Doe",
           phone: "invalidPhoneNumber", // 전화번호 형식이어야 함
         },
@@ -415,13 +269,6 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
 
       expect(res.send).toHaveBeenCalledWith(
         new HttpErrorResponse(400, [
-          {
-            location: "body",
-            msg: "정수 이어야 합니다.",
-            path: "product.width",
-            type: "field",
-            value: "notInt",
-          },
           {
             location: "body",
             msg: "문자열 이어야 합니다.",
@@ -438,13 +285,6 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
           },
           {
             location: "body",
-            msg: "Invalid value",
-            path: "destination.x",
-            type: "field",
-            value: "wrongType",
-          },
-          {
-            location: "body",
             msg: "실수 이어야 합니다.",
             path: "destination.x",
             type: "field",
@@ -452,17 +292,17 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
           },
           {
             location: "body",
-            msg: "Invalid value",
-            path: "departure.y",
-            type: "field",
-            value: "invalidType",
-          },
-          {
-            location: "body",
             msg: "실수 이어야 합니다.",
             path: "departure.y",
             type: "field",
-            value: "invalidType",
+            value: "126.978",
+          },
+          {
+            location: "body",
+            msg: "정수 이어야 합니다.",
+            path: "product.width",
+            type: "field",
+            value: "notInt",
           },
           {
             location: "body",
@@ -474,7 +314,7 @@ describe("POST /order 요청 데이터 검증 테스트", () => {
           {
             location: "body",
             msg: "전화번호 형식 이어야 합니다.",
-            path: "recipient.phone",
+            path: "receiver.phone",
             type: "field",
             value: "invalidPhoneNumber",
           },
@@ -505,8 +345,36 @@ describe("PATCH: /order/delivery-person", () => {
     expect(next).toHaveBeenCalled();
   });
 
-  test("실패하는 테스트, 주문 아이디 타입 불일치", async () => {
+  test("실패하는 테스트, 속성누락", async () => {
     req.body.orderId = "3e4";
+
+    await testTarget(req as Request, res as Response, next);
+
+    expect(res.send).toHaveBeenCalledWith(
+      new HttpErrorResponse(400, [
+        {
+          location: "body",
+          msg: "데이터가 존재하지 않습니다.",
+          path: "walletAddress",
+          type: "field",
+          value: undefined,
+        },
+        {
+          location: "body",
+          msg: "정수 이어야 합니다.",
+          path: "orderId",
+          type: "field",
+          value: "3e4",
+        },
+      ]),
+    );
+  });
+
+  test("실패하는 테스트, 타입 불일치", async () => {
+    req.body = {
+      orderId: "3",
+      walletAddress: "0xe829h129k480dflj289308",
+    };
 
     await testTarget(req as Request, res as Response, next);
 
@@ -517,48 +385,63 @@ describe("PATCH: /order/delivery-person", () => {
           msg: "정수 이어야 합니다.",
           path: "orderId",
           type: "field",
-          value: "3e4",
-        },
-        {
-          location: "body",
-          msg: "데이터가 존재하지 않습니다.",
-          path: "walletAddress",
-          type: "field",
-          value: undefined,
-        },
-        {
-          location: "body",
-          msg: "문자열 이어야 합니다.",
-          path: "walletAddress",
-          type: "field",
-          value: undefined,
+          value: "3",
         },
       ]),
     );
   });
+});
 
-  test("실패하는 테스트, 지갑주소 필드 누락", async () => {
-    req.body.orderId = "3";
+describe("GET: /order/coordinates", () => {
+  const testTarget = validate(getOrderCoordinatesSchema, ["query"]);
+
+  test("통과하는 테스트", async () => {
+    req.query = {
+      orderId: "1",
+    };
 
     await testTarget(req as Request, res as Response, next);
 
-    expect(res.send).toHaveBeenCalledWith(
-      new HttpErrorResponse(400, [
-        {
-          location: "body",
-          msg: "데이터가 존재하지 않습니다.",
-          path: "walletAddress",
-          type: "field",
-          value: undefined,
-        },
-        {
-          location: "body",
-          msg: "문자열 이어야 합니다.",
-          path: "walletAddress",
-          type: "field",
-          value: undefined,
-        },
-      ]),
-    );
+    expect(next).toHaveBeenCalledWith();
+  });
+
+  describe("실패하는 테스트", () => {
+    test("타입 미스", async () => {
+      req.query = {
+        orderId: "1d",
+      };
+
+      await testTarget(req as Request, res as Response, next);
+
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
+          {
+            location: "query",
+            msg: "정수 이어야 합니다.",
+            path: "orderId",
+            type: "field",
+            value: "1d",
+          },
+        ]),
+      );
+    });
+
+    test("속성 누락", async () => {
+      req.query = {};
+
+      await testTarget(req as Request, res as Response, next);
+
+      expect(res.send).toHaveBeenCalledWith(
+        new HttpErrorResponse(400, [
+          {
+            location: "query",
+            msg: "데이터가 존재하지 않습니다.",
+            path: "orderId",
+            type: "field",
+            value: undefined,
+          },
+        ]),
+      );
+    });
   });
 });

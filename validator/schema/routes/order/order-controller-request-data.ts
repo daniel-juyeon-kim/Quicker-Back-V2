@@ -21,65 +21,68 @@ export interface OrderControllerRequestData {
     sender: DeliverParticipant;
     receiver: DeliverParticipant;
   };
+
   updateOrderDeliveryPerson: {
     walletAddress: string;
     orderId: number;
   };
+
+  getCoordinates: {
+    orderId: string;
+  };
 }
 
-// GET /order
-export const getOrderSchema = {
-  orderId: {
-    trim: true,
-    escape: true,
-    exists: {
-      errorMessage: DATA.NOT_EXIST,
-    },
-    notEmpty: {
-      errorMessage: DATA.NOT_EXIST,
-    },
-    isInt: {
-      errorMessage: mustBe(TYPE.INTEGER),
-    },
-  },
-};
-
-const existAndInteger = {
+const existInt = {
   notEmpty: {
     errorMessage: DATA.NOT_EXIST,
-  },
-  isInt: {
-    errorMessage: mustBe(TYPE.INTEGER),
-  },
-};
-
-const existAndString = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
-  },
-  isString: {
-    errorMessage: mustBe(TYPE.STRING),
-  },
-};
-
-const existAndObject = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
-  },
-  isObject: {
-    errorMessage: mustBe(TYPE.OBJECT),
-  },
-};
-
-const existAndFloat = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
+    bail: true,
   },
   isString: {
     negated: true,
+    errorMessage: mustBe(TYPE.INTEGER),
+    bail: true,
+  },
+  isInt: {
+    errorMessage: mustBe(TYPE.INTEGER),
+    bail: true,
+  },
+};
+
+const existString = {
+  notEmpty: {
+    errorMessage: DATA.NOT_EXIST,
+    bail: true,
+  },
+  isString: {
+    errorMessage: mustBe(TYPE.STRING),
+    bail: true,
+  },
+};
+
+const existObject = {
+  notEmpty: {
+    errorMessage: DATA.NOT_EXIST,
+    bail: true,
+  },
+  isObject: {
+    errorMessage: mustBe(TYPE.OBJECT),
+    bail: true,
+  },
+};
+
+const existFloat = {
+  notEmpty: {
+    errorMessage: DATA.NOT_EXIST,
+    bail: true,
+  },
+  isString: {
+    negated: true,
+    errorMessage: mustBe(TYPE.FLOAT),
+    bail: true,
   },
   isFloat: {
     errorMessage: mustBe(TYPE.FLOAT),
+    bail: true,
   },
 };
 
@@ -90,96 +93,81 @@ const optionalAndString = {
   },
 };
 
+const existStringTypeInteger = {
+  notEmpty: {
+    errorMessage: DATA.NOT_EXIST,
+    bail: true,
+  },
+  isInt: {
+    errorMessage: mustBe(TYPE.INTEGER),
+    bail: true,
+  },
+};
+
 const transportation = {
   transportation: {
     notEmpty: {
       errorMessage: DATA.NOT_EXIST,
+      bail: true,
     },
     isArray: {
-      bail: true,
       errorMessage: mustBe(TYPE.ARRAY),
+      bail: true,
     },
     custom: {
       options: validateTransportationRequestData,
+      bail: true,
     },
   },
 };
 
 const destination: Schema = {
-  destination: existAndObject,
-  "destination.x": existAndFloat,
-  "destination.y": existAndFloat,
+  destination: existObject,
+  "destination.x": existFloat,
+  "destination.y": existFloat,
   "destination.detail": optionalAndString,
 };
 
 const departure: Schema = {
-  departure: existAndObject,
-  "departure.x": existAndFloat,
-  "departure.y": existAndFloat,
-  "departure.detail": { optional: true, ...existAndString },
+  departure: existObject,
+  "departure.x": existFloat,
+  "departure.y": existFloat,
+  "departure.detail": { optional: true, ...existString },
 };
 
 const product: Schema = {
-  product: existAndObject,
-  "product.width": existAndInteger,
-  "product.length": existAndInteger,
-  "product.height": existAndInteger,
-  "product.weight": existAndInteger,
+  product: existObject,
+  "product.width": existInt,
+  "product.length": existInt,
+  "product.height": existInt,
+  "product.weight": existInt,
 };
 
 const sender: Schema = {
-  sender: existAndObject,
-  "sender.name": existAndString,
+  sender: existObject,
+  "sender.name": existString,
   "sender.phone": {
-    ...existAndString,
+    ...existString,
     isMobilePhone: {
       errorMessage: mustBe(FORMAT.PHONE_NUMBER),
     },
   },
 };
 
-const recipient: Schema = {
-  recipient: existAndObject,
-  "recipient.name": existAndString,
-  "recipient.phone": {
-    ...existAndString,
+const receiver: Schema = {
+  receiver: existObject,
+  "receiver.name": existString,
+  "receiver.phone": {
+    ...existString,
     isMobilePhone: {
       errorMessage: mustBe(FORMAT.PHONE_NUMBER),
     },
   },
 };
-
-/**
- * walletAddress: string
- * detail:string | undefined
- * transportation: ("walking" | "bicycle" | "scooter" | "bike" | "car" | "truck")[]
- * product: {
- *  width: number;
- *  length: number;
- *  height: number;
- *  weight: number;
- * }
- * destination: {
- *  x: number
- *  y: number
- * },
- * departure: {
- *  x: number
- *  y: number
- * }
- * sender: {
- *  name: string;
- *  phone: string;
- * },
- * recipient: {
- *  name: string;
- *  phone: string;
- * }
- */
 
 // POST /order
 export const postOrderSchema: Schema = {
-  walletAddress: existAndString,
+  walletAddress: existString,
   detail: {
     optional: true,
     isString: {
@@ -191,16 +179,16 @@ export const postOrderSchema: Schema = {
   ...departure,
   ...product,
   ...sender,
-  ...recipient,
+  ...receiver,
 };
-
-// body: {
-//   userWalletAddress : string
-//   orderId: number
-// }
 
 // PATCH /order/delivery-person
 export const patchOrderDeliveryPersonSchema: Schema = {
-  walletAddress: existAndString,
-  orderId: existAndInteger,
+  walletAddress: existString,
+  orderId: existInt,
+};
+
+// GET /order/coordinates
+export const getOrderCoordinatesSchema: Schema = {
+  orderId: existStringTypeInteger,
 };
