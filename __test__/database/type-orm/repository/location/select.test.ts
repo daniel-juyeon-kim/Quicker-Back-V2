@@ -133,8 +133,9 @@ describe("findDestinationDepartureByOrderId 테스트", () => {
   });
 
   test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-    await expect(locationRepository.findDestinationDepartureByOrderId(32)).rejects.toThrow(
-      "데이터가 존재하지 않습니다.",
+    const orderId = 32;
+    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toThrow(
+      `${orderId}에 대한 주소 정보가 존재하지 않습니다.`,
     );
   });
 });

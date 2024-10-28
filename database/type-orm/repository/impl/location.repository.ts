@@ -1,5 +1,7 @@
 import { In, Repository } from "typeorm";
+import { UnknownDataBaseError } from "../../../../core";
 import { Order } from "../../entity/order.entity";
+import { NotExistDataError } from "../../util";
 import { AbstractRepository } from "../abstract-repository";
 
 export class LocationRepository extends AbstractRepository {
@@ -8,19 +10,26 @@ export class LocationRepository extends AbstractRepository {
   }
 
   async findDestinationDepartureByOrderId(orderId: number) {
-    const destinationDeparture = await this.repository.findOne({
-      where: { id: orderId },
-      relations: { departure: true, destination: true },
-      select: {
-        id: true,
-        departure: { x: true, y: true },
-        destination: { x: true, y: true },
-      },
-    });
+    try {
+      const destinationDeparture = await this.repository.findOne({
+        where: { id: orderId },
+        relations: { departure: true, destination: true },
+        select: {
+          id: true,
+          departure: { x: true, y: true },
+          destination: { x: true, y: true },
+        },
+      });
 
-    this.validateNotNull(destinationDeparture);
+      this.validateNotNull(destinationDeparture);
 
-    return destinationDeparture;
+      return destinationDeparture;
+    } catch (error) {
+      if (error instanceof NotExistDataError) {
+        throw new NotExistDataError(`${orderId}에 대한 주소 정보가 존재하지 않습니다.`);
+      }
+      throw new UnknownDataBaseError(error);
+    }
   }
 
   async findAllDestinationDepartureByOrderId(orderIds: number[]) {
