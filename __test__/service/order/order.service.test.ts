@@ -23,13 +23,13 @@ import { initializeDataSource, testDataSource } from "../../database/type-orm/re
 
 const dataSource = mock<DataSource>();
 const orderRepository = mock<OrderRepository>();
-const recipientRepository = mock<ReceiverRepository>();
+const receiverRepository = mock<ReceiverRepository>();
 const deliveryPersonMatchedDateRepository = mock<DeliveryPersonMatchedDateRepository>();
 const deliveryUrlMessage = mock<DeliveryUrlMessage>();
 const service = new OrderServiceImpl({
   dataSource,
   orderRepository,
-  recipientRepository,
+  receiverRepository,
   deliveryPersonMatchedDateRepository,
   deliveryUrlMessage,
 });
@@ -37,7 +37,7 @@ const service = new OrderServiceImpl({
 beforeEach(() => {
   mockClear(dataSource);
   mockClear(orderRepository);
-  mockClear(recipientRepository);
+  mockClear(receiverRepository);
   mockClear(deliveryPersonMatchedDateRepository);
   mockClear(deliveryUrlMessage);
 });
@@ -233,7 +233,7 @@ describe("OrderService 테스트", () => {
     });
 
     const orderRepository = new OrderRepositoryImpl(testDataSource.getRepository(Order));
-    const recipientRepository = new ReceiverRepository();
+    const receiverRepository = new ReceiverRepository();
     const deliveryPersonMatchedDateRepository = new DeliveryPersonMatchedDateRepository(
       testDataSource.getRepository(DeliveryPersonMatchedDate),
     );
@@ -241,7 +241,7 @@ describe("OrderService 테스트", () => {
     const service = new OrderServiceImpl({
       dataSource: testDataSource,
       orderRepository,
-      recipientRepository,
+      receiverRepository,
       deliveryPersonMatchedDateRepository,
       deliveryUrlMessage,
     });

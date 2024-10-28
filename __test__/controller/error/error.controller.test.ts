@@ -6,7 +6,7 @@ import {
   ErrorMessageBotErrorHandler,
   SmsApiErrorHandler,
   TmapApiErrorHandler,
-} from "../../../controllers";
+} from "../../../controllers/error";
 import { DataBaseErrorController } from "../../../controllers/error/database/database-error.controller";
 import { ExternalApiErrorController } from "../../../controllers/error/external-api/external-api-error.controller";
 import { UnknownErrorController } from "../../../controllers/error/unknown/unknown-error.controller";

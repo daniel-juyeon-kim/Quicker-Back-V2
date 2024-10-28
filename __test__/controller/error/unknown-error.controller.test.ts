@@ -1,8 +1,9 @@
 import { Response } from "express";
 import { mock, mockClear } from "jest-mock-extended";
+
 import { UnknownErrorController } from "../../../controllers/error/unknown/unknown-error.controller";
 import { ErrorLogger, ErrorMessage, ErrorMessageBot, UnknownDataBaseError } from "../../../core";
-import { DataBaseError } from "../../../database";
+import { NotExistDataError } from "../../../database";
 import { HttpErrorResponse } from "../../../util/http-response";
 
 const fakeDate = new Date(2000, 0, 1);
@@ -49,7 +50,7 @@ describe("UnknownErrorController 테스트", () => {
   });
 
   test("다른 에러 처리", async () => {
-    const error = new DataBaseError("데이터가 존재하지 않습니다.");
+    const error = new NotExistDataError("데이터가 존재하지 않습니다.");
 
     await controller.handle({ error, res: res as Response, date: fakeDate });
 

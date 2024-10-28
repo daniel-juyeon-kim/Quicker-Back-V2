@@ -1,7 +1,11 @@
 import { Response } from "express";
 import { mock, mockClear } from "jest-mock-extended";
-import { ErrorMessageBotErrorHandler, SmsApiErrorHandler, TmapApiErrorHandler } from "../../../../controllers";
 import { ExternalApiErrorController } from "../../../../controllers/error/external-api/external-api-error.controller";
+import {
+  ErrorMessageBotErrorHandler,
+  SmsApiErrorHandler,
+  TmapApiErrorHandler,
+} from "../../../../controllers/error/external-api/handler";
 import { ErrorLogger, ErrorMessageBot, ErrorMessageBotError, SmsApiError, TmapApiError } from "../../../../core";
 import { DuplicatedDataError } from "../../../../database";
 import { HttpErrorResponse } from "../../../../util/http-response";

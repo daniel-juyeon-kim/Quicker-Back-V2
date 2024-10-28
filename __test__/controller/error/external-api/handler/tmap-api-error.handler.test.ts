@@ -1,5 +1,6 @@
 import { mock, mockClear } from "jest-mock-extended";
-import { TmapApiErrorHandler } from "../../../../../controllers";
+
+import { TmapApiErrorHandler } from "../../../../../controllers/error/external-api/handler";
 import { ErrorLogger, ErrorMessageBot, SmsApiError, TmapApiError } from "../../../../../core";
 
 const logger = mock<ErrorLogger>();
