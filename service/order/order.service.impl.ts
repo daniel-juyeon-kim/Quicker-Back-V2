@@ -1,13 +1,50 @@
+import { DataSource } from "typeorm";
+import { DeliveryPersonMatchedDateRepository, ReceiverRepository } from "../../database";
 import { OrderRepository } from "../../database/type-orm/repository/order/order.repository";
+import { DeliveryUrlMessage } from "./delivery-url-message";
 import { OrderService } from "./order.service";
 import { createBasicTransportationEntity } from "./util";
 
 export class OrderServiceImpl implements OrderService {
-  constructor(private readonly repository: OrderRepository) {}
+  private readonly dataSource: DataSource;
+  private readonly orderRepository: OrderRepository;
+  private readonly receiverRepository: ReceiverRepository;
+  private readonly deliverUrlMessage: DeliveryUrlMessage;
+  private readonly deliveryPersonMatchedDateRepository: DeliveryPersonMatchedDateRepository;
+
+  constructor({
+    dataSource,
+    orderRepository,
+    receiverRepository,
+    deliveryUrlMessage,
+    deliveryPersonMatchedDateRepository,
+  }: {
+    dataSource: DataSource;
+    orderRepository: OrderRepository;
+    receiverRepository: ReceiverRepository;
+    deliveryPersonMatchedDateRepository: DeliveryPersonMatchedDateRepository;
+    deliveryUrlMessage: DeliveryUrlMessage;
+  }) {
+    this.dataSource = dataSource;
+    this.orderRepository = orderRepository;
+    this.receiverRepository = receiverRepository;
+    this.deliverUrlMessage = deliveryUrlMessage;
+    this.deliveryPersonMatchedDateRepository = deliveryPersonMatchedDateRepository;
+  }
 
   async createOrder(body: Parameters<OrderService["createOrder"]>[0]) {
     const transportation = createBasicTransportationEntity(body.transportation);
 
-    await this.repository.create({ ...body, transportation });
+    await this.orderRepository.create({ ...body, transportation });
+  }
+
+  async matchDeliveryPersonAtOrder({ orderId, walletAddress }: { orderId: number; walletAddress: string }) {
+    await this.dataSource.transaction(async (manager) => {
+      await this.orderRepository.updateDeliveryPersonAtOrder(manager, { orderId, walletAddress });
+      await this.deliveryPersonMatchedDateRepository.create(manager, orderId);
+      const receiver = await this.receiverRepository.findPhoneNumberByOrderId(manager, orderId);
+
+      await this.deliverUrlMessage.sendToReceiver(receiver, { orderId, walletAddress });
+    });
   }
 }
