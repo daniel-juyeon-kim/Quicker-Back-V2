@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Quicker Server API",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Quicker 서버 Api 문서"
   },
   "tags": [
@@ -415,7 +415,7 @@
                     },
                     "required": ["name", "phone"]
                   },
-                  "recipient": {
+                  "receiver": {
                     "type": "object",
                     "description": "수취인에 대한 정보",
                     "properties": {
@@ -436,7 +436,7 @@
                   "destination",
                   "departure",
                   "sender",
-                  "recipient"
+                  "receiver"
                 ]
               }
             }
@@ -479,6 +479,103 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/delivery-person": {
+      "patch": {
+        "tags": ["order"],
+        "summary": "배송원 배정",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "walletAddress": {
+                    "type": "string",
+                    "description": "사용자 지갑주소"
+                  },
+                  "orderId": {
+                    "type": "number",
+                    "description": "주문 아이디"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response200"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "존재하지 않는 데이터 (사용자, 수취인, 주문, ...)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "중복된 데이터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response409"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "의뢰인과 배송원의 정보가 동일함",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response422"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "외부 api 서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response502"
                 }
               }
             }
@@ -574,6 +671,23 @@
           }
         }
       },
+      "response422": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 422
+          },
+          "message": {
+            "type": "string",
+            "example": "Unprocessable Content"
+          },
+          "properties": {
+            "type": "string",
+            "description": "에러 메시지"
+          }
+        }
+      },
       "response500": {
         "type": "object",
         "properties": {
@@ -584,6 +698,19 @@
           "message": {
             "type": "string",
             "example": "Internal Server Error"
+          }
+        }
+      },
+      "response502": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 502
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad Gateway"
           }
         }
       }
