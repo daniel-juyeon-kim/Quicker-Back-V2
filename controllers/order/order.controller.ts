@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { matchedData } from "express-validator";
-import { averageInstance, locationInstance, orderInstance, roomInstance, userInstance } from "../../maria/commands";
+import { averageInstance, orderInstance, roomInstance, userInstance } from "../../maria/commands";
 import { Order } from "../../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../../mongo/command";
 import connectMongo from "../../mongo/connector";
@@ -38,36 +38,6 @@ export class OrderController {
 
       res.send(new HttpResponse(200));
     } catch (error) {
-      next(error);
-    }
-  };
-
-  // query {
-  //   orderId
-  // }
-
-  // response : {
-  //   id: number;
-  //   Destination : {
-  //     X: number;
-  //     Y: number;
-  //   }
-  //   Departure: {
-  //     X!: number;
-  //     Y!: number;
-  //   }
-  // }
-
-  getCoordinates = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const orderId = req.query.orderid;
-
-      if (typeof orderId === "string") {
-        const location = await locationInstance.find(parseInt(orderId));
-        res.send(location);
-      }
-    } catch (error) {
-      console.error(error);
       next(error);
     }
   };

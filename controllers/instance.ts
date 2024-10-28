@@ -2,16 +2,18 @@ import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 
 import { ErrorLogger, errorMessageBot } from "../core";
-import { orderService, userService } from "../service";
+import { orderLocationService, orderService, userService } from "../service";
 import { ErrorControllerImpl, ErrorMessageBotErrorHandler, SmsApiErrorHandler, TmapApiErrorHandler } from "./error";
 import { DataBaseErrorController } from "./error/database/database-error.controller";
 import { ExternalApiErrorController } from "./error/external-api/external-api-error.controller";
 import { UnknownErrorController } from "./error/unknown/unknown-error.controller";
+import { OrderLocationController } from "./order/location/order-location.controller";
 import { OrderController } from "./order/order.controller";
 import { UserController } from "./user.controller";
 
 export const userController = new UserController(userService);
 export const orderController = new OrderController(orderService);
+export const orderLocationController = new OrderLocationController(orderLocationService);
 
 const databaseErrorController = new DataBaseErrorController();
 

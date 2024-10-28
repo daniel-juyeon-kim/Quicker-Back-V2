@@ -1,7 +1,7 @@
 import express from "express";
 
 import multer from "multer";
-import { orderController } from "../controllers";
+import { orderController, orderLocationController } from "../controllers";
 import { validate } from "../validator";
 import {
   getOrderImageCompleteSchema,
@@ -9,7 +9,7 @@ import {
 } from "../validator/schema/routes/order/image/complete";
 import { getOrderImageFailSchema, postOrderImageFailSchema } from "../validator/schema/routes/order/image/fail";
 import {
-  getOrderSchema,
+  getOrderCoordinatesSchema,
   patchOrderDeliveryPersonSchema,
   postOrderSchema,
 } from "../validator/schema/routes/order/order-controller-request-data";
@@ -50,7 +50,7 @@ router.patch(
 //     y: number
 //   }
 // }
-router.get("/coordinates", validate(getOrderSchema, ["query"]), orderController.getCoordinates);
+router.get("/coordinates", validate(getOrderCoordinatesSchema, ["query"]), orderLocationController.getCoordinates);
 
 // 배송이미지
 
