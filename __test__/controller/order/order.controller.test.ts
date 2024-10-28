@@ -7,6 +7,7 @@ import { UnknownDataBaseError } from "../../../core";
 import { NotExistDataError } from "../../../database";
 import { OrderService } from "../../../service/order/order.service";
 import { HttpResponse } from "../../../util/http-response";
+import { OrderControllerRequestData } from "../../../validator/schema/routes/order/order-controller-request-data";
 
 const service = mock<OrderService>();
 const controller = new OrderController(service);
@@ -27,10 +28,7 @@ describe("OrderController", () => {
     const body: Parameters<OrderService["createOrder"]>[0] = {
       walletAddress: "0x123456789abcdef",
       detail: "Fragile, handle with care",
-      transportation: {
-        bicycle: false,
-        truck: true,
-      },
+      transportation: ["bicycle", "truck"],
       product: {
         width: 20,
         length: 30,
@@ -49,7 +47,7 @@ describe("OrderController", () => {
         name: "John Doe",
         phone: "123-456-7890",
       },
-      recipient: {
+      receiver: {
         name: "Jane Smith",
         phone: "987-654-3210",
       },
@@ -93,10 +91,36 @@ describe("OrderController", () => {
     });
   });
 
-  // test("should have a method getCoordinates()", async () => {
-  //   // await controller.getCoordinates(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+  describe("updateOrderDeliveryPerson()", () => {
+    const body: OrderControllerRequestData["updateOrderDeliveryPerson"] = {
+      walletAddress: "지갑주소",
+      orderId: 1,
+    };
+
+    test("통과하는 테스트", async () => {
+      req.body = body;
+
+      await controller.updateOrderDeliveryPerson(req as Request, res as Response, next as NextFunction);
+
+      expect(service.matchDeliveryPersonAtOrder).toHaveBeenCalledWith(body);
+      expect(res.send).toHaveBeenCalledWith(new HttpResponse(200));
+      expect(next).not.toHaveBeenCalledWith();
+    });
+
+    test("실패하는 테스트, next 호출", async () => {
+      req.body = body;
+
+      const error = new NotExistDataError("존제하지 않는 데이터");
+
+      service.matchDeliveryPersonAtOrder.mockRejectedValueOnce(error);
+
+      await controller.updateOrderDeliveryPerson(req as Request, res as Response, next as NextFunction);
+
+      expect(service.matchDeliveryPersonAtOrder).toHaveBeenCalledWith(body);
+      expect(res.send).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 
   // test("should have a method updateOrder()", async () => {
   //   // await controller.updateOrder(req,res,next);

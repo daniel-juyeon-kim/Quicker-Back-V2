@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
 import { matchedData } from "express-validator";
-import { config } from "../../config";
 import { averageInstance, locationInstance, orderInstance, roomInstance, userInstance } from "../../maria/commands";
 import { Order } from "../../maria/models/init-models";
 import { currentLocationInstance, imageInstance } from "../../mongo/command";
 import connectMongo from "../../mongo/connector";
 
-import { keyCreator, messageSender, parseNumericsToNumberList, updateOrder } from "../../core";
+import { parseNumericsToNumberList } from "../../core";
 import { OrderService } from "../../service/order/order.service";
 import { findDistanceKey } from "../../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../../util/http-response";
@@ -50,7 +49,7 @@ export class OrderController {
    *  phone: string;
    * }
    */
-  async createOrder(req: Request, res: Response, next: NextFunction) {
+  createOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body as OrderControllerRequestData["createOrder"];
 
@@ -60,7 +59,22 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
+  // body: {
+  //   userWalletAddress : string
+  //   orderId: number
+  // }
+  updateOrderDeliveryPerson = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body = req.body as OrderControllerRequestData["updateOrderDeliveryPerson"];
+
+      await this.service.matchDeliveryPersonAtOrder(body);
+
+      res.send(new HttpResponse(200));
+    } catch (error) {
+      next(error);
+    }
+  };
 
   // query {
   //   orderId
@@ -86,24 +100,6 @@ export class OrderController {
         const location = await locationInstance.find(parseInt(orderId));
         res.send(location);
       }
-    } catch (error) {
-      console.error(error);
-      next(error);
-    }
-  }
-
-  // body: {
-  //   userWalletAddress : string
-  //   orderId: number
-  // }
-
-  // response 200
-  async updateOrder(req: Request, res: Response, next: NextFunction) {
-    try {
-      const body = req.body;
-      //TODO: 리팩토링 보류
-      await updateOrder(body, messageSender, keyCreator, config.urlCryptoKey as string);
-      res.send(new HttpResponse(200));
     } catch (error) {
       console.error(error);
       next(error);
