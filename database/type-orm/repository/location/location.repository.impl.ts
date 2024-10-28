@@ -3,8 +3,9 @@ import { UnknownDataBaseError } from "../../../../core";
 import { Order } from "../../entity/order.entity";
 import { NotExistDataError } from "../../util";
 import { AbstractRepository } from "../abstract-repository";
+import { LocationRepository } from "./location.repository";
 
-export class LocationRepository extends AbstractRepository {
+export class LocationRepositoryImpl extends AbstractRepository implements LocationRepository {
   constructor(private readonly repository: Repository<Order>) {
     super();
   }

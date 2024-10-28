@@ -1,15 +1,11 @@
-import {
-  Departure,
-  Destination,
-  LocationRepository,
-  Order,
-  Product,
-  Transportation,
-  User,
-} from "../../../../../database/type-orm";
+import { mock } from "jest-mock-extended";
+import { Repository } from "typeorm";
+import { UnknownDataBaseError } from "../../../../../core";
+import { Departure, Destination, Order, Product, Transportation, User } from "../../../../../database/type-orm";
+import { LocationRepositoryImpl } from "../../../../../database/type-orm/repository/location/location.repository.impl";
 import { initializeDataSource, testDataSource } from "../data-source";
 
-const locationRepository = new LocationRepository(testDataSource.getRepository(Order));
+const locationRepository = new LocationRepositoryImpl(testDataSource.getRepository(Order));
 
 const createUser = async () => {
   const user = testDataSource.manager.create(User, {
@@ -136,6 +132,23 @@ describe("findDestinationDepartureByOrderId 테스트", () => {
     const orderId = 32;
     await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toThrow(
       `${orderId}에 대한 주소 정보가 존재하지 않습니다.`,
+    );
+  });
+
+  test("실패하는 테스트, 예측하지 못한 에러", async () => {
+    const orderId = 32;
+    const repository = mock<Repository<Order>>();
+    const error = new Error("알 수 없는 에러");
+
+    repository.findOne.mockRejectedValue(error);
+
+    const locationRepository = new LocationRepositoryImpl(repository as Repository<Order>);
+
+    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toBeInstanceOf(
+      UnknownDataBaseError,
+    );
+    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toStrictEqual(
+      expect.objectContaining(error),
     );
   });
 });
