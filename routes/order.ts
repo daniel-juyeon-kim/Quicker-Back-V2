@@ -10,7 +10,7 @@ import {
 import { getOrderImageFailSchema, postOrderImageFailSchema } from "../validator/schema/routes/order/image/fail";
 import {
   getOrderSchema,
-  patchOrderSchema,
+  patchOrderDeliveryPersonSchema,
   postOrderSchema,
 } from "../validator/schema/routes/order/order-controller-request-data";
 
@@ -72,7 +72,7 @@ const router = express.Router();
 // message: "OK"
 router.post("/", validate(postOrderSchema, ["body"]), orderController.createOrder);
 
-// PATCH /order -> /order/deliver
+// PATCH /order -> /order/delivery-person
 
 // body {
 //   userWalletAddress: string
@@ -83,7 +83,11 @@ router.post("/", validate(postOrderSchema, ["body"]), orderController.createOrde
 
 // code: 200,
 // message: "OK"
-router.patch("/", validate(patchOrderSchema, ["body"]), orderController.updateOrder);
+router.patch(
+  "/delivery-person",
+  validate(patchOrderDeliveryPersonSchema, ["body"]),
+  orderController.updateOrderDeliveryPerson,
+);
 
 // GET /order -> /order/coordinates
 

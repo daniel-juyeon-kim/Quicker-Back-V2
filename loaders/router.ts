@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import { errorController } from "../controllers";
 import notFound from "../routes/not-found";
 
+import order from "../routes/order";
 import user from "../routes/user";
 import swaggerDocumentV1 from "../swagger.v1.json";
 import swaggerDocumentV2 from "../swagger.v2.json";
@@ -25,7 +26,7 @@ export const router = {
     // 서비스용 라우터
     // app.use("/room", room);
     app.use("/user", user);
-    // app.use("/order", order);
+    app.use("/order", order);
     // app.use("/orders", orders);
 
     // app.use("/current-deliver-location", currentLocation);
