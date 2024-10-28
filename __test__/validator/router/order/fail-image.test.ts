@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
-import { HttpErrorResponse } from "../../../../../../util/http-response";
-import { DATA, mustBe, TYPE, validate } from "../../../../../../validator";
+import { HttpErrorResponse } from "../../../../util/http-response";
+import { DATA, mustBe, TYPE, validate } from "../../../../validator";
 import {
-  getOrderImageFailSchema,
+  getOrderFailImageSchema,
   postOrderImageFailSchema,
-} from "../../../../../../validator/schema/routes/order/image/fail";
-import { TestName } from "../../../types/test-name";
+} from "../../../../validator/schema/routes/order/order-fail-image-controller-request-data";
+import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -19,7 +19,7 @@ beforeEach(() => {
 });
 
 describe("GET: /order/image/fail", () => {
-  const testTarget = validate(getOrderImageFailSchema, ["query"]);
+  const testTarget = validate(getOrderFailImageSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
@@ -66,14 +66,7 @@ describe("GET: /order/image/fail", () => {
             msg: DATA.NOT_EXIST,
             path: "orderId",
             type: "field",
-            value: "",
-          },
-          {
-            location: "query",
-            msg: "정수 이어야 합니다.",
-            path: "orderId",
-            type: "field",
-            value: "",
+            value: undefined,
           },
         ]),
       );

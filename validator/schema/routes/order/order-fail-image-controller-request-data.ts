@@ -1,17 +1,15 @@
-import { DATA, mustBe, TYPE } from "../../../../../error-message";
+import { DATA, mustBe, TYPE } from "../../../error-message";
+import { existStringTypeInt } from "../../util";
 
-// GET /order/image/fail
-export const getOrderImageFailSchema = {
-  orderId: {
-    trim: true,
-    escape: true,
-    notEmpty: {
-      errorMessage: DATA.NOT_EXIST,
-    },
-    isInt: {
-      errorMessage: mustBe(TYPE.INTEGER),
-    },
-  },
+export interface OrderFailImageControllerRequestData {
+  getOrderFailImage: {
+    orderId: string;
+  };
+}
+
+// GET /order/fail-image
+export const getOrderFailImageSchema = {
+  orderId: existStringTypeInt,
 };
 
 // POST /order/image/fail

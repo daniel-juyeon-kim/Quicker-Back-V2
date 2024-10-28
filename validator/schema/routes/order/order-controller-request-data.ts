@@ -1,5 +1,6 @@
 import { Schema } from "express-validator";
 import { DATA, FORMAT, mustBe, TYPE } from "../../../error-message";
+import { existFloat, existInt, existObject, existString, existStringTypeInt, optionalAndString } from "../../util";
 import { validateTransportationRequestData } from "./custom-validator";
 
 type Coordinate = { x: number; y: number };
@@ -31,78 +32,6 @@ export interface OrderControllerRequestData {
     orderId: string;
   };
 }
-
-const existInt = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
-    bail: true,
-  },
-  isString: {
-    negated: true,
-    errorMessage: mustBe(TYPE.INTEGER),
-    bail: true,
-  },
-  isInt: {
-    errorMessage: mustBe(TYPE.INTEGER),
-    bail: true,
-  },
-};
-
-const existString = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
-    bail: true,
-  },
-  isString: {
-    errorMessage: mustBe(TYPE.STRING),
-    bail: true,
-  },
-};
-
-const existObject = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
-    bail: true,
-  },
-  isObject: {
-    errorMessage: mustBe(TYPE.OBJECT),
-    bail: true,
-  },
-};
-
-const existFloat = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
-    bail: true,
-  },
-  isString: {
-    negated: true,
-    errorMessage: mustBe(TYPE.FLOAT),
-    bail: true,
-  },
-  isFloat: {
-    errorMessage: mustBe(TYPE.FLOAT),
-    bail: true,
-  },
-};
-
-const optionalAndString = {
-  optional: true,
-  isString: {
-    errorMessage: mustBe(TYPE.STRING),
-  },
-};
-
-const existStringTypeInteger = {
-  notEmpty: {
-    errorMessage: DATA.NOT_EXIST,
-    bail: true,
-  },
-  isInt: {
-    errorMessage: mustBe(TYPE.INTEGER),
-    bail: true,
-  },
-};
 
 const transportation = {
   transportation: {
@@ -190,5 +119,5 @@ export const patchOrderDeliveryPersonSchema: Schema = {
 
 // GET /order/coordinates
 export const getOrderCoordinatesSchema: Schema = {
-  orderId: existStringTypeInteger,
+  orderId: existStringTypeInt,
 };
