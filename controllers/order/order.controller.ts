@@ -13,42 +13,12 @@ import { HttpErrorResponse, HttpResponse } from "../../util/http-response";
 import { OrderControllerRequestData } from "../../validator/schema/routes/order/order-controller-request-data";
 
 export class OrderController {
-  constructor(private readonly service: OrderService) {}
+  private readonly service: OrderService;
 
-  /**
-   * walletAddress: string
-   * detail:string | undefined
-   * transportation: {
-   *  walking: boolean | undefined;
-   *  bicycle: boolean | undefined;
-   *  scooter: boolean | undefined;
-   *  bike: boolean | undefined;
-   *  car: boolean | undefined;
-   *  truck: boolean | undefined;
-   * }
-   * product: {
-   *  width: number;
-   *  length: number;
-   *  height: number;
-   *  weight: number;
-   * }
-   * destination: {
-   *  x: number
-   *  y: number
-   * },
-   * departure: {
-   *  x: number
-   *  y: number
-   * }
-   * sender: {
-   *  name: string;
-   *  phone: string;
-   * },
-   * recipient: {
-   *  name: string;
-   *  phone: string;
-   * }
-   */
+  constructor(service: OrderService) {
+    this.service = service;
+  }
+
   createOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body as OrderControllerRequestData["createOrder"];
@@ -60,10 +30,6 @@ export class OrderController {
       next(error);
     }
   };
-  // body: {
-  //   userWalletAddress : string
-  //   orderId: number
-  // }
   updateOrderDeliveryPerson = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body as OrderControllerRequestData["updateOrderDeliveryPerson"];
@@ -92,7 +58,7 @@ export class OrderController {
   //   }
   // }
 
-  async getCoordinates(req: Request, res: Response, next: NextFunction) {
+  getCoordinates = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orderId = req.query.orderid;
 
@@ -104,7 +70,7 @@ export class OrderController {
       console.error(error);
       next(error);
     }
-  }
+  };
 
   // query : {
   //   userWalletAdress: string
@@ -139,7 +105,7 @@ export class OrderController {
   //     WEIGHT: number;
   //   }[]
   // }
-  async getRequests(req: Request, res: Response, next: NextFunction) {
+  getRequests = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { walletAddress } = matchedData(req);
 
@@ -159,7 +125,7 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // query {
   //   orderNum: number
@@ -170,7 +136,7 @@ export class OrderController {
   //   reason: string
   // }
 
-  async getFailImage(req: Request, res: Response, next: NextFunction) {
+  getFailImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const query = req.query;
       const orderId = query.orderNum;
@@ -190,7 +156,7 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // body {
   //   file: string
@@ -198,7 +164,7 @@ export class OrderController {
   // }
 
   // response 200
-  async postFailImage(req: Request, res: Response, next: NextFunction) {
+  postFailImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body;
       const documentFile = req.file;
@@ -216,7 +182,7 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // query {
   //   orderNum: number
@@ -226,7 +192,7 @@ export class OrderController {
   //   image: string
   // }
 
-  async getImage(req: Request, res: Response, next: NextFunction) {
+  getImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const query = req.query;
       const orderId = query.orderNum;
@@ -248,7 +214,7 @@ export class OrderController {
       console.error(error);
       next(error);
     }
-  }
+  };
 
   // body {
   //   file: string
@@ -257,7 +223,7 @@ export class OrderController {
 
   // response 200
 
-  async postImage(req: Request, res: Response, next: NextFunction) {
+  postImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body;
       if (!req.file) throw new Error("image file not exist");
@@ -271,7 +237,7 @@ export class OrderController {
       console.error(error);
       next(error);
     }
-  }
+  };
 
   // query : {
   //   orderIds: string
@@ -306,7 +272,7 @@ export class OrderController {
   //   }
   // }[]
 
-  async orderlist(req: Request, res: Response, next: NextFunction) {
+  orderlist = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { orderIds } = matchedData(req) as { orderIds: string };
 
@@ -317,7 +283,7 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // query {
   //   orderNum: number
@@ -325,7 +291,7 @@ export class OrderController {
 
   // response 200
 
-  async getRoomInfo(req: Request, res: Response, next: NextFunction) {
+  getRoomInfo = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { orderNum } = matchedData(req);
       const room = (await roomInstance.find(parseInt(orderNum))) as Order;
@@ -333,7 +299,7 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // body {
   //   X: number
@@ -343,7 +309,7 @@ export class OrderController {
 
   // response 200
 
-  async postLocation(req: Request, res: Response, next: NextFunction) {
+  postLocation = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { address, ...location } = matchedData(req);
 
@@ -354,7 +320,7 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // query {
   //   quicker: string // address
@@ -365,7 +331,7 @@ export class OrderController {
   //   Y : number
   // }
 
-  async getLocation(req: Request, res: Response, next: NextFunction) {
+  getLocation = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { quicker } = matchedData(req);
 
@@ -384,7 +350,7 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // query {
   //   distance: number
@@ -394,7 +360,7 @@ export class OrderController {
   //   distance: number
   // }
 
-  async getAverageCost(req: Request, res: Response, next: NextFunction) {
+  getAverageCost = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { distance } = matchedData(req);
 
@@ -413,5 +379,5 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }

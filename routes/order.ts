@@ -20,69 +20,9 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 
 // POST /order
-
-// walletAddress: string,
-// Order: {
-//   id: number,
-//   ID_REQ: string,
-//   DETAIL: string
-// },
-// Transportation: {
-//   ID: number,
-//   WALKING: number,
-//   BICYCLE: number,
-//   SCOOTER: number,
-//   BIKE: number,
-//   CAR: number,
-//   TRUCK: number
-// },
-// Destination: {
-//   id: number,
-//   X: number,
-//   Y: number,
-//   DETAIL: string
-// },
-// Departure: {
-//   ID: number,
-//   X: number,
-//   Y: number,
-//   DETAIL: string
-// },
-// Product: {
-//   ID: number,
-//   WIDTH: number,
-//   LENGTH: number,
-//   HEIGHT: number,
-//   WEIGHT: number
-// },
-// Sender: {
-//   ID: number,
-//   NAME: string,
-//   PHONE: string
-// },
-// Recipient: {
-//   id: number,
-//   NAME: string,
-//   PHONE: string
-// }
-
-// Response
-
-// code: 200,
-// message: "OK"
 router.post("/", validate(postOrderSchema, ["body"]), orderController.createOrder);
 
-// PATCH /order -> /order/delivery-person
-
-// body {
-//   userWalletAddress: string
-//   orderId: number
-// }
-
-// Response
-
-// code: 200,
-// message: "OK"
+// PATCH /order/delivery-person
 router.patch(
   "/delivery-person",
   validate(patchOrderDeliveryPersonSchema, ["body"]),
