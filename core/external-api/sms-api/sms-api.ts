@@ -1,5 +1,5 @@
 export interface SmsApi {
-  sendDeliveryTrackingMessage(url: string, to: string): void;
+  sendDeliveryTrackingMessage(url: string, to: string): Promise<void>;
 }
 export type Body = {
   type: string;

@@ -1,22 +1,21 @@
 import fetch from "node-fetch";
-import { Location } from "../../maria/commands/location";
-import { isFulfilled, isNull, validateResponse } from "../../util";
-import { validateEnvValue } from "../../util/env";
-import { EnvConfig } from "../../util/env/types";
-import { ErrorMessage, ErrorMessageBot } from "../slack";
-import { ErrorResponseBody, RequestBody, ResponseBody } from "./types";
+
+import { Location } from "../../../maria/commands/location";
+import { isNull, validateResponse } from "../../../util";
+import { validateEnvValue } from "../../../util/env";
+import { EnvConfig } from "../../../util/env/types";
+import { TmapApiError } from "./tmap-api.error";
+import { RequestBody, ResponseBody } from "./types";
 
 export class TmapApi {
   private readonly REQUEST_API_URL = `https://apis.openapi.sk.com/tmap/routes?version=1&format=json&appKey=`;
   private readonly appKey: string;
-  private readonly slackbot: ErrorMessageBot;
   private readonly KM = 1000;
 
-  constructor(appKey: EnvConfig["tmapApiKey"], slackbot: ErrorMessageBot) {
+  constructor(appKey: EnvConfig["tmapApiKey"]) {
     validateEnvValue("appKey", appKey);
 
     this.appKey = appKey;
-    this.slackbot = slackbot;
   }
 
   public async requestRouteDistances(locations: Location[]) {
@@ -34,10 +33,7 @@ export class TmapApi {
       return isNull(distance) ? null : { orderId: location.id, km: distance };
     });
 
-    return (await Promise.allSettled(promises))
-      .filter(isFulfilled)
-      .map((distance) => distance.value)
-      .filter((distance) => !isNull(distance));
+    return await Promise.allSettled(promises);
   }
 
   private async requestRouteDistance(body: RequestBody) {
@@ -52,10 +48,7 @@ export class TmapApi {
       const responseBody = (await response.json()) as ResponseBody;
       return responseBody.features[0].properties.totalDistance / this.KM;
     } catch (e) {
-      const error = new Error((e as ErrorResponseBody).toString());
-      const errorMessage = new ErrorMessage({ error, date: new Date() });
-      this.slackbot.sendMessage(errorMessage);
-      return null;
+      throw new TmapApiError(e);
     }
   }
 }

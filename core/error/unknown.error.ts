@@ -1,1 +1,5 @@
-export class UnknownError extends Error {}
+export abstract class UnknownError extends Error {
+  constructor(public readonly unknownError: unknown) {
+    super();
+  }
+}

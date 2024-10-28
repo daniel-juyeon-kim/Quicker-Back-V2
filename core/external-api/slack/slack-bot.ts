@@ -1,18 +1,23 @@
 import { ChatPostMessageResponse, WebClient } from "@slack/web-api";
-import { ErrorMessageBot } from ".";
-import { validateEnv } from "../../util/env";
-import { EnvConfig } from "../../util/env/types";
+import { isUndefined } from "../../../util";
+import { validateEnvValue } from "../../../util/env";
+import { EnvConfig } from "../../../util/env/types";
 import { ErrorMessage } from "./error-message";
+import { ErrorMessageBot } from "./error-message-bot";
+import { ErrorMessageBotError } from "./error-message-bot.error";
 
 export class SlackBot implements ErrorMessageBot {
   private readonly client: WebClient;
   private readonly channelId: string;
 
-  constructor(envObject: EnvConfig["slackbot"]) {
-    validateEnv(envObject);
+  constructor({ webClient, channelId }: { webClient: WebClient; channelId: EnvConfig["slackbot"]["channelId"] }) {
+    validateEnvValue("channelId", channelId);
+    if (isUndefined(webClient.token)) {
+      throw new Error("slack token이 존재하지 않습니다.");
+    }
 
-    this.client = new WebClient(envObject.token);
-    this.channelId = envObject.channelId;
+    this.client = webClient;
+    this.channelId = channelId;
   }
 
   public async sendMessage(message: ErrorMessage<unknown>) {
@@ -24,7 +29,7 @@ export class SlackBot implements ErrorMessageBot {
 
       this.validateResponse(response);
     } catch (e) {
-      const error = e as ChatPostMessageResponse;
+      throw new ErrorMessageBotError(e);
     }
   }
 

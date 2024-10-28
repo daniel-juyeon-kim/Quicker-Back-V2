@@ -1,10 +1,10 @@
 import CryptoJS from "crypto-js";
 import fetch from "node-fetch";
-import { validateResponse } from "../../util";
-import { validateEnv } from "../../util/env";
-import { EnvConfig } from "../../util/env/types";
-import { ErrorMessage, ErrorMessageBot } from "../slack";
-import { Body, Headers, SmsApi } from "./types";
+import { validateResponse } from "../../../util";
+import { validateEnv } from "../../../util/env";
+import { EnvConfig } from "../../../util/env/types";
+import { Body, Headers, SmsApi } from "./sms-api";
+import { SmsApiError } from "./sms-api.error";
 
 export class NaverSmsApi implements SmsApi {
   private readonly messageTemplate = `\n[Quicker]\n\n반갑습니다, 고객님.\n고객님의 소중한 상품이 배송 예정입니다.\n\n※ 실시간 배송정보\n `;
@@ -14,10 +14,7 @@ export class NaverSmsApi implements SmsApi {
   private readonly apiUrl: string;
   private readonly fromNumber: string;
 
-  constructor(
-    envObject: EnvConfig["nhnApi"],
-    private readonly slackBot: ErrorMessageBot,
-  ) {
+  constructor(envObject: EnvConfig["nhnApi"]) {
     validateEnv(envObject);
 
     this.accesskey = envObject.accesskey;
@@ -34,8 +31,7 @@ export class NaverSmsApi implements SmsApi {
 
       validateResponse(response);
     } catch (e) {
-      const errorMessage = new ErrorMessage({ error: e as Error, date: new Date() });
-      this.slackBot.sendMessage(errorMessage);
+      throw new SmsApiError(e);
     }
   }
 

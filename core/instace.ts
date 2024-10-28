@@ -1,18 +1,16 @@
-import winston from "winston";
-
-import { Blockchain, Klaytn } from ".";
+import { WebClient } from "@slack/web-api";
 import { config } from "../config";
-import { ErrorFileLogger } from "./error-file-logger";
+import { Blockchain, Klaytn } from "./blockchain";
+import { ErrorMessageBot, NaverSmsApi, SlackBot, SmsApi, TmapApi } from "./external-api";
 import { KeyCreator } from "./key-creator";
-import { MessageSender, NaverSmsApi } from "./message-sender";
-import { ErrorMessageBot, SlackBot } from "./slack";
-import { TmapApi } from "./tmap-api";
 
+const webClient = new WebClient(config.slackbot.token);
+export const errorMessageBot: ErrorMessageBot = new SlackBot({
+  webClient,
+  channelId: config.slackbot.channelId,
+});
 export const keyCreator = new KeyCreator(config.cryptoKey as string);
-export const errorMessageBot: ErrorMessageBot = new SlackBot(config.slackbot);
-export const tmapApi = new TmapApi(config.tmapApiKey, errorMessageBot);
-export const messageSender: MessageSender = new NaverSmsApi(config.nhnApi, errorMessageBot);
-export const blockchain: Blockchain = new Klaytn(config.klaytn.baobobProvider);
 
-export const slackBot = new SlackBot(config.slackbot);
-export const errorLogger = new ErrorFileLogger(winston.createLogger());
+export const tmapApi = new TmapApi(config.tmapApiKey);
+export const messageSender: SmsApi = new NaverSmsApi(config.nhnApi);
+export const blockchain: Blockchain = new Klaytn(config.klaytn.baobobProvider);
