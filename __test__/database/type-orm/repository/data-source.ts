@@ -3,9 +3,9 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { CustomNamingStrategy } from "../../../../database/type-orm/util/custom-naming-strategy";
 
-const ENTITY_PATH = join(`${__dirname}/../../../../database/type-orm/**/*.entity.ts`);
+const ENTITY_PATH = join(`${__dirname}/../../../../database/type-orm/entity/*.entity.ts`);
 
-export const testAppDataSource = new DataSource({
+export const testDataSource = new DataSource({
   type: "sqlite",
   database: ":memory:",
   entities: [ENTITY_PATH],

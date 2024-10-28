@@ -7,12 +7,12 @@ import {
   Transportation,
   User,
 } from "../../../../../database/type-orm";
-import { initializeDataSource, testAppDataSource } from "../data-source";
+import { initializeDataSource, testDataSource } from "../data-source";
 
-const locationRepository = new LocationRepository(testAppDataSource.getRepository(Order));
+const locationRepository = new LocationRepository(testDataSource.getRepository(Order));
 
 const createUser = async () => {
-  const user = testAppDataSource.manager.create(User, {
+  const user = testDataSource.manager.create(User, {
     id: "아이디",
     walletAddress: "지갑주소",
     name: "이름",
@@ -32,7 +32,7 @@ const createUser = async () => {
     },
   });
 
-  await testAppDataSource.manager.save(User, user);
+  await testDataSource.manager.save(User, user);
 };
 
 const createOrder = async (walletAddress: string) => {
@@ -70,7 +70,7 @@ const createOrder = async (walletAddress: string) => {
     phone: "01012345678",
   };
 
-  await testAppDataSource.transaction(async (manager) => {
+  await testDataSource.transaction(async (manager) => {
     const requester = (await manager.findOneBy(User, { walletAddress })) as User;
 
     const order = manager.create(Order, {
@@ -114,9 +114,9 @@ const createOrder = async (walletAddress: string) => {
 };
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
+  await initializeDataSource(testDataSource);
   await createUser();
-  const user = (await testAppDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
+  const user = (await testDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
   await createOrder(user.walletAddress);
   await createOrder(user.walletAddress);
 });

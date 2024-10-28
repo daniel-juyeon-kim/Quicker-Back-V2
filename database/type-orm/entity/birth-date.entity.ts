@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
-import { User } from "./user.entity";
+import { User } from "..";
 
 export type BasicBirthDate = Omit<BirthDate, "user">;
 

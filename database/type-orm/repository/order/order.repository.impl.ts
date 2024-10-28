@@ -1,7 +1,8 @@
 import { In, IsNull, Not, Repository } from "typeorm";
 import { UnknownDataBaseError } from "../../../../core";
+import { isNull } from "../../../../util";
 import { Departure, Destination, Order, Product, Transportation, User } from "../../entity";
-import { NotExistDataError } from "../../util";
+import { BusinessRuleConflictDataError, NotExistDataError } from "../../util";
 import { AbstractRepository } from "../abstract-repository";
 import { OrderRepository } from "./order.repository";
 
@@ -10,10 +11,48 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
     super();
   }
 
+  async updateDeliveryPersonAtOrder(
+    manager: Parameters<OrderRepository["updateDeliveryPersonAtOrder"]>[0],
+    { orderId, walletAddress }: Parameters<OrderRepository["updateDeliveryPersonAtOrder"]>[1],
+  ) {
+    try {
+      const deliverPerson = await manager.findOneBy(User, { walletAddress });
+
+      if (isNull(deliverPerson)) {
+        throw new NotExistDataError(`${walletAddress} 에 대응되는 사용자가 존재하지 않습니다.`);
+      }
+
+      const order = await manager.findOne(Order, {
+        relations: { requester: true },
+        select: {
+          requester: { walletAddress: true },
+        },
+        where: { id: orderId },
+      });
+
+      if (isNull(order)) {
+        throw new NotExistDataError(`${orderId} 에 대응되는 주문이 존재하지 않습니다.`);
+      }
+
+      if (deliverPerson.walletAddress === order.requester.walletAddress) {
+        throw new BusinessRuleConflictDataError(`${walletAddress}가 의뢰인의 지갑주소와 동일합니다.`);
+      }
+
+      await manager.update(Order, { id: orderId }, { deliveryPerson: deliverPerson });
+    } catch (error) {
+      if (error instanceof NotExistDataError) {
+        throw error;
+      } else if (error instanceof BusinessRuleConflictDataError) {
+        throw error;
+      }
+      throw new UnknownDataBaseError(error);
+    }
+  }
+
   async create({
     walletAddress,
     detail,
-    recipient,
+    receiver,
     destination,
     sender,
     departure,
@@ -49,9 +88,9 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
           id,
           ...destination,
           order: order,
-          recipient: {
+          receiver: {
             id,
-            ...recipient,
+            ...receiver,
           },
         });
         await manager.save(Departure, {
@@ -76,13 +115,13 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
     const requester = await this.repository.findOne({
       relations: {
         requester: true,
-        deliver: true,
+        deliveryPerson: true,
       },
       where: { id: orderId },
       select: {
         id: true,
         requester: { id: true },
-        deliver: { id: true },
+        deliveryPerson: { id: true },
       },
     });
 
@@ -101,7 +140,7 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
       },
       where: {
         requester: { id: Not(deliverId) },
-        deliver: { id: IsNull() },
+        deliveryPerson: { id: IsNull() },
       },
       select: {
         id: true,
@@ -146,7 +185,7 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
           sender: true,
         },
         destination: {
-          recipient: true,
+          receiver: true,
         },
       },
       where: { id: In(orderIds) },
@@ -172,7 +211,7 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
           x: true,
           y: true,
           detail: true,
-          recipient: {
+          receiver: {
             name: true,
             phone: true,
           },
@@ -181,16 +220,6 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
     });
 
     return order;
-  }
-
-  async updateDeliver(deliverId: string, orderId: number) {
-    await this.repository.manager.transaction(async (manager) => {
-      const deliver = await manager.findOneBy(User, { id: deliverId });
-
-      this.validateNotNull(deliver);
-
-      return manager.update(Order, { id: orderId }, { deliver });
-    });
   }
 
   async deleteByOrderId(orderId: number) {

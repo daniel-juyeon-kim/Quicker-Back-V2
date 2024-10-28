@@ -1,1 +1,1 @@
-export class DataBaseError extends Error {}
+export abstract class DataBaseError extends Error {}

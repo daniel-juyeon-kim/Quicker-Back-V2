@@ -7,12 +7,12 @@ import {
   Transportation,
   User,
 } from "../../../../../database/type-orm";
-import { initializeDataSource, testAppDataSource } from "../data-source";
+import { initializeDataSource, testDataSource } from "../data-source";
 
-const chatRoomRepository = new ChatRoomRepository(testAppDataSource.getRepository(Order));
+const chatRoomRepository = new ChatRoomRepository(testDataSource.getRepository(Order));
 
 const createUser = async () => {
-  const user = testAppDataSource.manager.create(User, {
+  const user = testDataSource.manager.create(User, {
     id: "아이디",
     walletAddress: "지갑주소",
     name: "이름",
@@ -32,7 +32,7 @@ const createUser = async () => {
     },
   });
 
-  await testAppDataSource.manager.save(User, user);
+  await testDataSource.manager.save(User, user);
 };
 
 const createOrder = async (requester: User) => {
@@ -56,7 +56,7 @@ const createOrder = async (requester: User) => {
     y: 112,
     detail: "디테일",
   };
-  const recipient = {
+  const receiver = {
     name: "이름",
     phone: "01012345678",
   };
@@ -69,7 +69,7 @@ const createOrder = async (requester: User) => {
     name: "이름",
     phone: "01012345678",
   };
-  await testAppDataSource.transaction(async (manager) => {
+  await testDataSource.transaction(async (manager) => {
     const order = manager.create(Order, {
       detail,
       requester,
@@ -93,9 +93,9 @@ const createOrder = async (requester: User) => {
       id,
       ...destination,
       order: order,
-      recipient: {
+      receiver: {
         id,
-        ...recipient,
+        ...receiver,
       },
     });
     await manager.save(Departure, {
@@ -111,17 +111,17 @@ const createOrder = async (requester: User) => {
 };
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
+  await initializeDataSource(testDataSource);
   await createUser();
 });
 
 beforeEach(async () => {
-  const user = (await testAppDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
+  const user = (await testDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
   await createOrder(user);
 });
 
 afterEach(async () => {
-  await testAppDataSource.manager.clear(Order);
+  await testDataSource.manager.clear(Order);
 });
 
 describe("findChatParticipantByOrderId 테스트", () => {
@@ -140,7 +140,7 @@ describe("findChatParticipantByOrderId 테스트", () => {
         id: orderId,
         x: 37.5,
         y: 112,
-        recipient: { phone: "01012345678" },
+        receiver: { phone: "01012345678" },
       },
     });
   });

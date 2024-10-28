@@ -11,7 +11,7 @@ export class ChatRoomRepository extends AbstractRepository {
     const order = await this.repository.findOne({
       relations: {
         departure: { sender: true },
-        destination: { recipient: true },
+        destination: { receiver: true },
       },
       where: {
         id: orderId,
@@ -28,7 +28,7 @@ export class ChatRoomRepository extends AbstractRepository {
           id: true,
           x: true,
           y: true,
-          recipient: { phone: true },
+          receiver: { phone: true },
         },
       },
     });

@@ -1,12 +1,11 @@
-import { UserRepositoryImpl } from "../../../../../database/type-orm/repository/impl/user/user.repository.impl";
-
 import { BirthDate, DataBaseError, JoinDate, NotExistDataError, ProfileImage, User } from "../../../../../database";
-import { initializeDataSource, testAppDataSource } from "../data-source";
+import { UserRepositoryImpl } from "../../../../../database/type-orm/repository/impl/user/user.repository.impl";
+import { initializeDataSource, testDataSource } from "../data-source";
 
-const userRepository = new UserRepositoryImpl(testAppDataSource.getRepository(User));
+const userRepository = new UserRepositoryImpl(testDataSource.getRepository(User));
 
 const createUser = async () => {
-  const user = testAppDataSource.manager.create(User, {
+  const user = testDataSource.manager.create(User, {
     id: "아이디",
     walletAddress: "지갑주소",
     name: "이름",
@@ -26,15 +25,15 @@ const createUser = async () => {
     },
   });
 
-  await testAppDataSource.manager.save(User, user);
+  await testDataSource.manager.save(User, user);
 };
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
+  await initializeDataSource(testDataSource);
 });
 
 afterEach(async () => {
-  await testAppDataSource.manager.clear(User);
+  await testDataSource.manager.clear(User);
 });
 
 describe("UserRepository 테스트", () => {
@@ -43,10 +42,10 @@ describe("UserRepository 테스트", () => {
       test("통과하는 테스트", async () => {
         const userId = "아이디";
 
-        await expect(testAppDataSource.manager.existsBy(User, { id: userId })).resolves.toBe(false);
-        await expect(testAppDataSource.manager.existsBy(ProfileImage, { id: userId })).resolves.toBe(false);
-        await expect(testAppDataSource.manager.existsBy(BirthDate, { id: userId })).resolves.toBe(false);
-        await expect(testAppDataSource.manager.existsBy(JoinDate, { id: userId })).resolves.toBe(false);
+        await expect(testDataSource.manager.existsBy(User, { id: userId })).resolves.toBe(false);
+        await expect(testDataSource.manager.existsBy(ProfileImage, { id: userId })).resolves.toBe(false);
+        await expect(testDataSource.manager.existsBy(BirthDate, { id: userId })).resolves.toBe(false);
+        await expect(testDataSource.manager.existsBy(JoinDate, { id: userId })).resolves.toBe(false);
 
         const user = {
           id: userId,
@@ -60,7 +59,7 @@ describe("UserRepository 테스트", () => {
 
         await userRepository.create({ user, birthDate, id: userId });
 
-        const userInstance = await testAppDataSource.manager.findOne(User, {
+        const userInstance = await testDataSource.manager.findOne(User, {
           relations: {
             profileImage: true,
             birthDate: true,
@@ -146,7 +145,7 @@ describe("UserRepository 테스트", () => {
         const walletAddress = "지갑주소";
 
         const findProfileImageId = async (walletAddress: string) => {
-          const profileImage = await testAppDataSource.manager.findOne(ProfileImage, {
+          const profileImage = await testDataSource.manager.findOne(ProfileImage, {
             relations: { user: true },
             where: { user: { walletAddress } },
             select: {

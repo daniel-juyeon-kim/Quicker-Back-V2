@@ -1,4 +1,4 @@
-import { ErrorMessageBot } from "../../core/slack";
+import { ErrorMessageBot } from "../../core";
 import { CronService } from "../../cron/cron-service";
 import { DataService } from "../../cron/data/data-service";
 import { TableService } from "../../cron/table";

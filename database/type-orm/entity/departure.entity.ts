@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
-import { Order } from "./order.entity";
-import { Sender } from "./sender.entity";
+import { Order, Sender } from "..";
 
 @Entity()
 export class Departure {

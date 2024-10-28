@@ -8,9 +8,9 @@ import {
   Transportation,
   User,
 } from "../../../../../../database/type-orm";
-import { initializeDataSource, testAppDataSource } from "../../data-source";
+import { initializeDataSource, testDataSource } from "../../data-source";
 
-const orderRepository = new OrderRepositoryImpl(testAppDataSource.getRepository(Order));
+const orderRepository = new OrderRepositoryImpl(testDataSource.getRepository(Order));
 
 const createUser = async (dataSource: DataSource) => {
   const userId = "아이디";
@@ -74,7 +74,7 @@ const createOrder = async (dataSource: DataSource, requester: User) => {
       y: 112,
       detail: "디테일",
       order,
-      recipient: {
+      receiver: {
         id,
         name: "이름",
         phone: "01012345678",
@@ -104,12 +104,12 @@ const createOrder = async (dataSource: DataSource, requester: User) => {
 };
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
-  await createUser(testAppDataSource);
+  await initializeDataSource(testDataSource);
+  await createUser(testDataSource);
 
-  const user = (await testAppDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
-  await createOrder(testAppDataSource, user);
-  await createOrder(testAppDataSource, user);
+  const user = (await testDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
+  await createOrder(testDataSource, user);
+  await createOrder(testDataSource, user);
 });
 
 describe("findAllCreatedOrDeliveredOrderDetailByOrderId 테스트", () => {
@@ -119,14 +119,14 @@ describe("findAllCreatedOrDeliveredOrderDetailByOrderId 테스트", () => {
         id: 1,
         detail: "디테일",
         departure: { detail: "디테일", sender: { name: "이름", phone: "01012345678" }, x: 0, y: 0 },
-        destination: { detail: "디테일", recipient: { name: "이름", phone: "01012345678" }, x: 37.5, y: 112 },
+        destination: { detail: "디테일", receiver: { name: "이름", phone: "01012345678" }, x: 37.5, y: 112 },
         product: { height: 0, length: 0, weight: 0, width: 0 },
       },
       {
         id: 2,
         detail: "디테일",
         departure: { detail: "디테일", sender: { name: "이름", phone: "01012345678" }, x: 0, y: 0 },
-        destination: { detail: "디테일", recipient: { name: "이름", phone: "01012345678" }, x: 37.5, y: 112 },
+        destination: { detail: "디테일", receiver: { name: "이름", phone: "01012345678" }, x: 37.5, y: 112 },
         product: { height: 0, length: 0, weight: 0, width: 0 },
       },
     ]);

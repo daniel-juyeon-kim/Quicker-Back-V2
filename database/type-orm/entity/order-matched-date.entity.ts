@@ -1,15 +1,15 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
-import { Order } from "./order.entity";
+import { Order } from "..";
 
 @Entity()
-export class CacheMatchedOrder {
+export class DeliveryPersonMatchedDate {
   @PrimaryColumn()
   id!: number;
 
   @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
   date!: Date;
 
-  @OneToOne(() => Order, (order) => order.cacheMatchedOrder, {
+  @OneToOne(() => Order, (order) => order.deliveryPersonMatchedDate, {
     cascade: ["insert"],
     onDelete: "CASCADE",
   })

@@ -1,14 +1,14 @@
 import { AverageOfCost, AverageOfCostRepository } from "../../../../../database/type-orm";
-import { initializeDataSource, testAppDataSource } from "../data-source";
+import { initializeDataSource, testDataSource } from "../data-source";
 
-const averageRepository = new AverageOfCostRepository(testAppDataSource.getRepository(AverageOfCost));
+const averageRepository = new AverageOfCostRepository(testDataSource.getRepository(AverageOfCost));
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
+  await initializeDataSource(testDataSource);
 });
 
 afterEach(async () => {
-  await testAppDataSource.manager.clear(AverageOfCost);
+  await testDataSource.manager.clear(AverageOfCost);
 });
 
 describe("createAverage 테스트", () => {
@@ -30,6 +30,6 @@ describe("createAverage 테스트", () => {
 
     await averageRepository.createAverage(average);
 
-    await expect(testAppDataSource.manager.existsBy(AverageOfCost, { date: createDate })).resolves.toBe(true);
+    await expect(testDataSource.manager.existsBy(AverageOfCost, { date: createDate })).resolves.toBe(true);
   });
 });

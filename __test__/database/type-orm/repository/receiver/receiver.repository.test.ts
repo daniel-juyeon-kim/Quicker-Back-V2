@@ -3,19 +3,18 @@ import {
   Destination,
   Order,
   Product,
-  Recipient,
-  RecipientRepository,
+  ReceiverRepository,
   Transportation,
   User,
-} from "../../../../../database/type-orm";
-import { initializeDataSource, testAppDataSource } from "../data-source";
+} from "../../../../../database";
+import { initializeDataSource, testDataSource } from "../data-source";
 
-const recipientRepository = new RecipientRepository(testAppDataSource.getRepository(Recipient));
+const receiverRepository = new ReceiverRepository();
 
 const createUser = async () => {
   const id = "아이디";
 
-  const user = testAppDataSource.manager.create(User, {
+  const user = testDataSource.manager.create(User, {
     id,
     walletAddress: "지갑주소",
     name: "이름",
@@ -35,11 +34,11 @@ const createUser = async () => {
     },
   });
 
-  await testAppDataSource.manager.save(user);
+  await testDataSource.manager.save(user);
 };
 
 const createOrder = async (requester: User) => {
-  await testAppDataSource.manager.transaction(async (manager) => {
+  await testDataSource.manager.transaction(async (manager) => {
     const order = manager.create(Order, {
       requester,
       detail: "디테일",
@@ -75,7 +74,7 @@ const createOrder = async (requester: User) => {
       y: 112,
       detail: "디테일",
       order,
-      recipient: {
+      receiver: {
         id,
         name: "이름",
         phone: "01012345678",
@@ -103,29 +102,28 @@ const createOrder = async (requester: User) => {
     ]);
   });
 };
-
 beforeEach(async () => {
-  await initializeDataSource(testAppDataSource);
+  await initializeDataSource(testDataSource);
   await createUser();
-  const user = (await testAppDataSource.manager.findOne(User, { where: { id: "아이디" } })) as User;
+  const user = (await testDataSource.manager.findOne(User, { where: { id: "아이디" } })) as User;
   await createOrder(user);
 });
-
 afterEach(async () => {
-  await Promise.allSettled([testAppDataSource.manager.clear(User), testAppDataSource.manager.clear(Order)]);
+  await Promise.allSettled([testDataSource.manager.clear(User), testDataSource.manager.clear(Order)]);
 });
-
 describe("findPhoneNumberByOrderId 테스트", () => {
   test("통과하는 테스트", async () => {
     const orderId = 1;
 
-    await expect(recipientRepository.findPhoneNumberByOrderId(orderId)).resolves.toEqual({
+    await expect(receiverRepository.findPhoneNumberByOrderId(testDataSource.manager, orderId)).resolves.toEqual({
       id: orderId,
       phone: "01012345678",
     });
   });
 
   test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-    await expect(recipientRepository.findPhoneNumberByOrderId(32)).rejects.toThrow("데이터가 존재하지 않습니다.");
+    await expect(receiverRepository.findPhoneNumberByOrderId(testDataSource.manager, 32)).rejects.toThrow(
+      "데이터가 존재하지 않습니다.",
+    );
   });
 });

@@ -4,15 +4,15 @@ import {
   Destination,
   Order,
   Product,
-  Recipient,
+  Receiver,
   Sender,
   Transportation,
   User,
 } from "../../../../../database/type-orm";
 import { OrderRepositoryImpl } from "../../../../../database/type-orm/repository/order/order.repository.impl";
-import { initializeDataSource, testAppDataSource } from "../data-source";
+import { initializeDataSource, testDataSource } from "../data-source";
 
-const orderRepository = new OrderRepositoryImpl(testAppDataSource.getRepository(Order));
+const orderRepository = new OrderRepositoryImpl(testDataSource.getRepository(Order));
 
 const createUser = async (dataSource: DataSource) => {
   const userId = "아이디";
@@ -76,7 +76,7 @@ const createOrder = async (dataSource: DataSource, requester: User) => {
       y: 112,
       detail: "디테일",
       order,
-      recipient: {
+      receiver: {
         id,
         name: "이름",
         phone: "01012345678",
@@ -106,38 +106,38 @@ const createOrder = async (dataSource: DataSource, requester: User) => {
 };
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
+  await initializeDataSource(testDataSource);
 });
 
 beforeEach(async () => {
-  await createUser(testAppDataSource);
-  const requester = (await testAppDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
-  await createOrder(testAppDataSource, requester);
+  await createUser(testDataSource);
+  const requester = (await testDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
+  await createOrder(testDataSource, requester);
 });
 
 afterEach(async () => {
-  await testAppDataSource.manager.clear(Order);
+  await testDataSource.manager.clear(Order);
 });
 
 describe("orderRepository 테스트", () => {
   test("delete 테스트", async () => {
-    await expect(testAppDataSource.manager.exists(Order)).resolves.toBe(true);
-    await expect(testAppDataSource.manager.exists(Recipient)).resolves.toBe(true);
-    await expect(testAppDataSource.manager.exists(Sender)).resolves.toBe(true);
-    await expect(testAppDataSource.manager.exists(Destination)).resolves.toBe(true);
-    await expect(testAppDataSource.manager.exists(Departure)).resolves.toBe(true);
-    await expect(testAppDataSource.manager.exists(Product)).resolves.toBe(true);
-    await expect(testAppDataSource.manager.exists(Transportation)).resolves.toBe(true);
+    await expect(testDataSource.manager.exists(Order)).resolves.toBe(true);
+    await expect(testDataSource.manager.exists(Receiver)).resolves.toBe(true);
+    await expect(testDataSource.manager.exists(Sender)).resolves.toBe(true);
+    await expect(testDataSource.manager.exists(Destination)).resolves.toBe(true);
+    await expect(testDataSource.manager.exists(Departure)).resolves.toBe(true);
+    await expect(testDataSource.manager.exists(Product)).resolves.toBe(true);
+    await expect(testDataSource.manager.exists(Transportation)).resolves.toBe(true);
 
     const orderId = 1;
     await orderRepository.deleteByOrderId(orderId);
 
-    await expect(testAppDataSource.manager.exists(Order)).resolves.toBe(false);
-    await expect(testAppDataSource.manager.exists(Recipient)).resolves.toBe(false);
-    await expect(testAppDataSource.manager.exists(Sender)).resolves.toBe(false);
-    await expect(testAppDataSource.manager.exists(Destination)).resolves.toBe(false);
-    await expect(testAppDataSource.manager.exists(Departure)).resolves.toBe(false);
-    await expect(testAppDataSource.manager.exists(Product)).resolves.toBe(false);
-    await expect(testAppDataSource.manager.exists(Transportation)).resolves.toBe(false);
+    await expect(testDataSource.manager.exists(Order)).resolves.toBe(false);
+    await expect(testDataSource.manager.exists(Receiver)).resolves.toBe(false);
+    await expect(testDataSource.manager.exists(Sender)).resolves.toBe(false);
+    await expect(testDataSource.manager.exists(Destination)).resolves.toBe(false);
+    await expect(testDataSource.manager.exists(Departure)).resolves.toBe(false);
+    await expect(testDataSource.manager.exists(Product)).resolves.toBe(false);
+    await expect(testDataSource.manager.exists(Transportation)).resolves.toBe(false);
   });
 });

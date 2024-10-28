@@ -1,8 +1,5 @@
 import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
-import { BirthDate } from "./birth-date.entity";
-import { ProfileImage } from "./image.entity";
-import { JoinDate } from "./join-date.entity";
-import { Order } from "./order.entity";
+import { BirthDate, JoinDate, Order, ProfileImage } from "..";
 
 @Entity()
 export class User {
@@ -39,6 +36,6 @@ export class User {
   @OneToMany(() => Order, (order) => order.requester)
   requestOrder!: Order[];
 
-  @OneToMany(() => Order, (order) => order.deliver)
+  @OneToMany(() => Order, (order) => order.deliveryPerson)
   deliverOrder!: Order[];
 }

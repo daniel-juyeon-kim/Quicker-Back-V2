@@ -8,9 +8,9 @@ import {
   Transportation,
   User,
 } from "../../../../../../database/type-orm";
-import { initializeDataSource, testAppDataSource } from "../../data-source";
+import { initializeDataSource, testDataSource } from "../../data-source";
 
-const orderRepository = new OrderRepositoryImpl(testAppDataSource.getRepository(Order));
+const orderRepository = new OrderRepositoryImpl(testDataSource.getRepository(Order));
 
 const createUser = async (dataSource: DataSource) => {
   const userId = "아이디";
@@ -104,11 +104,11 @@ const createOrder = async (dataSource: DataSource, requester: User) => {
 };
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
-  await createUser(testAppDataSource);
+  await initializeDataSource(testDataSource);
+  await createUser(testDataSource);
 
-  const user = (await testAppDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
-  await createOrder(testAppDataSource, user);
+  const user = (await testDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
+  await createOrder(testDataSource, user);
 });
 
 describe("findMatchableOrderByDeliverId 테스트", () => {

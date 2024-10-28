@@ -1,10 +1,10 @@
 import { AverageOfCost, AverageOfCostRepository } from "../../../../../database/type-orm";
-import { initializeDataSource, testAppDataSource } from "../data-source";
+import { initializeDataSource, testDataSource } from "../data-source";
 
-const averageRepository = new AverageOfCostRepository(testAppDataSource.getRepository(AverageOfCost));
+const averageRepository = new AverageOfCostRepository(testDataSource.getRepository(AverageOfCost));
 
 beforeAll(async () => {
-  await initializeDataSource(testAppDataSource);
+  await initializeDataSource(testDataSource);
 });
 
 beforeEach(async () => {
@@ -36,11 +36,11 @@ beforeEach(async () => {
     "60+KM": 45098,
   };
 
-  await testAppDataSource.manager.save(AverageOfCost, [average1, average2]);
+  await testDataSource.manager.save(AverageOfCost, [average1, average2]);
 });
 
 afterEach(async () => {
-  await testAppDataSource.manager.clear(AverageOfCost);
+  await testDataSource.manager.clear(AverageOfCost);
 });
 
 describe("findLastMonthAverageCost 테스트", () => {
@@ -49,7 +49,7 @@ describe("findLastMonthAverageCost 테스트", () => {
   });
 
   test("실패하는 테스트, 값이 존재하지 않음", async () => {
-    await testAppDataSource.manager.clear(AverageOfCost);
+    await testDataSource.manager.clear(AverageOfCost);
 
     await expect(averageRepository.findLastMonthAverageCost("40KM")).rejects.toThrow("데이터가 존재하지 않습니다.");
   });
