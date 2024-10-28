@@ -1,8 +1,15 @@
 import { config } from "../config";
 import { DeliveryUrlCreator, messageSender } from "../core";
-import { deliveryPersonMatchedDateRepository, orderRepository, receiverRepository, userRepository } from "../database";
+import {
+  deliveryPersonMatchedDateRepository,
+  locationRepository,
+  orderRepository,
+  receiverRepository,
+  userRepository,
+} from "../database";
 import { AppDataSource } from "../loaders";
 import { DeliveryUrlMessage } from "./order/delivery-url-message";
+import { OrderLocationServiceImpl } from "./order/location/order-location.service.impl";
 import { OrderServiceImpl } from "./order/order.service.impl";
 import { UserServiceImpl } from "./user/user.service.impl";
 
@@ -24,3 +31,5 @@ export const orderService = new OrderServiceImpl({
   deliveryUrlMessage,
   deliveryPersonMatchedDateRepository,
 });
+
+export const orderLocationService = new OrderLocationServiceImpl(locationRepository);
