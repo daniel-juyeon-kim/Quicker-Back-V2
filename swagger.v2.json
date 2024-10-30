@@ -642,6 +642,96 @@
           }
         }
       }
+    },
+    "/order/fail-image": {
+      "get": {
+        "tags": ["order"],
+        "summary": "배송 실패 이유와 이미지 버퍼를 제공",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "주문 아이디",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "imageBuffer": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "Buffer"
+                            },
+                            "data": {
+                              "type": "array"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "reason": {
+                      "type": "string",
+                      "example": "배송 실패 사유"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "존재하지 않는 주문",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
