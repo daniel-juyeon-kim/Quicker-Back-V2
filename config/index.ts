@@ -21,7 +21,10 @@ export const config = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
   },
-  mongoDB: process.env.MONGO_DB,
+  mongoDB: {
+    url: process.env.MONGO_DB_URI,
+    dbName: process.env.MONGO_DB_NAME,
+  },
   cryptoKey: process.env.CRYPTO_KEY,
   port: process.env.SERVER_PORT,
   tinyurlToken: process.env.TINYURL_TOKEN,
