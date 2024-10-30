@@ -1,18 +1,21 @@
 import express from "express";
 
 import multer from "multer";
-import { orderController, orderLocationController } from "../controllers";
+import { orderController, orderFailImageController, orderLocationController } from "../controllers";
 import { validate } from "../validator";
 import {
   getOrderImageCompleteSchema,
   postOrderImageCompleteSchema,
 } from "../validator/schema/routes/order/image/complete";
-import { getOrderImageFailSchema, postOrderImageFailSchema } from "../validator/schema/routes/order/image/fail";
 import {
   getOrderCoordinatesSchema,
   patchOrderDeliveryPersonSchema,
   postOrderSchema,
 } from "../validator/schema/routes/order/order-controller-request-data";
+import {
+  getOrderFailImageSchema,
+  postOrderImageFailSchema,
+} from "../validator/schema/routes/order/order-fail-image-controller-request-data";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -29,47 +32,11 @@ router.patch(
   orderController.updateOrderDeliveryPerson,
 );
 
-// GET /order -> /order/coordinates
-
-// query {
-//   orderId: number
-// }
-
-// Response
-
-// code: 200,
-// message: "OK",
-// body: {
-//   id: number,
-//   destination: {
-//     x: number,
-//     y: number
-//   },
-//   departure: {
-//     x: number,
-//     y: number
-//   }
-// }
+// GET /order/coordinates
 router.get("/coordinates", validate(getOrderCoordinatesSchema, ["query"]), orderLocationController.getCoordinates);
 
-// 배송이미지
-
-// GET /order/image/fail -> /order/fail-image
-
-// query {
-//   orderId: "3" // string
-// }
-
-// code: 200,
-// message: "OK",
-// body: {
-//   imageBuffer: {
-//     type: string,
-//     data: number[]
-//   },
-//   reason: string
-// }
-router.get("/image/fail", validate(getOrderImageFailSchema, ["query"]), orderController.getFailImage);
+// GET /order/fail-image
+router.get("/fail-image", validate(getOrderFailImageSchema, ["query"]), orderFailImageController.getFailImage);
 
 // POST /order/image/fail -> /order/fail-image
 

@@ -97,37 +97,6 @@ export class OrderController {
     }
   };
 
-  // query {
-  //   orderNum: number
-  // }
-
-  // response {
-  //   imageBuffer: string
-  //   reason: string
-  // }
-
-  getFailImage = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const query = req.query;
-      const orderId = query.orderNum;
-
-      if (typeof orderId !== "string") {
-        throw new Error("TypeError : orderId be string");
-      }
-
-      const connection = await connectMongo("orderFail");
-      const image = await imageInstance.findFailImage(connection, orderId);
-
-      if (image === null || undefined) {
-        res.send(null);
-      } else {
-        res.send({ imageBuffer: image.image, reason: image.reason });
-      }
-    } catch (error) {
-      next(error);
-    }
-  };
-
   // body {
   //   file: string
   //   reason: string
