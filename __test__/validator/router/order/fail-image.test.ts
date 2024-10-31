@@ -4,9 +4,8 @@ import { HttpErrorResponse } from "../../../../util/http-response";
 import { DATA, mustBe, TYPE, validate } from "../../../../validator";
 import {
   getOrderFailImageSchema,
-  postOrderImageFailSchema,
+  postOrderFailImageSchema,
 } from "../../../../validator/schema/routes/order/order-fail-image-controller-request-data";
-import { TestName } from "../types/test-name";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -18,23 +17,21 @@ beforeEach(() => {
   next = jest.fn();
 });
 
-describe("GET: /order/image/fail", () => {
+describe("GET: /order/fail-image", () => {
   const testTarget = validate(getOrderFailImageSchema, ["query"]);
 
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
-      req.query = {
-        orderId: "1",
-      };
+  test("통과하는 테스트", async () => {
+    req.query = {
+      orderId: "1",
+    };
 
-      await testTarget(req as Request, res as Response, next);
+    await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith();
-    });
+    expect(next).toHaveBeenCalledWith();
   });
 
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.MISS_TYPE, async () => {
+  describe("실패하는 테스트", () => {
+    test("타입 미스", async () => {
       req.query = {
         orderId: "1d",
       };
@@ -54,7 +51,7 @@ describe("GET: /order/image/fail", () => {
       );
     });
 
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
+    test("필요 속성 누락", async () => {
       req.query = {};
 
       await testTarget(req as Request, res as Response, next);
@@ -74,26 +71,24 @@ describe("GET: /order/image/fail", () => {
   });
 });
 
-describe("POST: /order/image/fail", () => {
-  const testTarget = validate(postOrderImageFailSchema, ["body"]);
+describe("POST: /order/fail-image", () => {
+  const testTarget = validate(postOrderFailImageSchema, ["body"]);
 
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
-      req.body = {
-        orderNum: "1",
-        reason: "사유",
-      };
+  test("통과하는 테스트", async () => {
+    req.body = {
+      orderId: 1,
+      reason: "사유",
+    };
 
-      await testTarget(req as Request, res as Response, next);
+    await testTarget(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith();
-    });
+    expect(next).toHaveBeenCalledWith();
   });
 
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.MISS_TYPE, async () => {
+  describe("실패하는 테스트", () => {
+    test("타입미스", async () => {
       req.body = {
-        orderNum: "1",
+        orderId: "1",
         reason: "",
       };
 
@@ -103,18 +98,25 @@ describe("POST: /order/image/fail", () => {
         new HttpErrorResponse(400, [
           {
             location: "body",
-            msg: DATA.NOT_EXIST,
+            msg: "데이터가 존재하지 않습니다.",
             path: "reason",
             type: "field",
             value: "",
+          },
+          {
+            location: "body",
+            msg: "정수 이어야 합니다.",
+            path: "orderId",
+            type: "field",
+            value: "1",
           },
         ]),
       );
     });
 
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
+    test("속성 누락", async () => {
       req.body = {
-        orderNum: "1",
+        orderId: 1,
       };
 
       await testTarget(req as Request, res as Response, next);
@@ -126,7 +128,7 @@ describe("POST: /order/image/fail", () => {
             msg: DATA.NOT_EXIST,
             path: "reason",
             type: "field",
-            value: "",
+            value: undefined,
           },
         ]),
       );
