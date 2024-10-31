@@ -77,7 +77,7 @@
             }
           },
           "409": {
-            "description": "요청 실패: 유효성 검사 실패",
+            "description": "중복 데이터 존재",
             "content": {
               "application/json": {
                 "schema": {
@@ -716,6 +716,76 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["order"],
+        "summary": "배송 실패 이유와 이미지 버퍼를 전송",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "multer를 이용한 파일 업로드"
+                  },
+                  "orderId": {
+                    "type": "number",
+                    "description": "주문 아이디"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "배송 실패 이유"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response200"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "중복된 데이터 존재",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response409"
                 }
               }
             }
