@@ -17,4 +17,16 @@ export class OrderFailImageController {
       next(error);
     }
   };
+  postFailImage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { orderId, reason } = req.body as OrderFailImageControllerRequestData["postOrderFailImage"];
+      const file = req.file as Exclude<typeof req.file, undefined>;
+
+      await this.service.createFailImage({ orderId, reason, file });
+
+      res.send(new HttpResponse(200));
+    } catch (error) {
+      next(error);
+    }
+  };
 }

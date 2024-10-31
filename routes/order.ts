@@ -3,6 +3,7 @@ import express from "express";
 import multer from "multer";
 import { orderController, orderFailImageController, orderLocationController } from "../controllers";
 import { validate } from "../validator";
+import { validateSingleImageFile } from "../validator/file-validator";
 import {
   getOrderImageCompleteSchema,
   postOrderImageCompleteSchema,
@@ -14,11 +15,11 @@ import {
 } from "../validator/schema/routes/order/order-controller-request-data";
 import {
   getOrderFailImageSchema,
-  postOrderImageFailSchema,
+  postOrderFailImageSchema,
 } from "../validator/schema/routes/order/order-fail-image-controller-request-data";
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const uploadImage = multer({ storage: storage }).single("image");
 
 const router = express.Router();
 
@@ -39,20 +40,12 @@ router.get("/coordinates", validate(getOrderCoordinatesSchema, ["query"]), order
 router.get("/fail-image", validate(getOrderFailImageSchema, ["query"]), orderFailImageController.getFailImage);
 
 // POST /order/image/fail -> /order/fail-image
-
-// body {
-//   orderNum: "3" // string
-//   reason: string
-//   image: file
-// }
-
-// code: 200,
-// message: "OK"
 router.post(
-  "/image/fail",
-  validate(postOrderImageFailSchema, ["body"]),
-  upload.single("image"),
-  orderController.postFailImage,
+  "/fail-image",
+  uploadImage,
+  validateSingleImageFile,
+  validate(postOrderFailImageSchema, ["body"]),
+  orderFailImageController.postFailImage,
 );
 
 // GET /order/image/complete -> /order/complete-image
@@ -83,7 +76,7 @@ router.get("/image/complete", validate(getOrderImageCompleteSchema, ["query"]), 
 router.post(
   "/image/complete",
   validate(postOrderImageCompleteSchema, ["body"]),
-  upload.single("uploadImage"),
+  uploadImage,
   orderController.postImage,
 );
 

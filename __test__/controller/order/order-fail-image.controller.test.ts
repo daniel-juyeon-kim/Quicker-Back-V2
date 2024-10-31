@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { mock } from "jest-mock-extended";
+import { Readable } from "stream";
 import { OrderFailImageController } from "../../../controllers/order/fail-image/order-fail-image.controller";
-import { NotExistDataError } from "../../../database";
+import { DuplicatedDataError, NotExistDataError } from "../../../database";
 import { OrderFailImageService } from "../../../service/order/order-fail-image/order-fail-image.service";
 import { HttpResponse } from "../../../util/http-response";
 
@@ -9,26 +10,25 @@ const service = mock<OrderFailImageService>();
 const controller = new OrderFailImageController(service);
 
 describe("OrderFailImageController", () => {
+  let req: Partial<Request>;
+  let res: Partial<Response>;
+  let next: Partial<NextFunction>;
+
+  beforeEach(() => {
+    req = {};
+    res = { send: jest.fn() };
+    next = jest.fn();
+  });
   describe("getFailImage()", () => {
-    let req: Partial<Request>;
-    let res: Partial<Response>;
-    let next: Partial<NextFunction>;
-
-    beforeEach(() => {
-      req = {};
-      res = { send: jest.fn() };
-      next = jest.fn();
-    });
-
     test("통과하는 테스트", async () => {
-      const query = { orderId: "1" };
-      req.query = query;
-
       const resolvedValue = {
-        _id: "1",
+        _id: 1,
         image: Buffer.from([102, 97, 107, 101, 66, 117]),
         reason: "이유",
       } as Awaited<ReturnType<typeof service.findOrderFailImage>>;
+
+      const query = { orderId: "1" };
+      req.query = query;
 
       service.findOrderFailImage.mockResolvedValueOnce(resolvedValue);
 
@@ -53,6 +53,58 @@ describe("OrderFailImageController", () => {
       service.findOrderFailImage.mockRejectedValueOnce(error);
 
       await controller.getFailImage(req as Request, res as Response, next as NextFunction);
+
+      expect(res.send).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("postFailImage()", () => {
+    const file = {
+      fieldname: "uploadedFile",
+      originalname: "example.png",
+      encoding: "7bit",
+      mimetype: "image/png",
+      size: 1024,
+      stream: new Readable(),
+      destination: "/uploads",
+      filename: "example-1234.png",
+      path: "/uploads/example-1234.png",
+      buffer: Buffer.from("file content"),
+    };
+    const orderId = 1;
+    const reason = "이유";
+
+    test("통과하는 테스트", async () => {
+      req = {
+        file,
+        body: {
+          orderId,
+          reason,
+        },
+      };
+
+      await controller.postFailImage(req as Request, res as Response, next as NextFunction);
+
+      expect(service.createFailImage).toHaveBeenCalledWith({ file, orderId, reason });
+      expect(res.send).toHaveBeenCalledWith(new HttpResponse(200));
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    test("실패하는 테스트, 중복되는 데이터", async () => {
+      req = {
+        file,
+        body: {
+          orderId,
+          reason,
+        },
+      };
+
+      const error = new DuplicatedDataError("데이터 중복");
+
+      service.createFailImage.mockRejectedValueOnce(error);
+
+      await controller.postFailImage(req as Request, res as Response, next as NextFunction);
 
       expect(res.send).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledWith(error);

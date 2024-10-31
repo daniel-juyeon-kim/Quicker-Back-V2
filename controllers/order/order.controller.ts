@@ -97,32 +97,6 @@ export class OrderController {
     }
   };
 
-  // body {
-  //   file: string
-  //   reason: string
-  // }
-
-  // response 200
-  postFailImage = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const body = req.body;
-      const documentFile = req.file;
-
-      if (documentFile === undefined) {
-        throw new Error("File not exist");
-      }
-
-      const bufferImage = documentFile.buffer;
-      const orderNum = body.orderNum;
-      const reason = body.reason;
-      const connection = await connectMongo("orderFail");
-      await imageInstance.createFailImage(connection, orderNum, bufferImage, reason);
-      res.send({ msg: "done" });
-    } catch (error) {
-      next(error);
-    }
-  };
-
   // query {
   //   orderNum: number
   // }
