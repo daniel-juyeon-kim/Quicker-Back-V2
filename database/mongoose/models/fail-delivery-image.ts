@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 export interface FailDeliveryImage {
-  _id: string;
+  _id: number;
   image: Buffer;
   reason: string;
 }
 
 export const FailDeliveryImageSchema = new mongoose.Schema<FailDeliveryImage>({
-  _id: { type: String, required: true },
+  _id: { type: Number, required: true },
   image: { type: Buffer, required: true },
   reason: { type: String, required: true },
 });
