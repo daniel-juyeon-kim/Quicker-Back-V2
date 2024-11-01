@@ -2,21 +2,24 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose, { Connection, Model } from "mongoose";
 
 import {
-  CompleteDeliverImage,
-  CompleteDeliverImageRepository,
-  CompleteDeliverImageSchema,
+  CompleteDeliveryImage,
+  CompleteDeliveryImageRepository,
+  CompleteDeliveryImageSchema,
 } from "../../../../database/mongoose";
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let CompleteDeliverImageModel: Model<CompleteDeliverImage>;
-let repository: CompleteDeliverImageRepository;
+let CompleteDeliverImageModel: Model<CompleteDeliveryImage>;
+let repository: CompleteDeliveryImageRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  CompleteDeliverImageModel = connector.model<CompleteDeliverImage>("completeDeliverImage", CompleteDeliverImageSchema);
-  repository = new CompleteDeliverImageRepository(CompleteDeliverImageModel);
+  CompleteDeliverImageModel = connector.model<CompleteDeliveryImage>(
+    "completeDeliverImage",
+    CompleteDeliveryImageSchema,
+  );
+  repository = new CompleteDeliveryImageRepository(CompleteDeliverImageModel);
 });
 
 afterEach(async () => {
@@ -30,7 +33,7 @@ afterAll(async () => {
 
 describe("create 테스트", () => {
   test("통과하는 테스트", async () => {
-    const orderId = "아이디";
+    const orderId = 1;
 
     await repository.create({ orderId, bufferImage: Buffer.from("1") });
 
@@ -38,8 +41,8 @@ describe("create 테스트", () => {
 
     expect(result?.toJSON()).toEqual({
       __v: 0,
-      _id: orderId,
-      image: { data: [49], type: "Buffer" },
+      _id: 1,
+      bufferImage: { data: [49], type: "Buffer" },
     });
   });
 });
