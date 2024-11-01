@@ -915,11 +915,13 @@
               "properties": {
                 "type": {
                   "type": "string",
+                  "enum": ["field", "file"],
                   "example": "field"
                 },
                 "value": {
+                  "nullable": true,
                   "type": "any",
-                  "description": "요청할때 보낸 값"
+                  "description": "요청할 때 보낸 값"
                 },
                 "msg": {
                   "type": "string"
@@ -949,7 +951,8 @@
             "example": "Not Found"
           },
           "error": {
-            "type": "any"
+            "nullable": true,
+            "type": "string"
           }
         }
       },
@@ -965,7 +968,8 @@
             "example": "Conflict"
           },
           "error": {
-            "type": "any"
+            "nullable": true,
+            "type": "string"
           }
         }
       },
@@ -981,7 +985,8 @@
             "example": "Unprocessable Content"
           },
           "error": {
-            "type": "any"
+            "nullable": true,
+            "type": "string"
           }
         }
       },
