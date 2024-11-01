@@ -802,6 +802,84 @@
           }
         }
       }
+    },
+    "/order/complete-image": {
+      "get": {
+        "tags": ["order"],
+        "summary": "배송 완료 이미지 버퍼를 제공",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "주문 아이디",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "imageBuffer": {
+                          "type": "string",
+                          "example": "Buffer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "존재하지 않는 주문",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -830,7 +908,7 @@
             "type": "string",
             "example": "Bad Request"
           },
-          "name": {
+          "error": {
             "type": "array",
             "items": {
               "type": "object",
@@ -870,8 +948,8 @@
             "type": "string",
             "example": "Not Found"
           },
-          "properties": {
-            "type": "string"
+          "error": {
+            "type": "any"
           }
         }
       },
@@ -886,8 +964,8 @@
             "type": "string",
             "example": "Conflict"
           },
-          "properties": {
-            "type": "string"
+          "error": {
+            "type": "any"
           }
         }
       },
@@ -902,9 +980,8 @@
             "type": "string",
             "example": "Unprocessable Content"
           },
-          "properties": {
-            "type": "string",
-            "description": "에러 메시지"
+          "error": {
+            "type": "any"
           }
         }
       },
@@ -918,6 +995,9 @@
           "message": {
             "type": "string",
             "example": "Internal Server Error"
+          },
+          "error": {
+            "type": "any"
           }
         }
       },
@@ -931,6 +1011,9 @@
           "message": {
             "type": "string",
             "example": "Bad Gateway"
+          },
+          "error": {
+            "type": "any"
           }
         }
       }
