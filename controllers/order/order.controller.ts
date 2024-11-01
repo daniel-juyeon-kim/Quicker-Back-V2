@@ -97,38 +97,6 @@ export class OrderController {
     }
   };
 
-  // query {
-  //   orderNum: number
-  // }
-
-  // response {
-  //   image: string
-  // }
-
-  getImage = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const query = req.query;
-      const orderId = query.orderNum;
-      const connection = await connectMongo("orderComplete");
-
-      if (typeof orderId !== "string") {
-        throw new Error("TypeError : orderId be string");
-      }
-
-      const images = await imageInstance.find(connection, orderId);
-      let image;
-      if (images.length === 0) {
-        image = null;
-      } else {
-        image = { imageBuffer: images[0].image };
-      }
-      res.send(image);
-    } catch (error) {
-      console.error(error);
-      next(error);
-    }
-  };
-
   // body {
   //   file: string
   //   orderNum: number

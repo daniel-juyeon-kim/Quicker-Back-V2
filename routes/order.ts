@@ -1,11 +1,16 @@
 import express from "express";
 
 import multer from "multer";
-import { orderController, orderFailImageController, orderLocationController } from "../controllers";
+import {
+  orderCompeteImageController,
+  orderController,
+  orderFailImageController,
+  orderLocationController,
+} from "../controllers";
 import { validate } from "../validator";
 import { validateSingleImageFile } from "../validator/file-validator";
 import {
-  getOrderImageCompleteSchema,
+  getOrderCompleteImageSchema,
   postOrderImageCompleteSchema,
 } from "../validator/schema/routes/order/image/complete";
 import {
@@ -48,23 +53,14 @@ router.post(
   orderFailImageController.postFailImage,
 );
 
-// GET /order/image/complete -> /order/complete-image
+// GET /order/complete-image
+router.get(
+  "/complete-image",
+  validate(getOrderCompleteImageSchema, ["query"]),
+  orderCompeteImageController.getCompleteImageBuffer,
+);
 
-// query {
-//   orderId: "3" // string
-// }
-
-// code: 200,
-// message: "OK",
-// body: {
-//   imageBuffer: {
-//     type: string,
-//     data: number[]
-//   }
-// }
-router.get("/image/complete", validate(getOrderImageCompleteSchema, ["query"]), orderController.getImage);
-
-// POST /order/image/complete -> /order/complete-image
+// POST /order/complete-image
 
 // body {
 //   orderNum: number
