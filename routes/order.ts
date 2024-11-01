@@ -8,7 +8,7 @@ import {
   orderLocationController,
 } from "../controllers";
 import { validate } from "../validator";
-import { validateSingleImageFile } from "../validator/file-validator";
+import { validateSingleImageFile } from "../validator/file-validator/file-validator";
 import {
   getOrderCompleteImageSchema,
   postOrderImageCompleteSchema,
