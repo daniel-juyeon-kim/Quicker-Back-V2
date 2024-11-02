@@ -1,6 +1,6 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose, { Connection, Model } from "mongoose";
-import { NotExistDataError } from "../../../database";
+import { DuplicatedDataError, NotExistDataError } from "../../../database";
 import {
   CompleteDeliveryImage,
   CompleteDeliveryImageRepository,
@@ -22,15 +22,6 @@ beforeAll(async () => {
   repository = new CompleteDeliveryImageRepository(CompleteDeliverImageModel);
 });
 
-beforeEach(async () => {
-  const image = new CompleteDeliverImageModel({ _id: 1, bufferImage: Buffer.from("1") });
-  await image.save();
-});
-
-afterEach(async () => {
-  await CompleteDeliverImageModel.deleteMany();
-});
-
 afterAll(async () => {
   await connector.destroy();
   await mongod.stop();
@@ -38,6 +29,15 @@ afterAll(async () => {
 
 describe("CompleteDeliveryImageRepository", () => {
   describe("findByOrderId 테스트", () => {
+    beforeEach(async () => {
+      const image = new CompleteDeliverImageModel({ _id: 1, bufferImage: Buffer.from("1") });
+      await image.save();
+    });
+
+    afterEach(async () => {
+      await CompleteDeliverImageModel.deleteMany();
+    });
+
     test("통과하는 테스트", async () => {
       const orderId = 1;
 
@@ -52,6 +52,39 @@ describe("CompleteDeliveryImageRepository", () => {
       await expect(repository.findCompleteImageBufferByOrderId(orderId)).rejects.toStrictEqual(
         new NotExistDataError(`${orderId}에 해당되는 이미지 버퍼가 존재하지 않습니다.`),
       );
+    });
+  });
+
+  describe("create 테스트", () => {
+    afterEach(async () => {
+      await connector.dropDatabase();
+    });
+
+    test("통과하는 테스트", async () => {
+      const orderId = 1;
+
+      await repository.create({ orderId, bufferImage: Buffer.from("1") });
+
+      const result = await CompleteDeliverImageModel.findById(orderId);
+
+      expect(result?.toJSON()).toEqual({
+        __v: 0,
+        _id: 1,
+        bufferImage: { data: [49], type: "Buffer" },
+      });
+    });
+
+    describe("실패하는 테스트", () => {
+      test("중복된 데이터", async () => {
+        const image = new CompleteDeliverImageModel({ _id: 1, bufferImage: Buffer.from("1") });
+        await image.save();
+
+        const orderId = 1;
+
+        await expect(repository.create({ orderId, bufferImage: Buffer.from("1") })).rejects.toStrictEqual(
+          new DuplicatedDataError(`${orderId}에 해당되는 데이터가 이미 존재합니다.`),
+        );
+      });
     });
   });
 });

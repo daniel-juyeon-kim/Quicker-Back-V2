@@ -1,6 +1,6 @@
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { UnknownDataBaseError } from "../../../../core";
-import { NotExistDataError } from "../../../type-orm";
+import { DuplicatedDataError, NotExistDataError } from "../../../type-orm";
 import { CompleteDeliveryImage } from "../../models/complete-delivery-image";
 import { MongoRepository } from "../abstract.repository";
 
@@ -10,8 +10,16 @@ export class CompleteDeliveryImageRepository extends MongoRepository {
   }
 
   async create({ orderId, bufferImage }: { orderId: number; bufferImage: Buffer }) {
-    const image = new this.model({ _id: orderId, bufferImage });
-    await image.save();
+    try {
+      const image = new this.model({ _id: orderId, bufferImage });
+
+      await image.save();
+    } catch (error) {
+      if (error instanceof mongoose.mongo.MongoServerError && error.code === 11000) {
+        throw new DuplicatedDataError(`${orderId}에 해당되는 데이터가 이미 존재합니다.`);
+      }
+      throw new UnknownDataBaseError(error);
+    }
   }
 
   async findCompleteImageBufferByOrderId(orderId: number) {
