@@ -734,7 +734,7 @@
       },
       "post": {
         "tags": ["order"],
-        "summary": "배송 실패 이유와 이미지 버퍼를 전송",
+        "summary": "배송 실패 이유와 이미지 파일은 저장",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -775,7 +775,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/response400"
+                  "$ref": "#/components/schemas/response400(with file validation)"
                 }
               }
             }
@@ -879,6 +879,72 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": ["order"],
+        "summary": "배송 이미지 버퍼를 저장",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "multer를 이용한 파일 업로드"
+                  },
+                  "orderId": {
+                    "type": "number",
+                    "description": "주문 아이디"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response200"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400(with file validation)"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "중복된 데이터 존재",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response409"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -898,6 +964,47 @@
         }
       },
       "response400": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad Request"
+          },
+          "error": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "field"
+                },
+                "value": {
+                  "nullable": true,
+                  "type": "any",
+                  "description": "요청할 때 보낸 값"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "데이터가 존재하는 경로"
+                },
+                "location": {
+                  "type": "string",
+                  "description": "body, query등 존재하는 위치"
+                }
+              }
+            }
+          }
+        }
+      },
+      "response400(with file validation)": {
         "type": "object",
         "properties": {
           "code": {
