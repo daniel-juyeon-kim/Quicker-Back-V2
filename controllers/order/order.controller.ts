@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { averageInstance, orderInstance, roomInstance, userInstance } from "../../maria/commands";
 import { Order } from "../../maria/models/init-models";
-import { currentLocationInstance, imageInstance } from "../../mongo/command";
+import { currentLocationInstance } from "../../mongo/command";
 import connectMongo from "../../mongo/connector";
 
 import { parseNumericsToNumberList } from "../../core";
@@ -93,29 +93,6 @@ export class OrderController {
 
       res.send(new HttpResponse(200, orders));
     } catch (error) {
-      next(error);
-    }
-  };
-
-  // body {
-  //   file: string
-  //   orderNum: number
-  // }
-
-  // response 200
-
-  postImage = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const body = req.body;
-      if (!req.file) throw new Error("image file not exist");
-      const documentFile = req.file;
-      const orderNum = body.orderNum;
-      const bufferImage = documentFile.buffer;
-      const connection = await connectMongo("orderComplete");
-      await imageInstance.create(connection, orderNum, bufferImage);
-      res.send({ msg: "done" });
-    } catch (error) {
-      console.error(error);
       next(error);
     }
   };

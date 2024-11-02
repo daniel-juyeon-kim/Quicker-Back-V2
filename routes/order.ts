@@ -12,7 +12,7 @@ import { validateSingleImageFile } from "../validator/file-validator/file-valida
 import {
   getOrderCompleteImageSchema,
   postOrderImageCompleteSchema,
-} from "../validator/schema/routes/order/image/complete";
+} from "../validator/schema/routes/order/order-complete-image-controller.request-data";
 import {
   getOrderCoordinatesSchema,
   patchOrderDeliveryPersonSchema,
@@ -61,19 +61,12 @@ router.get(
 );
 
 // POST /order/complete-image
-
-// body {
-//   orderNum: number
-//   uploadImage: file
-// }
-
-// code: 200,
-// message: "OK",
 router.post(
   "/image/complete",
-  validate(postOrderImageCompleteSchema, ["body"]),
   uploadImage,
-  orderController.postImage,
+  validateSingleImageFile,
+  validate(postOrderImageCompleteSchema, ["body"]),
+  orderCompeteImageController.postCompleteImageBuffer,
 );
 
 export default router;
