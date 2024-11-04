@@ -946,6 +946,141 @@
           }
         }
       }
+    },
+    "/order/sender-receiver-info/{orderId}": {
+      "get": {
+        "tags": ["order"],
+        "summary": "출발지, 발송인, 도착지, 수취인 정보 제공",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "주문 아이디",
+            "example": "12345"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "12345"
+                        },
+                        "departure": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "example": "dep_001"
+                            },
+                            "x": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 37.5665
+                            },
+                            "y": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 126.978
+                            },
+                            "sender": {
+                              "type": "object",
+                              "properties": {
+                                "phone": {
+                                  "type": "string",
+                                  "example": "+821012345678"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "destination": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "example": "dest_001"
+                            },
+                            "x": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 35.1796
+                            },
+                            "y": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 129.0756
+                            },
+                            "receiver": {
+                              "type": "object",
+                              "properties": {
+                                "phone": {
+                                  "type": "string",
+                                  "example": "+821098765432"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "존재하지 않는 데이터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1109,7 +1244,7 @@
             "example": "Internal Server Error"
           },
           "error": {
-            "type": "any"
+            "type": "string"
           }
         }
       },
