@@ -1,10 +1,12 @@
 import { config } from "../config";
+
 import { DeliveryUrlCreator, messageSender } from "../core";
 import {
   completeDeliveryImageRepository,
   deliveryPersonMatchedDateRepository,
   failDeliveryImageRepository,
   locationRepository,
+  orderParticipantRepository,
   orderRepository,
   receiverRepository,
   userRepository,
@@ -15,9 +17,11 @@ import { OrderLocationServiceImpl } from "./order/location/order-location.servic
 import { OrderCompleteImageService } from "./order/order-complete-image/order-complete-image.service";
 import { OrderFailImageService } from "./order/order-fail-image/order-fail-image.service";
 import { OrderServiceImpl } from "./order/order.service.impl";
+import { SenderReceiverService } from "./order/sender-receiver/sender-receiver.service";
 import { UserServiceImpl } from "./user/user.service.impl";
 
 export const userService = new UserServiceImpl(userRepository);
+export const senderReceiverService = new SenderReceiverService(orderParticipantRepository);
 
 const deliveryUrlCreator = new DeliveryUrlCreator({
   encryptKey: config.urlCryptoKey,
