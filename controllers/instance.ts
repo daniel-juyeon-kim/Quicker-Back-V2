@@ -7,6 +7,7 @@ import {
   orderFailImageService,
   orderLocationService,
   orderService,
+  senderReceiverService,
   userService,
 } from "../service";
 import { ErrorControllerImpl, ErrorMessageBotErrorHandler, SmsApiErrorHandler, TmapApiErrorHandler } from "./error";
@@ -17,6 +18,7 @@ import { UnknownErrorController } from "./error/unknown/unknown-error.controller
 import { OrderFailImageController } from "./order/fail-image/order-fail-image.controller";
 import { OrderLocationController } from "./order/location/order-location.controller";
 import { OrderCompleteImageController } from "./order/order-complete-image.controller";
+import { OrderSenderReceiverController } from "./order/order-sender-receiver.controller";
 import { OrderController } from "./order/order.controller";
 import { UserController } from "./user.controller";
 
@@ -25,6 +27,7 @@ export const orderController = new OrderController(orderService);
 export const orderLocationController = new OrderLocationController(orderLocationService);
 export const orderFailImageController = new OrderFailImageController(orderFailImageService);
 export const orderCompeteImageController = new OrderCompleteImageController(orderCompleteImageService);
+export const orderSenderReceiverController = new OrderSenderReceiverController(senderReceiverService);
 
 const databaseErrorController = new DataBaseErrorController();
 

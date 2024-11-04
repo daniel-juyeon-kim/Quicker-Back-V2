@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { matchedData } from "express-validator";
-import { averageInstance, orderInstance, roomInstance, userInstance } from "../../maria/commands";
-import { Order } from "../../maria/models/init-models";
+import { averageInstance, orderInstance, userInstance } from "../../maria/commands";
 import { currentLocationInstance } from "../../mongo/command";
 import connectMongo from "../../mongo/connector";
 
@@ -138,22 +137,6 @@ export class OrderController {
       const orders = await orderInstance.findForDetail(parsedIds);
 
       res.send(new HttpResponse(200, orders));
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  // query {
-  //   orderNum: number
-  // }
-
-  // response 200
-
-  getRoomInfo = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { orderNum } = matchedData(req);
-      const room = (await roomInstance.find(parseInt(orderNum))) as Order;
-      res.send(new HttpResponse(200, room));
     } catch (error) {
       next(error);
     }

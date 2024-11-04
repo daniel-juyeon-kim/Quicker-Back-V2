@@ -6,9 +6,11 @@ import {
   orderController,
   orderFailImageController,
   orderLocationController,
+  orderSenderReceiverController,
 } from "../controllers";
 import { validate } from "../validator";
 import { validateSingleImageFile } from "../validator/file-validator/file-validator";
+import { getSenderReceiverInfoSchema } from "../validator/schema/routes/chat-room/chat-room-controller-request-data";
 import {
   getOrderCompleteImageSchema,
   postOrderImageCompleteSchema,
@@ -67,6 +69,13 @@ router.post(
   validateSingleImageFile,
   validate(postOrderImageCompleteSchema, ["body"]),
   orderCompeteImageController.postCompleteImageBuffer,
+);
+
+// GET /order/sender-receiver-info
+router.get(
+  "/sender-receiver-info/:orderId",
+  validate(getSenderReceiverInfoSchema, ["params"]),
+  orderSenderReceiverController.getSenderReceiverInfo,
 );
 
 export default router;
