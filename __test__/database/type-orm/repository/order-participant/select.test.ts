@@ -1,15 +1,15 @@
 import {
-  ChatRoomRepository,
   Departure,
   Destination,
   Order,
+  OrderParticipantRepository,
   Product,
   Transportation,
   User,
 } from "../../../../../database/type-orm";
 import { initializeDataSource, testDataSource } from "../data-source";
 
-const chatRoomRepository = new ChatRoomRepository(testDataSource.getRepository(Order));
+const orderParticipantRepository = new OrderParticipantRepository(testDataSource.getRepository(Order));
 
 const createUser = async () => {
   const user = testDataSource.manager.create(User, {
@@ -128,7 +128,7 @@ describe("findChatParticipantByOrderId 테스트", () => {
   test("통과하는 테스트", async () => {
     const orderId = 1;
 
-    await expect(chatRoomRepository.findChatParticipantByOrderId(orderId)).resolves.toEqual({
+    await expect(orderParticipantRepository.findSenderReceiverInfoByOrderId(orderId)).resolves.toEqual({
       id: orderId,
       departure: {
         id: orderId,
@@ -146,6 +146,8 @@ describe("findChatParticipantByOrderId 테스트", () => {
   });
 
   test("실패하는 테스트, 존재하지 않는 주문 아이디 입력", async () => {
-    await expect(chatRoomRepository.findChatParticipantByOrderId(32)).rejects.toThrow("데이터가 존재하지 않습니다.");
+    await expect(orderParticipantRepository.findSenderReceiverInfoByOrderId(32)).rejects.toThrow(
+      "데이터가 존재하지 않습니다.",
+    );
   });
 });
