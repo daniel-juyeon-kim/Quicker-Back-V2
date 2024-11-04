@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../../util/http-response";
 import { DATA, mustBe, TYPE, validate } from "../../../../../validator";
-import { getRoomSchema } from "../../../../../validator/schema/routes/room/";
+import { getRoomMessageSchema } from "../../../../../validator/schema/routes/chat-room/chat-room-controller-request-data";
 import { TestName } from "../../types/test-name";
 
 let req: Partial<Request>;
@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 
 describe("GET: /room/ValidateErrorMessage", () => {
-  const testTarget = validate(getRoomSchema, ["query"]);
+  const testTarget = validate(getRoomMessageSchema, ["query"]);
 
   describe(TestName.VALID_REQUSET, () => {
     test(TestName.PASS, async () => {
