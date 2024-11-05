@@ -13,6 +13,10 @@
     {
       "name": "order",
       "description": "주문 정보"
+    },
+    {
+      "name": "chat",
+      "description": "채팅 관련"
     }
   ],
   "paths": {
@@ -1039,6 +1043,99 @@
                                   "example": "+821098765432"
                                 }
                               }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "존재하지 않는 데이터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/{roomId}/recent-message": {
+      "get": {
+        "tags": ["chat"],
+        "summary": "roomId에 해당되는 채팅방의 최근 메시지 제공",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "채팅방 id(주문 id)",
+            "example": "12345"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "properties": {
+                            "walletAddress": {
+                              "type": "string",
+                              "example": "0x5bac0b7d..."
+                            },
+                            "message": {
+                              "type": "string",
+                              "example": "Message content"
+                            },
+                            "date": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2024-11-04T15:20:30Z"
                             }
                           }
                         }
