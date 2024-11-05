@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { SenderReceiverService } from "../../service/order/sender-receiver/sender-receiver.service";
 import { HttpResponse } from "../../util/http-response";
-import { OrderSenderReceiverControllerRequestData } from "../../validator/schema/routes/chat-room/chat-room-controller-request-data";
+import { OrderSenderReceiverControllerRequestData } from "../../validator/schema/routes/order/order-sender-receiver-controller-request-data";
 
 export class OrderSenderReceiverController {
   constructor(private readonly service: SenderReceiverService) {}

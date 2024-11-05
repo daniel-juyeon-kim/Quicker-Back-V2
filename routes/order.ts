@@ -10,7 +10,6 @@ import {
 } from "../controllers";
 import { validate } from "../validator";
 import { validateSingleImageFile } from "../validator/file-validator/file-validator";
-import { getSenderReceiverInfoSchema } from "../validator/schema/routes/chat-room/chat-room-controller-request-data";
 import {
   getOrderCompleteImageSchema,
   postOrderImageCompleteSchema,
@@ -24,6 +23,7 @@ import {
   getOrderFailImageSchema,
   postOrderFailImageSchema,
 } from "../validator/schema/routes/order/order-fail-image-controller-request-data";
+import { getSenderReceiverInfoSchema } from "../validator/schema/routes/order/order-sender-receiver-controller-request-data";
 
 const storage = multer.memoryStorage();
 const uploadImage = multer({ storage: storage }).single("image");
@@ -71,9 +71,9 @@ router.post(
   orderCompeteImageController.postCompleteImageBuffer,
 );
 
-// GET /order/sender-receiver-info
+// GET /order/{orderId}/sender-receiver-info
 router.get(
-  "/sender-receiver-info/:orderId",
+  "/:orderId/sender-receiver-info/",
   validate(getSenderReceiverInfoSchema, ["params"]),
   orderSenderReceiverController.getSenderReceiverInfo,
 );

@@ -947,7 +947,7 @@
         }
       }
     },
-    "/order/sender-receiver-info/{orderId}": {
+    "/order/{orderId}/sender-receiver-info/": {
       "get": {
         "tags": ["order"],
         "summary": "출발지, 발송인, 도착지, 수취인 정보 제공",

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../util/http-response";
 import { mustBe, TYPE, validate } from "../../../../validator";
-import { getSenderReceiverInfoSchema } from "../../../../validator/schema/routes/chat-room/chat-room-controller-request-data";
+import { getSenderReceiverInfoSchema } from "../../../../validator/schema/routes/order/order-sender-receiver-controller-request-data";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
