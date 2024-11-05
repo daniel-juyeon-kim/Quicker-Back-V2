@@ -879,6 +879,73 @@
           }
         }
       }
+    },
+    "/room/message": {
+      "get": {
+        "tags": ["chat"],
+        "summary": "채팅 메시지 제공",
+        "parameters": [
+          {
+            "name": "orderNum",
+            "in": "query",
+            "description": "주문 아이디",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "0x5bac0b7d..."
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Message content"
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-11-04T15:20:30Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
