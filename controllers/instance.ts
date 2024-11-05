@@ -3,6 +3,7 @@ import DailyRotateFile from "winston-daily-rotate-file";
 
 import { ErrorLogger, errorMessageBot } from "../core";
 import {
+  chatService,
   orderCompleteImageService,
   orderFailImageService,
   orderLocationService,
@@ -15,6 +16,7 @@ import { DataBaseErrorController } from "./error/database/database-error.control
 import { ExternalApiErrorController } from "./error/external-api/external-api-error.controller";
 import { UnknownErrorController } from "./error/unknown/unknown-error.controller";
 
+import { ChatController } from "./chat.controller";
 import { OrderFailImageController } from "./order/fail-image/order-fail-image.controller";
 import { OrderLocationController } from "./order/location/order-location.controller";
 import { OrderCompleteImageController } from "./order/order-complete-image.controller";
@@ -22,6 +24,7 @@ import { OrderSenderReceiverController } from "./order/order-sender-receiver.con
 import { OrderController } from "./order/order.controller";
 import { UserController } from "./user.controller";
 
+export const chatController = new ChatController(chatService);
 export const userController = new UserController(userService);
 export const orderController = new OrderController(orderService);
 export const orderLocationController = new OrderLocationController(orderLocationService);

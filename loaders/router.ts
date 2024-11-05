@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import { errorController } from "../controllers";
 import notFound from "../routes/not-found";
 
+import chat from "../routes/chat";
 import order from "../routes/order";
 import user from "../routes/user";
 import swaggerDocumentV1 from "../swagger.v1.json";
@@ -24,7 +25,7 @@ export const router = {
     // app.use("/AssociateOrder", associateOrder);
 
     // 서비스용 라우터
-    // app.use("/room", room);
+    app.use("/chat", chat);
     app.use("/user", user);
     app.use("/order", order);
     // app.use("/orders", orders);
