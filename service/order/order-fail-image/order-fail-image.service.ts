@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { FailDeliveryImageRepository } from "../../../database";
 
 export class OrderFailImageService {
@@ -8,16 +7,8 @@ export class OrderFailImageService {
     return await this.repository.findFailDeliveryImageByOrderId(parseInt(orderId));
   }
 
-  async createFailImage({
-    orderId,
-    reason,
-    file,
-  }: {
-    orderId: number;
-    reason: string;
-    file: Exclude<Request["file"], undefined>;
-  }) {
+  async createFailImage({ orderId, reason, file }: { orderId: number; reason: string; file: Express.Multer.File }) {
     const bufferImage = file.buffer;
-    return await this.repository.createFailDeliveryImage({ orderId, reason, bufferImage });
+    await this.repository.createFailDeliveryImage({ orderId, reason, bufferImage });
   }
 }

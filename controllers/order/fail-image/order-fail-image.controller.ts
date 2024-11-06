@@ -18,10 +18,14 @@ export class OrderFailImageController {
       next(error);
     }
   };
-  postFailImage = async (req: Request, res: Response, next: NextFunction) => {
+  postFailImage = async (
+    req: Request<never, never, OrderFailImageControllerRequestData["postOrderFailImage"]>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const { orderId, reason } = req.body as OrderFailImageControllerRequestData["postOrderFailImage"];
-      const file = req.file as Exclude<typeof req.file, undefined>;
+      const { orderId, reason } = req.body;
+      const file = req.file as Express.Multer.File;
 
       await this.service.createFailImage({ orderId, reason, file });
 
