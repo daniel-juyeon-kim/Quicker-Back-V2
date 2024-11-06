@@ -1,6 +1,6 @@
 import { Schema } from "express-validator";
 import { DATA, FORMAT, mustBe, TYPE } from "../../../error-message";
-import { existFloat, existInt, existObject, existString, existStringTypeInt, optionalAndString } from "../../util";
+import { existFloat, existInt, existObject, existString, optionalAndString } from "../../util";
 import { validateTransportationRequestData } from "./custom-validator";
 
 type Coordinate = { x: number; y: number };
@@ -25,10 +25,6 @@ export interface OrderControllerRequestData {
 
   updateOrderDeliveryPerson: {
     walletAddress: string;
-  };
-
-  getCoordinates: {
-    orderId: string;
   };
 }
 
@@ -110,12 +106,7 @@ export const postOrderSchema: Schema = {
   ...receiver,
 };
 
-// PATCH /order/delivery-person
+// PATCH /order/{orderId}/delivery-person
 export const patchOrderDeliveryPersonSchema: Schema = {
   walletAddress: existString,
-};
-
-// GET /order/coordinates
-export const getOrderCoordinatesSchema: Schema = {
-  orderId: existStringTypeInt,
 };

@@ -22,8 +22,8 @@ beforeEach(() => {
 describe("OrderLocationControllerImpl", () => {
   describe("getCoordinates()", () => {
     test("통과하는 테스트", async () => {
-      const query = { orderId: "1" };
-      req.query = query;
+      const params = { orderId: "1" };
+      req.params = params;
 
       const responseData = {
         id: 1,
@@ -34,14 +34,14 @@ describe("OrderLocationControllerImpl", () => {
 
       await controller.getCoordinates(req as Request, res as Response, next as NextFunction);
 
-      expect(service.findDepartureAndDestination).toHaveBeenCalledWith(parseInt(query.orderId));
+      expect(service.findDepartureAndDestination).toHaveBeenCalledWith(params.orderId);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200, responseData));
       expect(next).not.toHaveBeenCalled();
     });
 
     test("실패하는 테스트, 데이터가 존재하지 않아 예외 발생", async () => {
-      const query = { orderId: "1" };
-      req.query = query;
+      const params = { orderId: "1" };
+      req.params = params;
 
       const error = new NotExistDataError("존재하지 않는 데이터");
       service.findDepartureAndDestination.mockRejectedValueOnce(error);

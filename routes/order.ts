@@ -15,7 +15,6 @@ import {
   postOrderImageCompleteSchema,
 } from "../validator/schema/routes/order/order-complete-image-controller.request-data";
 import {
-  getOrderCoordinatesSchema,
   patchOrderDeliveryPersonSchema,
   postOrderSchema,
 } from "../validator/schema/routes/order/order-controller-request-data";
@@ -42,8 +41,8 @@ router.patch(
   orderController.updateOrderDeliveryPerson,
 );
 
-// GET /orders/coordinates
-router.get("/coordinates", validate(getOrderCoordinatesSchema, ["query"]), orderLocationController.getCoordinates);
+// GET /orders/{orderId}/coordinates
+router.get("/:orderId/coordinates", validate(orderIdParamSchema, ["params"]), orderLocationController.getCoordinates);
 
 // GET /orders/{orderId}/sender-receiver-info
 router.get(

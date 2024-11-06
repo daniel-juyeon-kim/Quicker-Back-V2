@@ -117,69 +117,71 @@ beforeAll(async () => {
   await createOrder(user.walletAddress);
 });
 
-describe("findDestinationDepartureByOrderId 테스트", () => {
-  test("통과하는 테스트", async () => {
-    const orderId = 1;
+describe("LocationRepository", () => {
+  describe("findDestinationDepartureByOrderId()", () => {
+    test("통과하는 테스트", async () => {
+      const orderId = 1;
 
-    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).resolves.toEqual({
-      id: orderId,
-      departure: { x: 127.09, y: 37.527 },
-      destination: { x: 127.8494, y: 37.5 },
+      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).resolves.toEqual({
+        id: orderId,
+        departure: { x: 127.09, y: 37.527 },
+        destination: { x: 127.8494, y: 37.5 },
+      });
+    });
+
+    test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
+      const orderId = 32;
+      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toThrow(
+        `${orderId}에 대한 주소 정보가 존재하지 않습니다.`,
+      );
+    });
+
+    test("실패하는 테스트, 예측하지 못한 에러", async () => {
+      const orderId = 32;
+      const repository = mock<Repository<Order>>();
+      const error = new Error("알 수 없는 에러");
+
+      repository.findOne.mockRejectedValue(error);
+
+      const locationRepository = new LocationRepositoryImpl(repository as Repository<Order>);
+
+      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toBeInstanceOf(
+        UnknownDataBaseError,
+      );
+      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toStrictEqual(
+        expect.objectContaining(error),
+      );
     });
   });
 
-  test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-    const orderId = 32;
-    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toThrow(
-      `${orderId}에 대한 주소 정보가 존재하지 않습니다.`,
-    );
-  });
+  describe("findAllDestinationDepartureByOrderId()", () => {
+    test("통과하는 테스트", async () => {
+      await expect(locationRepository.findAllDestinationDepartureByOrderId([1, 2])).resolves.toEqual([
+        {
+          id: 1,
+          departure: { x: 127.09, y: 37.527 },
+          destination: { x: 127.8494, y: 37.5 },
+        },
+        {
+          id: 2,
+          departure: { x: 127.09, y: 37.527 },
+          destination: { x: 127.8494, y: 37.5 },
+        },
+      ]);
+    });
 
-  test("실패하는 테스트, 예측하지 못한 에러", async () => {
-    const orderId = 32;
-    const repository = mock<Repository<Order>>();
-    const error = new Error("알 수 없는 에러");
+    test("실패하는 테스트, 존재하는 값과 존재하지 않는 값이 섞임", async () => {
+      await expect(locationRepository.findAllDestinationDepartureByOrderId([2, 3])).resolves.toEqual([
+        {
+          id: 2,
+          departure: { x: 127.09, y: 37.527 },
+          destination: { x: 127.8494, y: 37.5 },
+        },
+      ]);
+    });
 
-    repository.findOne.mockRejectedValue(error);
-
-    const locationRepository = new LocationRepositoryImpl(repository as Repository<Order>);
-
-    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toBeInstanceOf(
-      UnknownDataBaseError,
-    );
-    await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toStrictEqual(
-      expect.objectContaining(error),
-    );
-  });
-});
-
-describe("findAllDestinationDepartureByOrderId 테스트", () => {
-  test("통과하는 테스트", async () => {
-    await expect(locationRepository.findAllDestinationDepartureByOrderId([1, 2])).resolves.toEqual([
-      {
-        id: 1,
-        departure: { x: 127.09, y: 37.527 },
-        destination: { x: 127.8494, y: 37.5 },
-      },
-      {
-        id: 2,
-        departure: { x: 127.09, y: 37.527 },
-        destination: { x: 127.8494, y: 37.5 },
-      },
-    ]);
-  });
-
-  test("실패하는 테스트, 존재하는 값과 존재하지 않는 값이 섞임", async () => {
-    await expect(locationRepository.findAllDestinationDepartureByOrderId([2, 3])).resolves.toEqual([
-      {
-        id: 2,
-        departure: { x: 127.09, y: 37.527 },
-        destination: { x: 127.8494, y: 37.5 },
-      },
-    ]);
-  });
-
-  test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-    await expect(locationRepository.findAllDestinationDepartureByOrderId([3, 4])).resolves.toEqual([]);
+    test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
+      await expect(locationRepository.findAllDestinationDepartureByOrderId([3, 4])).resolves.toEqual([]);
+    });
   });
 });

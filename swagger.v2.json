@@ -595,7 +595,7 @@
         }
       }
     },
-    "/orders/coordinates": {
+    "/orders/{orderId}/coordinates": {
       "get": {
         "tags": ["orders"],
         "summary": "출발지 도착지에 대한 정보를 제공",
@@ -603,7 +603,7 @@
         "parameters": [
           {
             "name": "orderId",
-            "in": "query",
+            "in": "path",
             "description": "주문 아이디",
             "required": true,
             "schema": {

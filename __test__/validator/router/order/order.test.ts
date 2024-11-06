@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../util/http-response";
 import { validate } from "../../../../validator";
 import {
-  getOrderCoordinatesSchema,
   patchOrderDeliveryPersonSchema,
   postOrderSchema,
 } from "../../../../validator/schema/routes/order/order-controller-request-data";
@@ -378,59 +377,5 @@ describe("PATCH: /order/delivery-person", () => {
         },
       ]),
     );
-  });
-});
-
-describe("GET: /order/coordinates", () => {
-  const testTarget = validate(getOrderCoordinatesSchema, ["query"]);
-
-  test("통과하는 테스트", async () => {
-    req.query = {
-      orderId: "1",
-    };
-
-    await testTarget(req as Request, res as Response, next);
-
-    expect(next).toHaveBeenCalledWith();
-  });
-
-  describe("실패하는 테스트", () => {
-    test("타입 미스", async () => {
-      req.query = {
-        orderId: "1d",
-      };
-
-      await testTarget(req as Request, res as Response, next);
-
-      expect(res.send).toHaveBeenCalledWith(
-        new HttpErrorResponse(400, [
-          {
-            location: "query",
-            msg: "정수 이어야 합니다.",
-            path: "orderId",
-            type: "field",
-            value: "1d",
-          },
-        ]),
-      );
-    });
-
-    test("속성 누락", async () => {
-      req.query = {};
-
-      await testTarget(req as Request, res as Response, next);
-
-      expect(res.send).toHaveBeenCalledWith(
-        new HttpErrorResponse(400, [
-          {
-            location: "query",
-            msg: "데이터가 존재하지 않습니다.",
-            path: "orderId",
-            type: "field",
-            value: undefined,
-          },
-        ]),
-      );
-    });
   });
 });
