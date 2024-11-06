@@ -22,7 +22,6 @@ import {
   getOrderFailImageSchema,
   postOrderFailImageSchema,
 } from "../validator/schema/routes/order/order-fail-image-controller-request-data";
-import { getSenderReceiverInfoSchema } from "../validator/schema/routes/order/order-sender-receiver-controller-request-data";
 import { orderIdParamSchema } from "../validator/schema/routes/params";
 
 const storage = multer.memoryStorage();
@@ -47,7 +46,7 @@ router.get("/:orderId/coordinates", validate(orderIdParamSchema, ["params"]), or
 // GET /orders/{orderId}/sender-receiver-info
 router.get(
   "/:orderId/sender-receiver-info/",
-  validate(getSenderReceiverInfoSchema, ["params"]),
+  validate(orderIdParamSchema, ["params"]),
   orderSenderReceiverController.getSenderReceiverInfo,
 );
 
@@ -79,10 +78,10 @@ router.post(
   orderCompeteImageController.postCompleteImageBuffer,
 );
 
-// GET /orders/sender-receiver-info
+// GET /orders/{orderId}sender-receiver-info
 router.get(
   "/:orderId/sender-receiver-info/",
-  validate(getSenderReceiverInfoSchema, ["params"]),
+  validate(orderIdParamSchema, ["params"]),
   orderSenderReceiverController.getSenderReceiverInfo,
 );
 
