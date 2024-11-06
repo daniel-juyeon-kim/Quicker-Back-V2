@@ -11,7 +11,7 @@
       "description": "사용자 관련"
     },
     {
-      "name": "order",
+      "name": "orders",
       "description": "주문 정보"
     },
     {
@@ -325,9 +325,9 @@
         }
       }
     },
-    "/order": {
+    "/orders": {
       "post": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "주문 생성",
         "requestBody": {
           "content": {
@@ -490,9 +490,9 @@
         }
       }
     },
-    "/order/delivery-person": {
+    "/orders/delivery-person": {
       "patch": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "배송원 배정",
         "requestBody": {
           "content": {
@@ -587,9 +587,9 @@
         }
       }
     },
-    "/order/coordinates": {
+    "/orders/coordinates": {
       "get": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "출발지 도착지에 대한 정보를 제공",
         "description": "발송인에게 물건을 받는곳과 물품을 수취인에게 전달하는 곳에 대한 정보를 제공합니다.",
         "parameters": [
@@ -647,9 +647,9 @@
         }
       }
     },
-    "/order/fail-image": {
+    "/orders/fail-image": {
       "get": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "배송 실패 이유와 이미지 버퍼를 제공",
         "parameters": [
           {
@@ -737,7 +737,7 @@
         }
       },
       "post": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "배송 실패 이유와 이미지 파일은 저장",
         "requestBody": {
           "content": {
@@ -807,9 +807,9 @@
         }
       }
     },
-    "/order/complete-image": {
+    "/orders/complete-image": {
       "get": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "배송 완료 이미지 버퍼를 제공",
         "parameters": [
           {
@@ -885,7 +885,7 @@
         }
       },
       "post": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "배송 이미지 버퍼를 저장",
         "requestBody": {
           "content": {
@@ -951,9 +951,9 @@
         }
       }
     },
-    "/order/{orderId}/sender-receiver-info/": {
+    "/orders/{orderId}/sender-receiver-info/": {
       "get": {
-        "tags": ["order"],
+        "tags": ["orders"],
         "summary": "출발지, 발송인, 도착지, 수취인 정보 제공",
         "parameters": [
           {

@@ -27,7 +27,7 @@ export const router = {
     // 서비스용 라우터
     app.use("/chat", chat);
     app.use("/user", user);
-    app.use("/order", order);
+    app.use("/orders", order);
     // app.use("/orders", orders);
 
     // app.use("/current-deliver-location", currentLocation);
