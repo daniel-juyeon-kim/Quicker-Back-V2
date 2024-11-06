@@ -24,29 +24,38 @@ import {
   postOrderFailImageSchema,
 } from "../validator/schema/routes/order/order-fail-image-controller-request-data";
 import { getSenderReceiverInfoSchema } from "../validator/schema/routes/order/order-sender-receiver-controller-request-data";
+import { orderIdParamSchema } from "../validator/schema/routes/params";
 
 const storage = multer.memoryStorage();
 const uploadImage = multer({ storage: storage }).single("image");
 
 const router = express.Router();
 
-// POST /order
+// POST /orders
 router.post("/", validate(postOrderSchema, ["body"]), orderController.createOrder);
 
-// PATCH /order/delivery-person
+// PATCH /orders/{orderId}/delivery-person
 router.patch(
-  "/delivery-person",
+  "/:orderId/delivery-person",
+  validate(orderIdParamSchema, ["params"]),
   validate(patchOrderDeliveryPersonSchema, ["body"]),
   orderController.updateOrderDeliveryPerson,
 );
 
-// GET /order/coordinates
+// GET /orders/coordinates
 router.get("/coordinates", validate(getOrderCoordinatesSchema, ["query"]), orderLocationController.getCoordinates);
 
-// GET /order/fail-image
+// GET /orders/{orderId}/sender-receiver-info
+router.get(
+  "/:orderId/sender-receiver-info/",
+  validate(getSenderReceiverInfoSchema, ["params"]),
+  orderSenderReceiverController.getSenderReceiverInfo,
+);
+
+// GET /orders/fail-image
 router.get("/fail-image", validate(getOrderFailImageSchema, ["query"]), orderFailImageController.getFailImage);
 
-// POST /order/image/fail -> /order/fail-image
+// POST /orders/fail-image
 router.post(
   "/fail-image",
   uploadImage,
@@ -55,14 +64,14 @@ router.post(
   orderFailImageController.postFailImage,
 );
 
-// GET /order/complete-image
+// GET /orders/complete-image
 router.get(
   "/complete-image",
   validate(getOrderCompleteImageSchema, ["query"]),
   orderCompeteImageController.getCompleteImageBuffer,
 );
 
-// POST /order/complete-image
+// POST /orders/complete-image
 router.post(
   "/image/complete",
   uploadImage,
@@ -71,7 +80,7 @@ router.post(
   orderCompeteImageController.postCompleteImageBuffer,
 );
 
-// GET /order/{orderId}/sender-receiver-info
+// GET /orders/sender-receiver-info
 router.get(
   "/:orderId/sender-receiver-info/",
   validate(getSenderReceiverInfoSchema, ["params"]),

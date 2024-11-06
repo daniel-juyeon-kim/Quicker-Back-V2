@@ -10,6 +10,7 @@ import { OrderService } from "../../service/order/order.service";
 import { findDistanceKey } from "../../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../../util/http-response";
 import { OrderControllerRequestData } from "../../validator/schema/routes/order/order-controller-request-data";
+import { OrderIdParam } from "../../validator/schema/routes/params";
 
 export class OrderController {
   private readonly service: OrderService;
@@ -29,11 +30,16 @@ export class OrderController {
       next(error);
     }
   };
-  updateOrderDeliveryPerson = async (req: Request, res: Response, next: NextFunction) => {
+  updateOrderDeliveryPerson = async (
+    req: Request<OrderIdParam, never, OrderControllerRequestData["updateOrderDeliveryPerson"]>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const body = req.body as OrderControllerRequestData["updateOrderDeliveryPerson"];
+      const { orderId } = req.params;
+      const { walletAddress } = req.body;
 
-      await this.service.matchDeliveryPersonAtOrder(body);
+      await this.service.matchDeliveryPersonAtOrder({ walletAddress, orderId });
 
       res.send(new HttpResponse(200));
     } catch (error) {

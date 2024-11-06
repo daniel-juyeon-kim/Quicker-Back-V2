@@ -7,6 +7,7 @@ import { getOrdersDetailSchema } from "../validator/schema/routes/orders/detail"
 
 const router = express.Router();
 
+// 배송가능한 주문 조회
 // GET /orders
 
 // query {
@@ -45,6 +46,7 @@ const router = express.Router();
 // }
 router.get("/", validate(getOrdersSchema, ["query"]), orderController.getRequests);
 
+// 내가 배송하거나 주문한 의뢰 확인
 // GET /orders/detail
 
 // query {

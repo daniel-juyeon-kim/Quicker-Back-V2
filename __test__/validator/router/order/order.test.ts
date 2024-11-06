@@ -336,7 +336,6 @@ describe("PATCH: /order/delivery-person", () => {
 
   test("통과하는 테스트", async () => {
     req.body = {
-      orderId: 1,
       walletAddress: "0xe829h129k480dflj289308",
     };
 
@@ -346,8 +345,6 @@ describe("PATCH: /order/delivery-person", () => {
   });
 
   test("실패하는 테스트, 속성누락", async () => {
-    req.body.orderId = "3e4";
-
     await testTarget(req as Request, res as Response, next);
 
     expect(res.send).toHaveBeenCalledWith(
@@ -359,21 +356,13 @@ describe("PATCH: /order/delivery-person", () => {
           type: "field",
           value: undefined,
         },
-        {
-          location: "body",
-          msg: "정수 이어야 합니다.",
-          path: "orderId",
-          type: "field",
-          value: "3e4",
-        },
       ]),
     );
   });
 
   test("실패하는 테스트, 타입 불일치", async () => {
     req.body = {
-      orderId: "3",
-      walletAddress: "0xe829h129k480dflj289308",
+      walletAddress: 123,
     };
 
     await testTarget(req as Request, res as Response, next);
@@ -382,10 +371,10 @@ describe("PATCH: /order/delivery-person", () => {
       new HttpErrorResponse(400, [
         {
           location: "body",
-          msg: "정수 이어야 합니다.",
-          path: "orderId",
+          msg: "문자열 이어야 합니다.",
+          path: "walletAddress",
           type: "field",
-          value: "3",
+          value: 123,
         },
       ]),
     );

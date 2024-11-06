@@ -490,20 +490,28 @@
         }
       }
     },
-    "/orders/delivery-person": {
+    "/orders/{orderId}/delivery-person": {
       "patch": {
         "tags": ["orders"],
         "summary": "배송원 배정",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "주문 id",
+            "example": "12345"
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "walletAddress": {
-                    "type": "string",
-                    "description": "사용자 지갑주소"
-                  },
                   "orderId": {
                     "type": "number",
                     "description": "주문 아이디"

@@ -25,7 +25,6 @@ export interface OrderControllerRequestData {
 
   updateOrderDeliveryPerson: {
     walletAddress: string;
-    orderId: number;
   };
 
   getCoordinates: {
@@ -114,7 +113,6 @@ export const postOrderSchema: Schema = {
 // PATCH /order/delivery-person
 export const patchOrderDeliveryPersonSchema: Schema = {
   walletAddress: existString,
-  orderId: existInt,
 };
 
 // GET /order/coordinates

@@ -38,8 +38,13 @@ export class OrderServiceImpl implements OrderService {
     await this.orderRepository.create({ ...body, transportation });
   }
 
-  async matchDeliveryPersonAtOrder({ orderId, walletAddress }: { orderId: number; walletAddress: string }) {
+  async matchDeliveryPersonAtOrder({
+    orderId: stringTypeOrderId,
+    walletAddress,
+  }: Parameters<OrderService["matchDeliveryPersonAtOrder"]>[0]) {
     await this.dataSource.transaction(async (manager) => {
+      const orderId = parseInt(stringTypeOrderId);
+
       await this.orderRepository.updateDeliveryPersonAtOrder(manager, { orderId, walletAddress });
       await this.deliveryPersonMatchedDateRepository.create(manager, orderId);
       const receiver = await this.receiverRepository.findPhoneNumberByOrderId(manager, orderId);
