@@ -655,14 +655,14 @@
         }
       }
     },
-    "/orders/fail-image": {
+    "/orders/{orderId}/fail-image": {
       "get": {
         "tags": ["orders"],
         "summary": "배송 실패 이유와 이미지 버퍼를 제공",
         "parameters": [
           {
             "name": "orderId",
-            "in": "query",
+            "in": "path",
             "description": "주문 아이디",
             "required": true,
             "schema": {

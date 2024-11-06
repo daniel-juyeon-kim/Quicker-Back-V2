@@ -18,10 +18,7 @@ import {
   patchOrderDeliveryPersonSchema,
   postOrderSchema,
 } from "../validator/schema/routes/order/order-controller-request-data";
-import {
-  getOrderFailImageSchema,
-  postOrderFailImageSchema,
-} from "../validator/schema/routes/order/order-fail-image-controller-request-data";
+import { postOrderFailImageSchema } from "../validator/schema/routes/order/order-fail-image-controller-request-data";
 import { orderIdParamSchema } from "../validator/schema/routes/params";
 
 const storage = multer.memoryStorage();
@@ -50,8 +47,8 @@ router.get(
   orderSenderReceiverController.getSenderReceiverInfo,
 );
 
-// GET /orders/fail-image
-router.get("/fail-image", validate(getOrderFailImageSchema, ["query"]), orderFailImageController.getFailImage);
+// GET /orders/{orderId}/fail-image
+router.get("/:orderId/fail-image", validate(orderIdParamSchema, ["params"]), orderFailImageController.getFailImage);
 
 // POST /orders/fail-image
 router.post(

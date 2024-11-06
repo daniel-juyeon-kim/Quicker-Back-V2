@@ -1,4 +1,4 @@
-import { existInt, existString, existStringTypeInt } from "../../util";
+import { existInt, existString } from "../../util";
 
 export interface OrderFailImageControllerRequestData {
   getOrderFailImage: {
@@ -10,11 +10,6 @@ export interface OrderFailImageControllerRequestData {
     reason: string;
   };
 }
-
-// GET /order/fail-image
-export const getOrderFailImageSchema = {
-  orderId: existStringTypeInt,
-};
 
 // POST /order/fail-image
 export const postOrderFailImageSchema = {

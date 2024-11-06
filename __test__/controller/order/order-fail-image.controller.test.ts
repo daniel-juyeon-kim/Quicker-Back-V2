@@ -5,6 +5,7 @@ import { OrderFailImageController } from "../../../controllers/order/fail-image/
 import { DuplicatedDataError, NotExistDataError } from "../../../database";
 import { OrderFailImageService } from "../../../service/order/order-fail-image/order-fail-image.service";
 import { HttpResponse } from "../../../util/http-response";
+import { OrderIdParam } from "../../../validator/schema/routes/params";
 
 const service = mock<OrderFailImageService>();
 const controller = new OrderFailImageController(service);
@@ -27,14 +28,14 @@ describe("OrderFailImageController", () => {
         reason: "이유",
       } as Awaited<ReturnType<typeof service.findOrderFailImage>>;
 
-      const query = { orderId: "1" };
-      req.query = query;
+      const params = { orderId: "1" };
+      req = { params };
 
       service.findOrderFailImage.mockResolvedValueOnce(resolvedValue);
 
-      await controller.getFailImage(req as Request, res as Response, next as NextFunction);
+      await controller.getFailImage(req as Request<OrderIdParam>, res as Response, next as NextFunction);
 
-      expect(service.findOrderFailImage).toHaveBeenCalledWith(query.orderId);
+      expect(service.findOrderFailImage).toHaveBeenCalledWith(params.orderId);
       expect(res.send).toHaveBeenCalledWith(
         new HttpResponse(200, {
           imageBuffer: resolvedValue.image,
@@ -45,14 +46,14 @@ describe("OrderFailImageController", () => {
     });
 
     test("실패하는 테스트, 존재하지 않는 데이터 접근", async () => {
-      const query = { orderId: "1" };
-      req.query = query;
+      const params = { orderId: "1" };
+      req = { params };
 
       const error = new NotExistDataError("존재하지 않는 데이터");
 
       service.findOrderFailImage.mockRejectedValueOnce(error);
 
-      await controller.getFailImage(req as Request, res as Response, next as NextFunction);
+      await controller.getFailImage(req as Request<OrderIdParam>, res as Response, next as NextFunction);
 
       expect(res.send).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledWith(error);

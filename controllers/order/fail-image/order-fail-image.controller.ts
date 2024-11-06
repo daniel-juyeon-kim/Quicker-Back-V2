@@ -2,13 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import { OrderFailImageService } from "../../../service/order/order-fail-image/order-fail-image.service";
 import { HttpResponse } from "../../../util/http-response";
 import { OrderFailImageControllerRequestData } from "../../../validator/schema/routes/order/order-fail-image-controller-request-data";
+import { OrderIdParam } from "../../../validator/schema/routes/params";
 
 export class OrderFailImageController {
   constructor(private readonly service: OrderFailImageService) {}
 
-  getFailImage = async (req: Request, res: Response, next: NextFunction) => {
+  getFailImage = async (req: Request<OrderIdParam>, res: Response, next: NextFunction) => {
     try {
-      const { orderId } = req.query as OrderFailImageControllerRequestData["getOrderFailImage"];
+      const { orderId } = req.params;
 
       const failImage = await this.service.findOrderFailImage(orderId);
 
