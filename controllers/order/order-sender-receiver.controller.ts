@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { SenderReceiverService } from "../../service/order/sender-receiver/sender-receiver.service";
 import { HttpResponse } from "../../util/http-response";
-import { OrderIdParam } from "../../validator/schema/routes/params";
 
 export class OrderSenderReceiverController {
   constructor(private readonly service: SenderReceiverService) {}
 
-  getSenderReceiverInfo = async (req: Request<OrderIdParam>, res: Response, next: NextFunction) => {
+  getSenderReceiverInfo = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { orderId } = req.params;
 

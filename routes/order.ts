@@ -72,7 +72,7 @@ router.post(
   orderCompeteImageController.postCompleteImageBuffer,
 );
 
-// GET /orders/{orderId}sender-receiver-info
+// GET /orders/{orderId}/sender-receiver-info
 router.get(
   "/:orderId/sender-receiver-info/",
   validate(orderIdParamSchema, ["params"]),

@@ -19,9 +19,13 @@ export class OrderController {
     this.service = service;
   }
 
-  createOrder = async (req: Request, res: Response, next: NextFunction) => {
+  createOrder = async (
+    req: Request<never, never, OrderControllerRequestData["createOrder"]>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const body = req.body as OrderControllerRequestData["createOrder"];
+      const body = req.body;
 
       await this.service.createOrder(body);
 
