@@ -19,6 +19,10 @@
       "description": "주문 관련"
     },
     {
+      "name": "orders",
+      "description": "주문 컬렉션 관련"
+    },
+    {
       "name": "chat",
       "description": "채팅 관련"
     }
@@ -940,6 +944,249 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": ["orders"],
+        "summary": "배송원이 주문 가능한 의뢰 내역 제공",
+        "parameters": [
+          {
+            "name": "walletAddress",
+            "in": "query",
+            "description": "지갑 주소",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 123
+                          },
+                          "DETAIL": {
+                            "type": ["string", "null"],
+                            "example": "Delivery details"
+                          },
+                          "Transportation": {
+                            "type": "object",
+                            "properties": {
+                              "WALKING": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "BICYCLE": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "SCOOTER": {
+                                "type": "integer",
+                                "example": 3
+                              },
+                              "BIKE": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "CAR": {
+                                "type": "integer",
+                                "example": 5
+                              },
+                              "TRUCK": {
+                                "type": "integer",
+                                "example": 6
+                              }
+                            }
+                          },
+                          "Destination": {
+                            "type": "object",
+                            "properties": {
+                              "X": {
+                                "type": "number",
+                                "example": 37.7749
+                              },
+                              "Y": {
+                                "type": "number",
+                                "example": -122.4194
+                              },
+                              "DETAIL": {
+                                "type": "string",
+                                "example": "123 Destination St, City, Country"
+                              }
+                            }
+                          },
+                          "Departure": {
+                            "type": "object",
+                            "properties": {
+                              "X": {
+                                "type": "number",
+                                "example": 34.0522
+                              },
+                              "Y": {
+                                "type": "number",
+                                "example": -118.2437
+                              },
+                              "DETAIL": {
+                                "type": "string",
+                                "example": "456 Departure Ave, City, Country"
+                              }
+                            }
+                          },
+                          "Product": {
+                            "type": "object",
+                            "properties": {
+                              "WIDTH": {
+                                "type": "number",
+                                "example": 30.0
+                              },
+                              "LENGTH": {
+                                "type": "number",
+                                "example": 50.0
+                              },
+                              "HEIGHT": {
+                                "type": "number",
+                                "example": 20.0
+                              },
+                              "WEIGHT": {
+                                "type": "number",
+                                "example": 10.0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "찾을 수 없는 데이터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/detail": {
+      "get": {
+        "tags": ["orders"],
+        "summary": "의뢰인은 본인이 의뢰한 의뢰 내용을, 배송원은 자신이 배송한 주문 내역을 조회",
+        "parameters": [
+          {
+            "name": "orderIds",
+            "in": "query",
+            "description": "주문 아이디",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1,2,3"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "DETAIL": {
+                            "type": "string",
+                            "example": "Order details"
+                          },
+                          "Destination": {
+                            "type": "object",
+                            "properties": {
+                              "X": { "type": "number", "example": 37.7749 },
+                              "Y": { "type": "number", "example": -122.4194 },
+                              "DETAIL": { "type": "string", "example": "123 Destination St, City, Country" }
+                            }
+                          },
+                          "Departure": {
+                            "type": "object",
+                            "properties": {
+                              "X": { "type": "number", "example": 34.0522 },
+                              "Y": { "type": "number", "example": -118.2437 },
+                              "DETAIL": { "type": "string", "example": "456 Departure Ave, City, Country" }
+                            }
+                          },
+                          "Recipient": {
+                            "type": "object",
+                            "properties": {
+                              "NAME": { "type": "string", "example": "John Doe" },
+                              "PHONE": { "type": "string", "example": "+1234567890" }
+                            }
+                          },
+                          "Sender": {
+                            "type": "object",
+                            "properties": {
+                              "NAME": { "type": "string", "example": "Jane Smith" },
+                              "PHONE": { "type": "string", "example": "+0987654321" }
+                            }
+                          },
+                          "Product": {
+                            "type": "object",
+                            "properties": {
+                              "WIDTH": { "type": "number", "example": 30.0 },
+                              "LENGTH": { "type": "number", "example": 50.0 },
+                              "HEIGHT": { "type": "number", "example": 20.0 },
+                              "WEIGHT": { "type": "number", "example": 10.0 }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
