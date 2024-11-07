@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { CompleteDeliveryImageRepository } from "../../../database";
 
 export class OrderCompleteImageService {
@@ -8,7 +7,7 @@ export class OrderCompleteImageService {
     return await this.repository.findCompleteImageBufferByOrderId(parseInt(orderId));
   }
 
-  async createCompleteImage({ orderId, file }: { orderId: number; file: Exclude<Request["file"], undefined> }) {
+  async createCompleteImage({ orderId, file }: { orderId: number; file: Express.Multer.File }) {
     const bufferImage = file.buffer;
     await this.repository.create({ orderId, bufferImage });
   }

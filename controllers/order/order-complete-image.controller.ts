@@ -21,10 +21,14 @@ export class OrderCompleteImageController {
       next(error);
     }
   };
-  postCompleteImageBuffer = async (req: Request, res: Response, next: NextFunction) => {
+  postCompleteImageBuffer = async (
+    req: Request<never, never, OrderCompleteImageControllerRequestData["postCompleteImageBuffer"]>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const { orderId } = req.body as OrderCompleteImageControllerRequestData["postCompleteImageBuffer"];
-      const file = req.file as Exclude<typeof req.file, undefined>;
+      const { orderId } = req.body;
+      const file = req.file as Express.Multer.File;
 
       await this.service.createCompleteImage({ orderId, file });
 
