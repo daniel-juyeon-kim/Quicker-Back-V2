@@ -1,15 +1,18 @@
-import { NextFunction, Request, Response } from "express";
+import { Request as ExpressRequest, NextFunction, Response } from "express";
 import { mock } from "jest-mock-extended";
 import { Readable } from "stream";
 import { OrderCompleteImageController } from "../../../controllers/order/order-complete-image.controller";
 import { DuplicatedDataError, NotExistDataError } from "../../../database";
 import { OrderCompleteImageService } from "../../../service/order/order-complete-image/order-complete-image.service";
 import { HttpResponse } from "../../../util/http-response";
+import { OrderCompleteImageControllerRequestData } from "../../../validator/schema/routes/order/order-complete-image-controller.request-data";
 
 const service = mock<OrderCompleteImageService>();
 const controller = new OrderCompleteImageController(service);
 
 describe("OrderCompleteImageController", () => {
+  type Request = ExpressRequest<OrderCompleteImageControllerRequestData["getCompleteImage"]>;
+
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: Partial<NextFunction>;
@@ -22,8 +25,8 @@ describe("OrderCompleteImageController", () => {
 
   describe("getCompleteImage()", () => {
     test("통과하는 테스트", async () => {
-      const query = { orderId: "1" };
-      req = { query };
+      const params = { orderId: "1" };
+      req = { params };
 
       const buffer = Buffer.from([102, 97, 107, 101, 66, 117]);
 
@@ -31,14 +34,14 @@ describe("OrderCompleteImageController", () => {
 
       await controller.getCompleteImageBuffer(req as Request, res as Response, next as NextFunction);
 
-      expect(service.findCompleteImageBuffer).toHaveBeenCalledWith(query.orderId);
+      expect(service.findCompleteImageBuffer).toHaveBeenCalledWith(params.orderId);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200, buffer));
       expect(next).not.toHaveBeenCalled();
     });
 
     test("실패하는 테스트, 존재하지 않는 데이터 접근", async () => {
-      const query = { orderId: "1" };
-      req.query = query;
+      const params = { orderId: "1" };
+      req = { params };
 
       const error = new NotExistDataError("존재하지 않는 데이터");
 

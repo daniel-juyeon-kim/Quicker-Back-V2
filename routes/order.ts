@@ -10,10 +10,7 @@ import {
 } from "../controllers";
 import { validate } from "../validator";
 import { validateSingleImageFile } from "../validator/file-validator/file-validator";
-import {
-  getOrderCompleteImageSchema,
-  postOrderImageCompleteSchema,
-} from "../validator/schema/routes/order/order-complete-image-controller.request-data";
+import { postOrderImageCompleteSchema } from "../validator/schema/routes/order/order-complete-image-controller.request-data";
 import {
   patchOrderDeliveryPersonSchema,
   postOrderSchema,
@@ -59,10 +56,10 @@ router.post(
   orderFailImageController.postFailImage,
 );
 
-// GET /orders/complete-image
+// GET /orders/{orderId}/complete-image
 router.get(
-  "/complete-image",
-  validate(getOrderCompleteImageSchema, ["query"]),
+  "/:orderId/complete-image",
+  validate(orderIdParamSchema, ["params"]),
   orderCompeteImageController.getCompleteImageBuffer,
 );
 

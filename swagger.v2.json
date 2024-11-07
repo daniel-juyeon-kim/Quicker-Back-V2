@@ -815,14 +815,14 @@
         }
       }
     },
-    "/orders/complete-image": {
+    "/orders/{orderId}/complete-image": {
       "get": {
         "tags": ["orders"],
         "summary": "배송 완료 이미지 버퍼를 제공",
         "parameters": [
           {
             "name": "orderId",
-            "in": "query",
+            "in": "path",
             "description": "주문 아이디",
             "required": true,
             "schema": {

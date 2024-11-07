@@ -6,9 +6,13 @@ import { OrderCompleteImageControllerRequestData } from "../../validator/schema/
 export class OrderCompleteImageController {
   constructor(private readonly service: OrderCompleteImageService) {}
 
-  getCompleteImageBuffer = async (req: Request, res: Response, next: NextFunction) => {
+  getCompleteImageBuffer = async (
+    req: Request<OrderCompleteImageControllerRequestData["getCompleteImage"]>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const { orderId } = req.query as OrderCompleteImageControllerRequestData["getCompleteImage"];
+      const { orderId } = req.params;
 
       const buffer = await this.service.findCompleteImageBuffer(orderId);
 
