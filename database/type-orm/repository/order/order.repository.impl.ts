@@ -130,51 +130,62 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
     return requester;
   }
 
-  async findMatchableOrderByDeliverId(deliverId: string) {
-    const orderDetails = await this.repository.findOne({
-      relations: {
-        product: true,
-        transportation: true,
-        destination: true,
-        departure: true,
-      },
-      where: {
-        requester: { id: Not(deliverId) },
-        deliveryPerson: { id: IsNull() },
-      },
-      select: {
-        id: true,
-        detail: true,
-        product: {
-          width: true,
-          length: true,
-          height: true,
-          weight: true,
-        },
-        transportation: {
-          walking: true,
-          bicycle: true,
-          scooter: true,
-          bike: true,
-          car: true,
-          truck: true,
-        },
-        destination: {
-          x: true,
-          y: true,
-          detail: true,
-        },
-        departure: {
-          x: true,
-          y: true,
-          detail: true,
-        },
-      },
-    });
+  async findAllMatchableOrderByWalletAddress(deliverPersonWalletAddress: string) {
+    try {
+      return await this.repository.manager.transaction(async (manager) => {
+        const isExistUser = await manager.exists(User, { where: { walletAddress: deliverPersonWalletAddress } });
 
-    this.validateNotNull(orderDetails);
+        if (!isExistUser) {
+          throw new NotExistDataError(`${deliverPersonWalletAddress}에 해당하는 사용자가 존재하지 않습니다.`);
+        }
 
-    return orderDetails;
+        return await manager.find(Order, {
+          relations: {
+            product: true,
+            transportation: true,
+            destination: true,
+            departure: true,
+          },
+          where: {
+            requester: { walletAddress: Not(deliverPersonWalletAddress) },
+            deliveryPerson: { walletAddress: IsNull() },
+          },
+          select: {
+            id: true,
+            detail: true,
+            product: {
+              width: true,
+              length: true,
+              height: true,
+              weight: true,
+            },
+            transportation: {
+              walking: true,
+              bicycle: true,
+              scooter: true,
+              bike: true,
+              car: true,
+              truck: true,
+            },
+            destination: {
+              x: true,
+              y: true,
+              detail: true,
+            },
+            departure: {
+              x: true,
+              y: true,
+              detail: true,
+            },
+          },
+        });
+      });
+    } catch (error) {
+      if (error instanceof NotExistDataError) {
+        throw new NotExistDataError(`${deliverPersonWalletAddress}에 해당하는 사용자가 존재하지 않습니다.`);
+      }
+      throw new UnknownDataBaseError(error);
+    }
   }
 
   async findAllCreatedOrDeliveredOrderDetailByOrderId(orderIds: number[]) {
