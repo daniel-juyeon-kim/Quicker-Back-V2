@@ -32,6 +32,10 @@ export class OrderServiceImpl implements OrderService {
     this.deliveryPersonMatchedDateRepository = deliveryPersonMatchedDateRepository;
   }
 
+  async findAllMatchableOrder(walletAddress: string) {
+    return await this.orderRepository.findAllMatchableOrderByWalletAddress(walletAddress);
+  }
+
   async createOrder(body: Parameters<OrderService["createOrder"]>[0]) {
     const transportation = createBasicTransportationEntity(body.transportation);
 

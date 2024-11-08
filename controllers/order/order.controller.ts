@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { matchedData } from "express-validator";
-import { averageInstance, orderInstance, userInstance } from "../../maria/commands";
+import { averageInstance, orderInstance } from "../../maria/commands";
 import { currentLocationInstance } from "../../mongo/command";
 import connectMongo from "../../mongo/connector";
 
@@ -11,6 +11,7 @@ import { findDistanceKey } from "../../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../../util/http-response";
 import { OrderControllerRequestData } from "../../validator/schema/routes/order/order-controller-request-data";
 import { OrderIdParam } from "../../validator/schema/routes/params";
+import { WalletAddressQuery } from "../../validator/schema/routes/query";
 
 export class OrderController {
   private readonly service: OrderService;
@@ -19,6 +20,21 @@ export class OrderController {
     this.service = service;
   }
 
+  getMatchableOrdersByWalletAddress = async (
+    req: Request<never, never, never, WalletAddressQuery>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { walletAddress } = req.query;
+
+      const orders = await this.service.findAllMatchableOrder(walletAddress);
+
+      res.send(new HttpResponse(200, orders));
+    } catch (error) {
+      next(error);
+    }
+  };
   createOrder = async (
     req: Request<never, never, OrderControllerRequestData["createOrder"]>,
     res: Response,
@@ -51,60 +67,60 @@ export class OrderController {
     }
   };
 
-  // query : {
-  //   userWalletAdress: string
-  // }
+  // // query : {
+  // //   userWalletAdress: string
+  // // }
 
-  // {
-  //   id: number;
-  //   DETAIL: string | undefined;
-  //   PAYMENT: number;
-  //   Transportation : {
-  //     WALKING: number;
-  //     BICYCLE: number;
-  //     SCOOTER: number;
-  //     BIKE: number;
-  //     CAR: number;
-  //     TRUCK: number;
-  //   },
-  //   Destination: {
-  //     X: number;
-  //     Y: number;
-  //     DETAIL: string;
-  //   },
-  //   Departure: {
-  //     X: number;
-  //     Y: number;
-  //     DETAIL: string;
-  //   },
-  //   Product: {
-  //     WIDTH: number;
-  //     LENGTH: number;
-  //     HEIGHT: number;
-  //     WEIGHT: number;
-  //   }[]
-  // }
-  getRequests = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { walletAddress } = matchedData(req);
+  // // {
+  // //   id: number;
+  // //   DETAIL: string | undefined;
+  // //   PAYMENT: number;
+  // //   Transportation : {
+  // //     WALKING: number;
+  // //     BICYCLE: number;
+  // //     SCOOTER: number;
+  // //     BIKE: number;
+  // //     CAR: number;
+  // //     TRUCK: number;
+  // //   },
+  // //   Destination: {
+  // //     X: number;
+  // //     Y: number;
+  // //     DETAIL: string;
+  // //   },
+  // //   Departure: {
+  // //     X: number;
+  // //     Y: number;
+  // //     DETAIL: string;
+  // //   },
+  // //   Product: {
+  // //     WIDTH: number;
+  // //     LENGTH: number;
+  // //     HEIGHT: number;
+  // //     WEIGHT: number;
+  // //   }
+  // // }[]
+  // getRequests = async (req: Request, res: Response, next: NextFunction) => {
+  //   try {
+  //     const { walletAddress } = matchedData(req);
 
-      const user = await userInstance.findId(walletAddress);
+  //     const user = await userInstance.findId(walletAddress);
 
-      if (!user) {
-        throw new HttpErrorResponse(404, "해당 지갑주소와 일치하는 사용자가 존재하지 않습니다.");
-      }
+  //     if (!user) {
+  //       throw new HttpErrorResponse(404, "해당 지갑주소와 일치하는 사용자가 존재하지 않습니다.");
+  //     }
 
-      const orders = await orderInstance.findForSearch(user.id);
+  //     const orders = await orderInstance.findForSearch(user.id);
 
-      if (orders.length === 0) {
-        throw new HttpErrorResponse(404, "생성된 오더가 없습니다.");
-      }
+  //     if (orders.length === 0) {
+  //       throw new HttpErrorResponse(404, "생성된 오더가 없습니다.");
+  //     }
 
-      res.send(new HttpResponse(200, orders));
-    } catch (error) {
-      next(error);
-    }
-  };
+  //     res.send(new HttpResponse(200, orders));
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // };
 
   // query : {
   //   orderIds: string

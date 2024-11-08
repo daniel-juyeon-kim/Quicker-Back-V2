@@ -28,7 +28,6 @@ export const router = {
     app.use("/chat", chat);
     app.use("/user", user);
     app.use("/orders", order);
-    // app.use("/orders", orders);
 
     // app.use("/current-deliver-location", currentLocation);
     // app.use("/average", averageCost);

@@ -4,11 +4,12 @@ import { NextFunction } from "express-serve-static-core";
 import { mock, mockClear } from "jest-mock-extended";
 import { OrderController } from "../../../controllers/order/order.controller";
 import { UnknownDataBaseError } from "../../../core";
-import { NotExistDataError } from "../../../database";
+import { NotExistDataError, Order } from "../../../database";
 import { OrderService } from "../../../service/order/order.service";
 import { HttpResponse } from "../../../util/http-response";
 import { OrderControllerRequestData } from "../../../validator/schema/routes/order/order-controller-request-data";
 import { OrderIdParam } from "../../../validator/schema/routes/params";
+import { WalletAddressQuery } from "../../../validator/schema/routes/query";
 
 const service = mock<OrderService>();
 const controller = new OrderController(service);
@@ -131,15 +132,60 @@ describe("OrderController", () => {
     });
   });
 
-  // test("should have a method updateOrder()", async () => {
-  //   // await controller.updateOrder(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+  describe("getMatchableOrdersByWalletAddress()", () => {
+    let request: Partial<Request<never, never, never, WalletAddressQuery>>;
 
-  // test("should have a method getRequests()", async () => {
-  //   // await controller.getRequests(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+    beforeEach(() => {
+      request = {};
+    });
+
+    test("통과하는 테스트", async () => {
+      const walletAddress = "배송원 지갑주소";
+
+      request.query = { walletAddress };
+
+      const resolveValue = [
+        {
+          id: 1,
+          departure: { detail: "디테일", x: 0, y: 0 },
+          destination: { detail: "디테일", x: 37.5, y: 112 },
+          detail: "디테일",
+          product: { height: 0, length: 0, weight: 0, width: 0 },
+          transportation: { bicycle: 0, bike: 0, car: 0, scooter: 0, truck: 0, walking: 0 },
+        },
+      ];
+
+      service.findAllMatchableOrder.mockResolvedValueOnce(resolveValue as Order[]);
+
+      await controller.getMatchableOrdersByWalletAddress(
+        request as Request<never, never, never, WalletAddressQuery>,
+        res as Response,
+        next as NextFunction,
+      );
+
+      expect(service.findAllMatchableOrder).toHaveBeenCalledWith(walletAddress);
+      expect(res.send).toHaveBeenCalledWith(new HttpResponse(200, resolveValue));
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    test("실패하는 테스트, next 호출", async () => {
+      const walletAddress = "배송원 지갑주소";
+
+      request.query = { walletAddress };
+
+      const error = new NotExistDataError("회원이 존재하지 않습니다.");
+      service.findAllMatchableOrder.mockRejectedValueOnce(error);
+
+      await controller.getMatchableOrdersByWalletAddress(
+        request as Request<never, never, never, WalletAddressQuery>,
+        res as Response,
+        next as NextFunction,
+      );
+
+      expect(res.send).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 
   // test("should have a method getFailImage()", async () => {
   //   // await controller.getFailImage(req,res,next);

@@ -1186,6 +1186,126 @@
           }
         }
       }
+    },
+    "/orders/matchable/walletAddress={walletAddress}": {
+      "get": {
+        "tags": ["orders"],
+        "summary": "해당되는 지갑주소로 수락 가능한 주문을 제공",
+        "parameters": [
+          {
+            "name": "walletAddress",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "지갑 주소"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 123
+                          },
+                          "detail": {
+                            "type": "string",
+                            "example": "Order details"
+                          },
+                          "product": {
+                            "type": "object",
+                            "properties": {
+                              "width": { "type": "number", "example": 30.0 },
+                              "length": { "type": "number", "example": 50.0 },
+                              "height": { "type": "number", "example": 20.0 },
+                              "weight": { "type": "number", "example": 10.0 }
+                            }
+                          },
+                          "transportation": {
+                            "type": "object",
+                            "properties": {
+                              "walking": { "type": "integer", "example": 1 },
+                              "bicycle": { "type": "integer", "example": 2 },
+                              "scooter": { "type": "integer", "example": 3 },
+                              "bike": { "type": "integer", "example": 4 },
+                              "car": { "type": "integer", "example": 5 },
+                              "truck": { "type": "integer", "example": 6 }
+                            }
+                          },
+                          "destination": {
+                            "type": "object",
+                            "properties": {
+                              "x": { "type": "number", "example": 37.7749 },
+                              "y": { "type": "number", "example": -122.4194 },
+                              "detail": { "type": "string", "example": "123 Destination St, City, Country" }
+                            }
+                          },
+                          "departure": {
+                            "type": "object",
+                            "properties": {
+                              "x": { "type": "number", "example": 34.0522 },
+                              "y": { "type": "number", "example": -118.2437 },
+                              "detail": { "type": "string", "example": "456 Departure Ave, City, Country" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "해당 지갑주소와 일치하는 사용자가 존재하지 않음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
