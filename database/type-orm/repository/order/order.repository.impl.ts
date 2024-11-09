@@ -188,49 +188,53 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
     }
   }
 
-  async findAllCreatedOrDeliveredOrderDetailByOrderId(orderIds: number[]) {
-    const order = await this.repository.find({
-      relations: {
-        product: true,
-        departure: {
-          sender: true,
-        },
-        destination: {
-          receiver: true,
-        },
-      },
-      where: { id: In(orderIds) },
-      select: {
-        id: true,
-        detail: true,
-        product: {
-          width: true,
-          length: true,
-          height: true,
-          weight: true,
-        },
-        departure: {
-          x: true,
-          y: true,
-          detail: true,
-          sender: {
-            name: true,
-            phone: true,
+  async findAllCreatedOrDeliveredOrderDetailByOrderIds(orderIds: number[]) {
+    try {
+      const order = await this.repository.find({
+        relations: {
+          product: true,
+          departure: {
+            sender: true,
+          },
+          destination: {
+            receiver: true,
           },
         },
-        destination: {
-          x: true,
-          y: true,
+        where: { id: In(orderIds) },
+        select: {
+          id: true,
           detail: true,
-          receiver: {
-            name: true,
-            phone: true,
+          product: {
+            width: true,
+            length: true,
+            height: true,
+            weight: true,
+          },
+          departure: {
+            x: true,
+            y: true,
+            detail: true,
+            sender: {
+              name: true,
+              phone: true,
+            },
+          },
+          destination: {
+            x: true,
+            y: true,
+            detail: true,
+            receiver: {
+              name: true,
+              phone: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    return order;
+      return order;
+    } catch (error) {
+      throw new UnknownDataBaseError(error);
+    }
   }
 
   async deleteByOrderId(orderId: number) {

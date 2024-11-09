@@ -8,6 +8,7 @@ type BasicTransportationEntity = {
 };
 
 export interface OrderRepository {
+  findAllCreatedOrDeliveredOrderDetailByOrderIds(orderIds: number[]): Promise<Order[]>;
   findAllMatchableOrderByWalletAddress(walletAddress: string): Promise<Order[]>;
   updateDeliveryPersonAtOrder(manager: EntityManager, arg0: { orderId: number; walletAddress: string }): Promise<void>;
   create(
