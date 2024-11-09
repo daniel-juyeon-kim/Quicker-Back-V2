@@ -3,6 +3,7 @@ import { OrderControllerRequestData } from "../../validator/schema/routes/order/
 import { OrderIdParam } from "../../validator/schema/routes/params";
 
 export interface OrderService {
+  findAllOrderDetail(stringTypeOrderIds: string): Promise<Order[]>;
   findAllMatchableOrder(walletAddress: string): Promise<Order[]>;
   matchDeliveryPersonAtOrder(
     body: OrderControllerRequestData["updateOrderDeliveryPerson"] & OrderIdParam,

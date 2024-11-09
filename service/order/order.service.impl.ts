@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { parseNumericStringToNumberList } from "../../core";
 import { DeliveryPersonMatchedDateRepository, ReceiverRepository } from "../../database";
 import { OrderRepository } from "../../database/type-orm/repository/order/order.repository";
 import { DeliveryUrlMessage } from "./delivery-url-message";
@@ -30,6 +31,11 @@ export class OrderServiceImpl implements OrderService {
     this.receiverRepository = receiverRepository;
     this.deliverUrlMessage = deliveryUrlMessage;
     this.deliveryPersonMatchedDateRepository = deliveryPersonMatchedDateRepository;
+  }
+
+  async findAllOrderDetail(stringTypeOrderIds: string) {
+    const orderIds = parseNumericStringToNumberList(stringTypeOrderIds);
+    return await this.orderRepository.findAllCreatedOrDeliveredOrderDetailByOrderIds(orderIds);
   }
 
   async findAllMatchableOrder(walletAddress: string) {

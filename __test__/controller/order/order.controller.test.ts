@@ -55,10 +55,12 @@ describe("OrderController", () => {
       },
     };
 
-    test("통과하는 테스트", async () => {
-      req = { body };
+    type CreateOrderRequest = Request<never, never, OrderControllerRequestData["createOrder"]>;
 
-      await controller.createOrder(req as Request, res as Response, next as NextFunction);
+    test("통과하는 테스트", async () => {
+      const request: Partial<CreateOrderRequest> = { body };
+
+      await controller.createOrder(request as CreateOrderRequest, res as Response, next as NextFunction);
 
       expect(service.createOrder).toHaveBeenCalledWith(body);
       expect(res.send).toHaveBeenCalledWith(new HttpResponse(200));
@@ -66,12 +68,12 @@ describe("OrderController", () => {
     });
 
     test("실패하는 테스트, 알 수 없는 DB 에러 헨들링", async () => {
-      req = { body };
+      const request: Partial<CreateOrderRequest> = { body };
 
       const error = new UnknownDataBaseError("알 수 없는 DB 에러");
       service.createOrder.mockRejectedValue(error);
 
-      await controller.createOrder(req as Request, res as Response, next as NextFunction);
+      await controller.createOrder(request as CreateOrderRequest, res as Response, next as NextFunction);
 
       expect(service.createOrder).toHaveBeenCalledWith(body);
       expect(res.send).not.toHaveBeenCalled();
@@ -79,13 +81,13 @@ describe("OrderController", () => {
     });
 
     test("실패하는 테스트, 존재하지 않는 데이터 에러", async () => {
-      req = { body };
+      const request: Partial<CreateOrderRequest> = { body };
 
       const error = new NotExistDataError("존재하지 않는 데이터");
 
       service.createOrder.mockRejectedValue(error);
 
-      await controller.createOrder(req as Request, res as Response, next as NextFunction);
+      await controller.createOrder(request as CreateOrderRequest, res as Response, next as NextFunction);
 
       expect(service.createOrder).toHaveBeenCalledWith(body);
       expect(res.send).not.toHaveBeenCalled();
@@ -187,48 +189,94 @@ describe("OrderController", () => {
     });
   });
 
-  // test("should have a method getFailImage()", async () => {
-  //   // await controller.getFailImage(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+  describe("getOrdersDetail()", () => {
+    type GetOrdersDetailRequest = Parameters<OrderController["getOrdersDetail"]>[0];
 
-  // test("should have a method postFailImage()", async () => {
-  //   // await controller.postFailImage(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+    test("통과하는 테스트", async () => {
+      const orderIds = "1,2,3,4";
+      const request: Partial<GetOrdersDetailRequest> = { params: { orderIds } };
 
-  // test("should have a method getImage()", async () => {
-  //   // await controller.getImage(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+      const resolveValue = [
+        {
+          departure: {
+            detail: "디테일",
+            sender: {
+              name: "이름",
+              phone: "01012345678",
+            },
+            x: 0,
+            y: 0,
+          },
+          destination: {
+            detail: "디테일",
+            receiver: {
+              name: "이름",
+              phone: "01012345678",
+            },
+            x: 37.5,
+            y: 112,
+          },
+          detail: "디테일",
+          id: 2,
+          product: {
+            height: 0,
+            length: 0,
+            weight: 0,
+            width: 0,
+          },
+        },
+        {
+          departure: {
+            detail: "디테일",
+            sender: {
+              name: "이름",
+              phone: "01012345678",
+            },
+            x: 0,
+            y: 0,
+          },
+          destination: {
+            detail: "디테일",
+            receiver: {
+              name: "이름",
+              phone: "01012345678",
+            },
+            x: 37.5,
+            y: 112,
+          },
+          detail: "디테일",
+          id: 3,
+          product: {
+            height: 0,
+            length: 0,
+            weight: 0,
+            width: 0,
+          },
+        },
+      ];
+      service.findAllOrderDetail.mockResolvedValueOnce(resolveValue as Order[]);
 
-  // test("should have a method postImage()", async () => {
-  //   // await controller.postImage(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+      await controller.getOrdersDetail(request as GetOrdersDetailRequest, res as Response, next as NextFunction);
 
-  // test("should have a method orderlist()", async () => {
-  //   // await controller.orderlist(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+      expect(service.findAllOrderDetail).toHaveBeenCalledWith(orderIds);
+      expect(res.send).toHaveBeenCalledWith(new HttpResponse(200, resolveValue));
+      expect(next).not.toHaveBeenCalledWith();
+    });
 
-  // test("should have a method getRoomInfo()", async () => {
-  //   // await controller.getRoomInfo(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+    describe("실패하는 테스트", () => {
+      test("예상하지 못한 에러 발생", async () => {
+        const orderIds = "1,2,3,4";
+        const request: Partial<GetOrdersDetailRequest> = { params: { orderIds } };
 
-  // test("should have a method postLocation()", async () => {
-  //   // await controller.postLocation(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+        const error = new UnknownDataBaseError("알 수 없는 에러");
 
-  // test("should have a method getLocation()", async () => {
-  //   // await controller.getLocation(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+        service.findAllOrderDetail.mockRejectedValueOnce(error);
 
-  // test("should have a method getAverageCost()", async () => {
-  //   // await controller.getAverageCost(req,res,next);
-  //   expect(false).toBeTruthy();
-  // });
+        await controller.getOrdersDetail(request as GetOrdersDetailRequest, res as Response, next as NextFunction);
+
+        expect(res.send).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalledWith(error);
+      });
+    });
+  });
 });

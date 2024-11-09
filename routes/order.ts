@@ -84,43 +84,7 @@ router.get(
   orderSenderReceiverController.getSenderReceiverInfo,
 );
 
-// 내가 배송하거나 주문한 의뢰 확인
-// GET /orders/detail
-
-// query {
-//   orderIds: 1,2,3 string
-// }
-
-// code: 200,
-// message: "OK",
-// body: {
-//   id: number,
-//   DETAIL: string,
-//   Destination: {
-//     X: number,
-//     Y: number,
-//     DETAIL: string
-//   },
-//   Departure: {
-//     X: number,
-//     Y: number,
-//     DETAIL: string
-//   },
-//   Recipient: {
-//     NAME: string,
-//     PHONE: string
-//   },
-//   Sender: {
-//     NAME: string,
-//     PHONE: string
-//   },
-//   Product: {
-//     WIDTH: number,
-//     LENGTH: number,
-//     HEIGHT: number,
-//     WEIGHT: number
-//   }
-// }[]
-router.get("/detail", validate(getOrdersDetailSchema, ["query"]), orderController.orderlist);
+// GET /orders/{orderIds}/detail
+router.get("/:orderIds/detail", validate(getOrdersDetailSchema, ["params"]), orderController.getOrdersDetail);
 
 export default router;

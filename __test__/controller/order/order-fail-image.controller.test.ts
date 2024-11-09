@@ -5,7 +5,7 @@ import { OrderFailImageController } from "../../../controllers/order/fail-image/
 import { DuplicatedDataError, NotExistDataError } from "../../../database";
 import { OrderFailImageService } from "../../../service/order/order-fail-image/order-fail-image.service";
 import { HttpResponse } from "../../../util/http-response";
-import { OrderIdParam } from "../../../validator/schema/routes/params";
+import { OrderId } from "../../../validator/schema/routes/params";
 
 const service = mock<OrderFailImageService>();
 const controller = new OrderFailImageController(service);
@@ -33,7 +33,7 @@ describe("OrderFailImageController", () => {
 
       service.findOrderFailImage.mockResolvedValueOnce(resolvedValue);
 
-      await controller.getFailImage(req as Request<OrderIdParam>, res as Response, next as NextFunction);
+      await controller.getFailImage(req as Request<OrderId>, res as Response, next as NextFunction);
 
       expect(service.findOrderFailImage).toHaveBeenCalledWith(params.orderId);
       expect(res.send).toHaveBeenCalledWith(
@@ -53,7 +53,7 @@ describe("OrderFailImageController", () => {
 
       service.findOrderFailImage.mockRejectedValueOnce(error);
 
-      await controller.getFailImage(req as Request<OrderIdParam>, res as Response, next as NextFunction);
+      await controller.getFailImage(req as Request<OrderId>, res as Response, next as NextFunction);
 
       expect(res.send).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledWith(error);

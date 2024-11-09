@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 
 import { matchedData } from "express-validator";
-import { averageInstance, orderInstance } from "../../maria/commands";
+import { averageInstance } from "../../maria/commands";
 import { currentLocationInstance } from "../../mongo/command";
 import connectMongo from "../../mongo/connector";
 
-import { parseNumericsToNumberList } from "../../core";
 import { OrderService } from "../../service/order/order.service";
 import { findDistanceKey } from "../../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../../util/http-response";
 import { OrderControllerRequestData } from "../../validator/schema/routes/order/order-controller-request-data";
+import { OrderIdsParam } from "../../validator/schema/routes/orders/detail";
 import { OrderIdParam } from "../../validator/schema/routes/params";
 import { WalletAddressQuery } from "../../validator/schema/routes/query";
 
@@ -66,103 +66,13 @@ export class OrderController {
       next(error);
     }
   };
-
-  // // query : {
-  // //   userWalletAdress: string
-  // // }
-
-  // // {
-  // //   id: number;
-  // //   DETAIL: string | undefined;
-  // //   PAYMENT: number;
-  // //   Transportation : {
-  // //     WALKING: number;
-  // //     BICYCLE: number;
-  // //     SCOOTER: number;
-  // //     BIKE: number;
-  // //     CAR: number;
-  // //     TRUCK: number;
-  // //   },
-  // //   Destination: {
-  // //     X: number;
-  // //     Y: number;
-  // //     DETAIL: string;
-  // //   },
-  // //   Departure: {
-  // //     X: number;
-  // //     Y: number;
-  // //     DETAIL: string;
-  // //   },
-  // //   Product: {
-  // //     WIDTH: number;
-  // //     LENGTH: number;
-  // //     HEIGHT: number;
-  // //     WEIGHT: number;
-  // //   }
-  // // }[]
-  // getRequests = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const { walletAddress } = matchedData(req);
-
-  //     const user = await userInstance.findId(walletAddress);
-
-  //     if (!user) {
-  //       throw new HttpErrorResponse(404, "해당 지갑주소와 일치하는 사용자가 존재하지 않습니다.");
-  //     }
-
-  //     const orders = await orderInstance.findForSearch(user.id);
-
-  //     if (orders.length === 0) {
-  //       throw new HttpErrorResponse(404, "생성된 오더가 없습니다.");
-  //     }
-
-  //     res.send(new HttpResponse(200, orders));
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
-
-  // query : {
-  //   orderIds: string
-  // }
-
-  // {
-  //   id: number
-  //   DETAIL: string | undefined
-  //   Destination: {
-  //     X: number
-  //     Y: number
-  //     DETAIL: string
-  //   }
-  //   Departure: {
-  //     X: number
-  //     Y: number
-  //     DETAIL: string
-  //   }
-  //   Recipient: {
-  //     NAME: string
-  //     PHONE: string
-  //   }
-  //   Sender : {
-  //     NAME: string
-  //     PHONE: string
-  //   }
-  //   Product: {
-  //     WIDTH: number
-  //     LENGTH: number
-  //     HEIGHT: number
-  //     WEIGHT: number
-  //   }
-  // }[]
-
-  orderlist = async (req: Request, res: Response, next: NextFunction) => {
+  getOrdersDetail = async (req: Request<OrderIdsParam>, res: Response, next: NextFunction) => {
     try {
-      const { orderIds } = matchedData(req) as { orderIds: string };
+      const { orderIds } = req.params;
 
-      const parsedIds = parseNumericsToNumberList(orderIds);
-      const orders = await orderInstance.findForDetail(parsedIds);
+      const details = await this.service.findAllOrderDetail(orderIds);
 
-      res.send(new HttpResponse(200, orders));
+      res.send(new HttpResponse(200, details));
     } catch (error) {
       next(error);
     }

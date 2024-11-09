@@ -316,4 +316,9 @@ describe("OrderService 테스트", () => {
       });
     });
   });
+
+  test("findAllOrderDetail()", async () => {
+    await service.findAllOrderDetail("1,2,3,4");
+    expect(orderRepository.findAllCreatedOrDeliveredOrderDetailByOrderIds).toHaveBeenCalledWith([1, 2, 3, 4]);
+  });
 });
