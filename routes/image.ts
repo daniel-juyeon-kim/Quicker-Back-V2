@@ -32,7 +32,7 @@ router.get(
   orderCompeteImageController.getCompleteImageBuffer,
 );
 
-// POST /orders/complete-image
+// POST /orders/image/complete
 router.post(
   "/image/complete",
   uploadImage,

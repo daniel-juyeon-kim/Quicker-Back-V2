@@ -757,9 +757,8 @@
                 "type": "object",
                 "properties": {
                   "image": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "multer를 이용한 파일 업로드"
+                    "format": "file",
+                    "description": "multer를 이용한 파일 업로드, .jpg .png .jpeg만 가능"
                   },
                   "orderId": {
                     "type": "number",
@@ -898,7 +897,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/orders/image/complete": {
       "post": {
         "tags": ["orders"],
         "summary": "배송 이미지 버퍼를 저장",
@@ -909,9 +910,8 @@
                 "type": "object",
                 "properties": {
                   "image": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "multer를 이용한 파일 업로드"
+                    "format": "file",
+                    "description": "multer를 이용한 파일 업로드, .jpg .png .jpeg만 가능"
                   },
                   "orderId": {
                     "type": "number",
