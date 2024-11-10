@@ -655,7 +655,7 @@
         }
       }
     },
-    "/orders/{orderId}/fail-image": {
+    "/orders/{orderId}/image/fail": {
       "get": {
         "tags": ["orders"],
         "summary": "배송 실패 이유와 이미지 버퍼를 제공",
@@ -697,15 +697,16 @@
                               "example": "Buffer"
                             },
                             "data": {
-                              "type": "array"
+                              "type": "array",
+                              "example": [123, 345, 523]
                             }
                           }
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "배송 실패 사유"
                         }
                       }
-                    },
-                    "reason": {
-                      "type": "string",
-                      "example": "배송 실패 사유"
                     }
                   }
                 }

@@ -13,8 +13,8 @@ const uploadImage = multer({ storage }).single("image");
 
 const router = express.Router();
 
-// GET /orders/{orderId}/fail-image
-router.get("/:orderId/fail-image", validate(orderIdParamSchema, ["params"]), orderFailImageController.getFailImage);
+// GET /orders/{orderId}/image/fail
+router.get("/:orderId/image/fail", validate(orderIdParamSchema, ["params"]), orderFailImageController.getFailImage);
 
 // POST /orders/fail-image
 router.post(
