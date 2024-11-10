@@ -25,6 +25,10 @@
     {
       "name": "chat",
       "description": "채팅 관련"
+    },
+    {
+      "name": "current-deliver-location",
+      "description": "배송원 위치 관련"
     }
   ],
   "paths": {
@@ -1193,6 +1197,122 @@
           }
         }
       }
+    },
+    "/current-deliver-location": {
+      "get": {
+        "tags": ["current-deliver-location"],
+        "summary": "배송원의 현재 위치를 제공",
+        "parameters": [
+          {
+            "name": "quicker",
+            "in": "query",
+            "description": "지갑 주소",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "0x2ifn2..."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "X": {
+                      "type": "number",
+                      "example": 37.7749
+                    },
+                    "Y": {
+                      "type": "number",
+                      "example": -122.4194
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "데이터가 존재하지 않음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 에러",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["current-deliver-location"],
+        "summary": "배송원의 위치 업데이트",
+        "requestBody": {
+          "content": {
+            "json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "X": {
+                    "type": "number",
+                    "example": 37.7749
+                  },
+                  "Y": {
+                    "type": "number",
+                    "example": -122.4194
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "0x2ifn2..."
+                  }
+                },
+                "required": ["X", "Y", "address"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "done"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1200,8 +1320,25 @@
       "response404": {
         "type": "object",
         "properties": {
+          "code": {
+            "type": "number",
+            "example": 500
+          },
           "error_message": {
             "type": "string"
+          }
+        }
+      },
+      "response500": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "InternalServerError"
           }
         }
       }
