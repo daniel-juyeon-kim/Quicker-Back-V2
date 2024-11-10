@@ -818,7 +818,7 @@
         }
       }
     },
-    "/orders/{orderId}/complete-image": {
+    "/orders/{orderId}/image/complete": {
       "get": {
         "tags": ["orders"],
         "summary": "배송 완료 이미지 버퍼를 제공",
@@ -852,9 +852,13 @@
                     "body": {
                       "type": "object",
                       "properties": {
-                        "imageBuffer": {
+                        "type": {
                           "type": "string",
                           "example": "Buffer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "example": [123, 345, 523]
                         }
                       }
                     }

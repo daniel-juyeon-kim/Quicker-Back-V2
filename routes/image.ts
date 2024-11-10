@@ -25,9 +25,9 @@ router.post(
   orderFailImageController.postFailImage,
 );
 
-// GET /orders/{orderId}/complete-image
+// GET /orders/{orderId}/image/complete
 router.get(
-  "/:orderId/complete-image",
+  "/:orderId/image/complete",
   validate(orderIdParamSchema, ["params"]),
   orderCompeteImageController.getCompleteImageBuffer,
 );
