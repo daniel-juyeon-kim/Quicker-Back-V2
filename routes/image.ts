@@ -16,9 +16,9 @@ const router = express.Router();
 // GET /orders/{orderId}/image/fail
 router.get("/:orderId/image/fail", validate(orderIdParamSchema, ["params"]), orderFailImageController.getFailImage);
 
-// POST /orders/fail-image
+// POST /orders/image/fail
 router.post(
-  "/fail-image",
+  "/image/fail",
   uploadImage,
   validateSingleImageFile,
   validate(postOrderFailImageSchema, ["body"]),
