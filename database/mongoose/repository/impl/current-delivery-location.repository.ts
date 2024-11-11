@@ -1,6 +1,5 @@
 import { Model } from "mongoose";
 import { UnknownDataBaseError } from "../../../../core";
-import { isEmptyArray, isNull } from "../../../../util";
 import { NotExistDataError } from "../../../type-orm";
 import { CurrentDeliveryLocation, Location } from "../../models/current-deliver-location";
 import { MongoRepository } from "../abstract.repository";
@@ -9,35 +8,37 @@ export class CurrentDeliveryLocationRepository extends MongoRepository {
     super();
   }
 
-  async createLocation(walletAddress: string, location: Location) {
-    await this.model.create({ _id: walletAddress, location: [location] });
-  }
+  async saveDeliveryPersonLocation(orderId: number, location: Location) {
+    const session = await this.model.startSession();
+    session.startTransaction();
 
-  async updateLocation(walletAddress: string, location: Location) {
-    await this.model.updateOne({ _id: walletAddress }, { $push: { location: location } });
+    try {
+      if (await this.model.exists({ _id: orderId })) {
+        await this.model.findByIdAndUpdate(orderId, { location });
+        await session.commitTransaction();
+        return;
+      }
+
+      await this.model.create({ _id: orderId, location });
+      await session.commitTransaction();
+    } catch (error) {
+      await session.abortTransaction();
+      throw new UnknownDataBaseError(error);
+    } finally {
+      session.endSession();
+    }
   }
 
   async findCurrentLocationByOrderId(orderId: number) {
     try {
-      const currentLocationDocument = await this.model
-        .findOne({ _id: orderId })
-        .select(["-_id", "location.x", "location.y"])
-        .lean();
+      const document = await this.model.findOne({ _id: orderId }).select(["-_id", "location.x", "location.y"]).lean();
 
-      if (isNull(currentLocationDocument)) {
-        throw new NotExistDataError(`${orderId}에 대한 데이터가 존재하지 않습니다.`);
-      }
+      this.validateNull(document);
 
-      const location = currentLocationDocument.location;
-
-      if (isEmptyArray(location)) {
-        throw new NotExistDataError(`${orderId}에 대한 데이터가 존재하지 않습니다.`);
-      }
-
-      return location[location.length - 1];
+      return document.location;
     } catch (error) {
       if (error instanceof NotExistDataError) {
-        throw error;
+        throw new NotExistDataError(`${orderId}에 대한 데이터가 존재하지 않습니다.`);
       }
       throw new UnknownDataBaseError(error);
     }

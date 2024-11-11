@@ -29,25 +29,44 @@ afterAll(async () => {
 });
 
 describe("CurrentDeliverLocationRepository", () => {
-  test("should have a method createLocation()", async () => {
-    // await instance.createLocation(walletAddress,location);
+  describe("saveDeliveryPersonLocation()", () => {
+    afterAll(async () => {
+      await CurrentDeliverLocationModel.deleteMany();
+    });
+
+    describe("통과하는 테스트", () => {
+      test("최초 저장", async () => {
+        const orderId = 1;
+
+        await repository.saveDeliveryPersonLocation(orderId, { x: 112.1314, y: 37.4 });
+
+        const result = await CurrentDeliverLocationModel.findById(orderId).select(["-__v", "-location._id"]).lean();
+
+        expect(result).toEqual({
+          _id: orderId,
+          location: { x: 112.1314, y: 37.4 },
+        });
+      });
+
+      test("위치 정보 업데이트", async () => {
+        const orderId = 1;
+
+        await repository.saveDeliveryPersonLocation(orderId, { x: 112.1333, y: 37.44 });
+
+        const result = await CurrentDeliverLocationModel.findById(orderId).select(["-__v"]).lean();
+        expect(result).toEqual({
+          _id: orderId,
+          location: { x: 112.1333, y: 37.44 },
+        });
+      });
+    });
   });
 
-  test("should have a method updateLocation()", async () => {
-    // await instance.updateLocation(walletAddress,location);
-  });
-
-  describe("findByWalletAddress 테스트", () => {
+  describe("findByWalletAddress()", () => {
     beforeEach(async () => {
       await CurrentDeliverLocationModel.create({
         _id: 1,
-        location: [
-          { x: 112.1314, y: 37.4 },
-          { x: 112.1314, y: 37.4 },
-          { x: 112.1314, y: 37.4 },
-          { x: 112.1314, y: 37.4 },
-          { x: 112.1313, y: 37.3 },
-        ],
+        location: { x: 112.1313, y: 37.3 },
       });
     });
 
