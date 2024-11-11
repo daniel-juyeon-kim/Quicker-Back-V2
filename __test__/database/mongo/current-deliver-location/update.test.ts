@@ -1,24 +1,24 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose, { Connection, Model } from "mongoose";
 import {
-  CurrentDeliverLocation,
-  CurrentDeliverLocationRepository,
-  CurrentDeliverLocationSchema,
+  CurrentDeliveryLocation,
+  CurrentDeliveryLocationRepository,
+  CurrentDeliveryLocationSchema,
 } from "../../../../database/mongoose";
 
 let mongod: MongoMemoryServer;
 let connector: Connection;
-let CurrentDeliverLocationModel: Model<CurrentDeliverLocation>;
-let repository: CurrentDeliverLocationRepository;
+let CurrentDeliverLocationModel: Model<CurrentDeliveryLocation>;
+let repository: CurrentDeliveryLocationRepository;
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   connector = mongoose.createConnection(mongod.getUri());
-  CurrentDeliverLocationModel = connector.model<CurrentDeliverLocation>(
+  CurrentDeliverLocationModel = connector.model<CurrentDeliveryLocation>(
     "completeDeliverImage",
-    CurrentDeliverLocationSchema,
+    CurrentDeliveryLocationSchema,
   );
-  repository = new CurrentDeliverLocationRepository(CurrentDeliverLocationModel);
+  repository = new CurrentDeliveryLocationRepository(CurrentDeliverLocationModel);
 });
 
 beforeEach(async () => {

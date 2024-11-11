@@ -1,7 +1,17 @@
 import mongoose from "mongoose";
 
-import { ChatMessageSchema, CompleteDeliveryImageSchema, FailDeliveryImageSchema } from "./models";
-import { ChatMessageRepository, CompleteDeliveryImageRepository, FailDeliveryImageRepository } from "./repository";
+import {
+  ChatMessageSchema,
+  CompleteDeliveryImageSchema,
+  CurrentDeliveryLocationSchema,
+  FailDeliveryImageSchema,
+} from "./models";
+import {
+  ChatMessageRepository,
+  CompleteDeliveryImageRepository,
+  CurrentDeliveryLocationRepository,
+  FailDeliveryImageRepository,
+} from "./repository";
 
 const FailDeliveryImageModel = mongoose.connection.model("failDeliveryImage", FailDeliveryImageSchema);
 export const failDeliveryImageRepository = new FailDeliveryImageRepository(FailDeliveryImageModel);
@@ -11,3 +21,6 @@ export const completeDeliveryImageRepository = new CompleteDeliveryImageReposito
 
 const chatMessageModel = mongoose.connection.model("chatMessage", ChatMessageSchema);
 export const chatMessageRepository = new ChatMessageRepository(chatMessageModel);
+
+const deliveryLocationModel = mongoose.connection.model("deliveryLocation", CurrentDeliveryLocationSchema);
+export const currentDeliverLocationRepository = new CurrentDeliveryLocationRepository(deliveryLocationModel);
