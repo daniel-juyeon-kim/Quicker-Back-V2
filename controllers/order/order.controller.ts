@@ -98,37 +98,6 @@ export class OrderController {
       next(error);
     }
   };
-
-  // query {
-  //   quicker: string // address
-  // }
-
-  // response {
-  //   X : number,
-  //   Y : number
-  // }
-
-  getLocation = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { quicker } = matchedData(req);
-
-      const connection = await connectMongo("realTimeLocation");
-      const location = await currentLocationInstance.find(connection, quicker);
-
-      if (!location) {
-        throw new HttpErrorResponse(500);
-      }
-
-      if (!(location.X && location.Y)) {
-        throw new HttpErrorResponse(404, "요청한 데이터가 존재하지 않습니다.");
-      }
-
-      res.send(location);
-    } catch (error) {
-      next(error);
-    }
-  };
-
   // query {
   //   distance: number
   // }
