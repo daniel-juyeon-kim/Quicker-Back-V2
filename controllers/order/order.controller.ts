@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import { matchedData } from "express-validator";
 import { averageInstance } from "../../maria/commands";
-import { currentLocationInstance } from "../../mongo/command";
-import connectMongo from "../../mongo/connector";
 
 import { OrderService } from "../../service/order/order.service";
 import { findDistanceKey } from "../../util/distance";
@@ -78,26 +76,6 @@ export class OrderController {
     }
   };
 
-  // body {
-  //   X: number
-  //   Y: number
-  //   address: string // walletAddress
-  // }
-
-  // response 200
-
-  postLocation = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { address, ...location } = matchedData(req);
-
-      const connection = await connectMongo("realTimeLocation");
-      await currentLocationInstance.create(connection, address, location);
-
-      res.send(new HttpResponse(200));
-    } catch (error) {
-      next(error);
-    }
-  };
   // query {
   //   distance: number
   // }

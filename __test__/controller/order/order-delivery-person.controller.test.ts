@@ -4,6 +4,7 @@ import { OrderDeliveryPersonController } from "../../../controllers/order/order-
 import { NotExistDataError } from "../../../database";
 import { DeliveryPersonService } from "../../../service/order/delivery-person/delivery-person.service";
 import { HttpResponse } from "../../../util/http-response";
+import { OrdersDeliveryPersonLocationControllerRequestData } from "../../../validator/schema/routes/current-deliver-location";
 
 const service = mock<DeliveryPersonService>();
 const controller = new OrderDeliveryPersonController(service);
@@ -43,6 +44,51 @@ describe("OrderDeliveryPersonController", () => {
       service.findCurrentLocation.mockRejectedValueOnce(error);
 
       await controller.getDeliveryPersonCurrentLocation(req as Request, res as Response, next as NextFunction);
+
+      expect(res.send).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("getDeliveryPersonCurrentLocation()", () => {
+    type RequestType = Request<
+      never,
+      never,
+      OrdersDeliveryPersonLocationControllerRequestData["postDeliveryPersonCurrentLocation"]
+    >;
+    let request: Partial<RequestType>;
+
+    beforeEach(() => {
+      request = {};
+    });
+
+    test("통과하는 테스트", async () => {
+      const body = {
+        x: 126.73,
+        y: 37.71,
+        orderId: 1,
+      };
+      request = { body };
+
+      await controller.postDeliveryPersonCurrentLocation(request as RequestType, res as Response, next as NextFunction);
+
+      expect(service.createDeliveryPersonCurrentLocation).toHaveBeenCalledWith(body);
+      expect(res.send).toHaveBeenCalledWith(new HttpResponse(200));
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    test("실패하는 테스트, 존재하지 않는 데이터 ", async () => {
+      const body = {
+        x: 126.73,
+        y: 37.71,
+        orderId: 1,
+      };
+      request = { body };
+
+      const error = new NotExistDataError("데이터가 존재하지 않습니다.");
+      service.createDeliveryPersonCurrentLocation.mockRejectedValueOnce(error);
+
+      await controller.postDeliveryPersonCurrentLocation(request as RequestType, res as Response, next as NextFunction);
 
       expect(res.send).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledWith(error);

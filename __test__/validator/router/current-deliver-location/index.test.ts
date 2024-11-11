@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../util/http-response";
 import { DATA, mustBe, TYPE, validate } from "../../../../validator";
-import {
-  getCurrentDeliverLocationSchema,
-  postCurrentDeliverLocationSchema,
-} from "../../../../validator/schema/routes/current-deliver-location";
-import { TestName } from "../types/test-name";
+import { postDeliveryPersonCurrentLocationSchema } from "../../../../validator/schema/routes/current-deliver-location";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -17,98 +13,60 @@ beforeEach(() => {
   next = jest.fn();
 });
 
-describe("GET: /current-deliver-location", () => {
-  const testTarget = validate(getCurrentDeliverLocationSchema, ["query"]);
+describe("POST: /orders/delivery-person/location", () => {
+  const validateFn = validate(postDeliveryPersonCurrentLocationSchema, ["body"]);
 
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
-      req.query = {
-        quicker: "1",
-      };
+  test("통과하는 테스트", async () => {
+    req.body = {
+      x: 127,
+      y: 37,
+      orderId: 1,
+    };
 
-      await testTarget(req as Request, res as Response, next);
+    await validateFn(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith();
-    });
+    expect(next).toHaveBeenCalledWith();
   });
 
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
-      req.query = {};
-
-      await testTarget(req as Request, res as Response, next);
-
-      expect(res.send).toHaveBeenCalledWith(
-        new HttpErrorResponse(400, [
-          {
-            location: "query",
-            msg: DATA.NOT_EXIST,
-            path: "quicker",
-            type: "field",
-            value: "",
-          },
-        ]),
-      );
-    });
-  });
-});
-
-describe("POST: /current-deliver-location", () => {
-  const testTarget = validate(postCurrentDeliverLocationSchema, ["body"]);
-
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
+  describe("실패하는 테스트", () => {
+    test("타입 미스", async () => {
       req.body = {
-        X: 1,
-        Y: 2,
-        address: "fadsf",
+        x: 127,
+        y: "37",
+        orderId: 1,
       };
 
-      await testTarget(req as Request, res as Response, next);
-
-      expect(next).toHaveBeenCalledWith();
-    });
-  });
-
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.MISS_TYPE, async () => {
-      req.body = {
-        X: 1,
-        Y: "2",
-        address: "0xi2o124120082yjl3803",
-      };
-
-      await testTarget(req as Request, res as Response, next);
+      await validateFn(req as Request, res as Response, next);
 
       expect(res.send).toHaveBeenCalledWith(
         new HttpErrorResponse(400, [
           {
             location: "body",
             msg: mustBe(TYPE.INTEGER),
-            path: "Y",
+            path: "y",
             type: "field",
-            value: "2",
+            value: "37",
           },
         ]),
       );
     });
 
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
+    test("속성 누락", async () => {
       req.body = {
-        X: 1,
-        Y: 2,
+        x: 127,
+        y: 37,
       };
 
-      await testTarget(req as Request, res as Response, next);
+      await validateFn(req as Request, res as Response, next);
 
       expect(res.send).toHaveBeenCalledWith(
         new HttpErrorResponse(400, [
           {
             location: "body",
             msg: DATA.NOT_EXIST,
-            path: "address",
+            path: "orderId",
             type: "field",
-            value: "",
+            value: undefined,
           },
         ]),
       );

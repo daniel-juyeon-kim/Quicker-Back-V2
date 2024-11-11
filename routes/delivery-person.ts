@@ -1,20 +1,23 @@
 import express from "express";
-import { orderController } from "../controllers";
+import { orderDeliveryPersonController } from "../controllers";
 import { validate } from "../validator";
-import { postCurrentDeliverLocationSchema } from "../validator/schema/routes/current-deliver-location";
+import { postDeliveryPersonCurrentLocationSchema } from "../validator/schema/routes/current-deliver-location";
+import { orderIdParamSchema } from "../validator/schema/routes/params";
 
 const router = express.Router();
 
-// POST /current-deliver-location
+// GET /orders/{orderId}/delivery-person/location
+router.get(
+  "/:orderId/delivery-person/location",
+  validate(orderIdParamSchema, ["params"]),
+  orderDeliveryPersonController.getDeliveryPersonCurrentLocation,
+);
 
-// body {
-//   X: number
-//   Y: number
-//   address: string // 지갑주소
-// }
-
-// code: 200,
-// message: "OK",
-router.post("/", validate(postCurrentDeliverLocationSchema, ["body"]), orderController.postLocation);
+// POST /orders/delivery-person/location
+router.post(
+  "/delivery-person/location",
+  validate(postDeliveryPersonCurrentLocationSchema, ["body"]),
+  orderDeliveryPersonController.postDeliveryPersonCurrentLocation,
+);
 
 export default router;

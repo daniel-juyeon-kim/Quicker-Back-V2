@@ -1,11 +1,6 @@
 import express from "express";
 
-import {
-  orderController,
-  orderDeliveryPersonController,
-  orderLocationController,
-  orderSenderReceiverController,
-} from "../controllers";
+import { orderController, orderLocationController, orderSenderReceiverController } from "../controllers";
 import { validate } from "../validator";
 import {
   patchOrderDeliveryPersonSchema,
@@ -40,15 +35,7 @@ router.get("/:orderIds/detail", validate(getOrdersDetailSchema, ["params"]), ord
 
 router.use("/", imageRouter);
 
-// POST /orders/delivery-person/location
-router.use("/current-deliver-location", deliveryPerson);
-
-// GET /orders/{orderId}/delivery-person/location
-router.get(
-  "/:orderId/delivery-person/location",
-  validate(orderIdParamSchema, ["params"]),
-  orderDeliveryPersonController.getDeliveryPersonCurrentLocation,
-);
+router.use("/", deliveryPerson);
 
 // PATCH /orders/{orderId}/delivery-person
 router.patch(
