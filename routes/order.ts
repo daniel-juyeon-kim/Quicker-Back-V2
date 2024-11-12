@@ -2,10 +2,7 @@ import express from "express";
 
 import { orderController, orderLocationController, orderSenderReceiverController } from "../controllers";
 import { validate } from "../validator";
-import {
-  patchOrderDeliveryPersonSchema,
-  postOrderSchema,
-} from "../validator/schema/routes/order/order-controller-request-data";
+import { postOrderSchema } from "../validator/schema/routes/order/order-controller-request-data";
 import { getOrdersDetailSchema } from "../validator/schema/routes/orders/detail";
 import { orderIdParamSchema } from "../validator/schema/routes/params";
 import { walletAddressSchema } from "../validator/schema/routes/query";
@@ -36,13 +33,5 @@ router.get("/:orderIds/detail", validate(getOrdersDetailSchema, ["params"]), ord
 router.use("/", imageRouter);
 
 router.use("/", deliveryPerson);
-
-// PATCH /orders/{orderId}/delivery-person
-router.patch(
-  "/:orderId/delivery-person",
-  validate(orderIdParamSchema, ["params"]),
-  validate(patchOrderDeliveryPersonSchema, ["body"]),
-  orderController.updateOrderDeliveryPerson,
-);
 
 export default router;
