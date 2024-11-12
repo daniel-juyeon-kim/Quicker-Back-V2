@@ -40,7 +40,7 @@ const deliveryUrlMessage = new DeliveryUrlMessage({
 });
 export const orderService = new OrderServiceImpl({
   dataSource: AppDataSource,
-  orderRepository,
+  repository: orderRepository,
   receiverRepository,
   deliveryUrlMessage,
   deliveryPersonMatchedDateRepository,

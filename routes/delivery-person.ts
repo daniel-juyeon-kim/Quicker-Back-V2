@@ -1,8 +1,10 @@
 import express from "express";
 import { orderDeliveryPersonController } from "../controllers";
 import { validate } from "../validator";
-import { postDeliveryPersonCurrentLocationSchema } from "../validator/schema/routes/current-deliver-location";
-import { patchOrderDeliveryPersonSchema } from "../validator/schema/routes/order/order-controller-request-data";
+import {
+  patchOrderDeliveryPersonSchema,
+  postDeliveryPersonCurrentLocationSchema,
+} from "../validator/schema/routes/order/order-delivery-person-controller-request-data";
 import { orderIdParamSchema } from "../validator/schema/routes/params";
 
 const router = express.Router();

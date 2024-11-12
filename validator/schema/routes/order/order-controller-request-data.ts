@@ -22,10 +22,6 @@ export interface OrderControllerRequestData {
     sender: DeliverParticipant;
     receiver: DeliverParticipant;
   };
-
-  updateOrderDeliveryPerson: {
-    walletAddress: string;
-  };
 }
 
 const transportation = {
@@ -104,9 +100,4 @@ export const postOrderSchema: Schema = {
   ...product,
   ...sender,
   ...receiver,
-};
-
-// PATCH /order/{orderId}/delivery-person
-export const patchOrderDeliveryPersonSchema: Schema = {
-  walletAddress: existString,
 };

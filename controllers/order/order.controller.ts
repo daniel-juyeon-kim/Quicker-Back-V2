@@ -8,7 +8,6 @@ import { findDistanceKey } from "../../util/distance";
 import { HttpErrorResponse, HttpResponse } from "../../util/http-response";
 import { OrderControllerRequestData } from "../../validator/schema/routes/order/order-controller-request-data";
 import { OrderIdsParam } from "../../validator/schema/routes/orders/detail";
-import { OrderIdParam } from "../../validator/schema/routes/params";
 import { WalletAddressQuery } from "../../validator/schema/routes/query";
 
 export class OrderController {
@@ -42,22 +41,6 @@ export class OrderController {
       const body = req.body;
 
       await this.service.createOrder(body);
-
-      res.send(new HttpResponse(200));
-    } catch (error) {
-      next(error);
-    }
-  };
-  updateOrderDeliveryPerson = async (
-    req: Request<OrderIdParam, never, OrderControllerRequestData["updateOrderDeliveryPerson"]>,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const { orderId } = req.params;
-      const { walletAddress } = req.body;
-
-      await this.service.matchDeliveryPersonAtOrder({ walletAddress, orderId });
 
       res.send(new HttpResponse(200));
     } catch (error) {

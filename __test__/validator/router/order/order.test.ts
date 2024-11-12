@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../util/http-response";
 import { validate } from "../../../../validator";
-import {
-  patchOrderDeliveryPersonSchema,
-  postOrderSchema,
-} from "../../../../validator/schema/routes/order/order-controller-request-data";
+import { postOrderSchema } from "../../../../validator/schema/routes/order/order-controller-request-data";
+import { patchOrderDeliveryPersonSchema } from "../../../../validator/schema/routes/order/order-delivery-person-controller-request-data";
 
 let req: Partial<Request>;
 let res: Partial<Response>;

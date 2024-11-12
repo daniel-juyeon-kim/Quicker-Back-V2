@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../util/http-response";
 import { DATA, mustBe, TYPE, validate } from "../../../../validator";
-import { postDeliveryPersonCurrentLocationSchema } from "../../../../validator/schema/routes/current-deliver-location";
+import { postDeliveryPersonCurrentLocationSchema } from "../../../../validator/schema/routes/order/order-delivery-person-controller-request-data";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
