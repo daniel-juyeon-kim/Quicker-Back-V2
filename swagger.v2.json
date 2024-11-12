@@ -1428,7 +1428,7 @@
         }
       }
     },
-    "/orders/{orderIds}/delivery/location": {
+    "/orders/{orderId}/delivery-person/location": {
       "get": {
         "tags": ["orders"],
         "summary": "주문 아이디에 해당되는 배송원의 현재 위치를 제공",
