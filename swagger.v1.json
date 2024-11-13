@@ -29,6 +29,10 @@
     {
       "name": "current-deliver-location",
       "description": "배송원 위치 관련"
+    },
+    {
+      "name": "average",
+      "description": "평균 정보 관련"
     }
   ],
   "paths": {
@@ -1303,6 +1307,74 @@
           },
           "400": {
             "description": "유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/average/cost": {
+      "get": {
+        "tags": ["average"],
+        "summary": "출발지와 도착지의 거리에 따른 전월 평균 거래 금액을 제공",
+        "parameters": [
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "출발지와 도착지의 거리, 단위: m",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "distance": {
+                          "type": "number",
+                          "example": 123400
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "데이터가 존재하지 않음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 에러",
             "content": {
               "application/json": {
                 "schema": {
