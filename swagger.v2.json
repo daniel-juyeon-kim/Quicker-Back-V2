@@ -8,15 +8,15 @@
   "tags": [
     {
       "name": "user",
-      "description": "사용자 관련"
+      "description": "사용자"
     },
     {
       "name": "orders",
-      "description": "주문 정보"
+      "description": "주문"
     },
     {
       "name": "chat",
-      "description": "채팅 관련"
+      "description": "채팅"
     }
   ],
   "paths": {
@@ -1542,6 +1542,74 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/response200"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 실패: 유효성 검사 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response400"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response500"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/average/cost/latest?distance={distance}": {
+      "post": {
+        "tags": ["orders"],
+        "summary": "출발지와 도착지의 거리에 따른 전월 평균 거래 금액을 제공",
+        "parameters": [
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "출발지와 도착지의 거리, 단위: m",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "정상 흐름",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "body": {
+                      "type": "object",
+                      "properties": {
+                        "averageCost": {
+                          "type": "number",
+                          "example": 123000
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
