@@ -1,14 +1,20 @@
 import { mock, mockClear } from "jest-mock-extended";
-import { OrderRepository } from "../../../database";
+import { AverageCostRepository, OrderRepository } from "../../../database";
 
+import { createLastMonth } from "../../../core";
 import { OrderService } from "../../../service/order/order.service";
 import { OrderServiceImpl } from "../../../service/order/order.service.impl";
 
-const repository = mock<OrderRepository>();
-const service = new OrderServiceImpl(repository);
+const averageRepository = mock<AverageCostRepository>();
+const orderRepository = mock<OrderRepository>();
+const service = new OrderServiceImpl({
+  orderRepository,
+  averageRepository,
+});
 
 beforeEach(() => {
-  mockClear(repository);
+  mockClear(orderRepository);
+  mockClear(averageRepository);
 });
 
 describe("OrderService 테스트", () => {
@@ -56,12 +62,30 @@ describe("OrderService 테스트", () => {
         },
       };
 
-      expect(repository.create).toHaveBeenCalledWith(expectResult);
+      expect(orderRepository.create).toHaveBeenCalledWith(expectResult);
     });
   });
 
-  test("findAllOrderDetail()", async () => {
-    await service.findAllOrderDetail("1,2,3,4");
-    expect(repository.findAllCreatedOrDeliveredOrderDetailByOrderIds).toHaveBeenCalledWith([1, 2, 3, 4]);
+  describe("findAllOrderDetail()", () => {
+    test("통과하는 테스트", async () => {
+      await service.findAllOrderDetail("1,2,3,4");
+
+      expect(orderRepository.findAllCreatedOrDeliveredOrderDetailByOrderIds).toHaveBeenCalledWith([1, 2, 3, 4]);
+    });
+  });
+
+  describe("findLatestOrderAverageCost()", () => {
+    test("통과하는 테스트", async () => {
+      averageRepository.findAverageCostByDateAndDistanceUnit.mockResolvedValue(100);
+
+      const distance = "50";
+      const result = await service.findLatestOrderAverageCost(distance);
+
+      expect(result).toEqual({ averageCost: 100 });
+      expect(averageRepository.findAverageCostByDateAndDistanceUnit).toHaveBeenCalledWith({
+        distanceUnit: "50KM",
+        lastMonth: createLastMonth(new Date()),
+      });
+    });
   });
 });

@@ -29,8 +29,6 @@ export const router = {
     app.use("/user", user);
     app.use("/orders", order);
 
-    // app.use("/average", averageCost);
-
     // 블록체인 라우터
     // app.use("/caver", caverLimiter, Caver);
 

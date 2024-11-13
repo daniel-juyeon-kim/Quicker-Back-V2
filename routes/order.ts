@@ -6,6 +6,7 @@ import { postOrderSchema } from "../validator/schema/routes/order/order-controll
 import { getOrdersDetailSchema } from "../validator/schema/routes/orders/detail";
 import { orderIdParamSchema } from "../validator/schema/routes/params";
 import { walletAddressSchema } from "../validator/schema/routes/query";
+import average from "./average";
 import deliveryPerson from "./delivery-person";
 import imageRouter from "./image";
 
@@ -33,5 +34,7 @@ router.get("/:orderIds/detail", validate(getOrdersDetailSchema, ["params"]), ord
 router.use("/", imageRouter);
 
 router.use("/", deliveryPerson);
+
+router.use("/average", average);
 
 export default router;

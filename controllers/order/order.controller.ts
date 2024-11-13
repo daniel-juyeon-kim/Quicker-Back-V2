@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { matchedData } from "express-validator";
-import { averageInstance } from "../../maria/commands";
-
 import { OrderService } from "../../service/order/order.service";
-import { findDistanceKey } from "../../util/distance";
-import { HttpErrorResponse, HttpResponse } from "../../util/http-response";
+import { HttpResponse } from "../../util/http-response";
 import { OrderControllerRequestData } from "../../validator/schema/routes/order/order-controller-request-data";
 import { OrderIdsParam } from "../../validator/schema/routes/orders/detail";
 import { WalletAddressQuery } from "../../validator/schema/routes/query";
@@ -58,31 +54,17 @@ export class OrderController {
       next(error);
     }
   };
-
-  // query {
-  //   distance: number
-  // }
-
-  // response {
-  //   distance: number
-  // }
-
-  getAverageCost = async (req: Request, res: Response, next: NextFunction) => {
+  getLatestAverageCost = async (
+    req: Request<never, never, never, { distance: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const { distance } = matchedData(req);
+      const { distance } = req.query;
 
-      const unit = findDistanceKey(parseInt(distance));
-      const averageCost = await averageInstance.findLastMonthCost(unit);
+      const averageCost = await this.service.findLatestOrderAverageCost(distance);
 
-      if (!averageCost) {
-        throw new HttpErrorResponse(500);
-      }
-
-      if (!averageCost[unit]) {
-        throw new HttpErrorResponse(404, "요청한 데이터가 존재하지 않습니다.");
-      }
-
-      res.send(new HttpResponse(200, { distance: averageCost[unit] }));
+      res.send(new HttpResponse(200, averageCost));
     } catch (error) {
       next(error);
     }

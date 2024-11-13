@@ -239,4 +239,42 @@ describe("OrderController", () => {
       });
     });
   });
+
+  describe("getLatestAverageCost()", () => {
+    type RequestType = Parameters<OrderController["getLatestAverageCost"]>[0];
+
+    let request: Partial<RequestType>;
+
+    beforeEach(() => {
+      request = {};
+    });
+    test("통과하는 테스트", async () => {
+      const distance = "50";
+      request.query = { distance };
+
+      const resolveValue = { averageCost: 123000 };
+      service.findLatestOrderAverageCost.mockResolvedValueOnce(resolveValue);
+
+      await controller.getLatestAverageCost(request as RequestType, res as Response, next as NextFunction);
+
+      expect(service.findLatestOrderAverageCost).toHaveBeenCalledWith(distance);
+      expect(res.send).toHaveBeenCalledWith(new HttpResponse(200, resolveValue));
+      expect(next).not.toHaveBeenCalledWith();
+    });
+
+    describe("실패하는 테스트", () => {
+      test("예상하지 못한 에러 발생", async () => {
+        const distance = "50";
+        request.query = { distance };
+
+        const error = new UnknownDataBaseError("알 수 없는 에러");
+        service.findLatestOrderAverageCost.mockRejectedValueOnce(error);
+
+        await controller.getLatestAverageCost(request as RequestType, res as Response, next as NextFunction);
+
+        expect(res.send).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalledWith(error);
+      });
+    });
+  });
 });

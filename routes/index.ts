@@ -1,5 +1,5 @@
 export * from "./associate-order";
-export * from "./average-cost";
+export * from "./average";
 export * from "./Caver";
 export * from "./chat";
 export * from "./delivery-person";
