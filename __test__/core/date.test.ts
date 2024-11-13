@@ -1,12 +1,12 @@
-import { createLastMonthRange } from "../../../cron/data/month";
+import { createLastMonthRange } from "../../core/date";
 
 describe("createLastMonthRange 테스트", () => {
   test("통과", () => {
     // 2024. 05. 01 0시 0분 0초
-    const date = new Date(2024, 4, 1, 0, 0, 0, 0);
+    const date = new Date(2024, 4, 1);
 
     // 2024. 04. 01 0시 0분 0초
-    const start = new Date(2024, 3, 1, 0, 0, 0, 0);
+    const start = new Date(2024, 3, 1);
 
     // 2024. 04. 30 23시 59분 59초 999
     const end = new Date(2024, 4, 0, 23, 59, 59, 999);
@@ -16,10 +16,10 @@ describe("createLastMonthRange 테스트", () => {
 
   test("통과, 생성된 날자가 작년인 테스트", () => {
     // 2024. 01. 01 0시 0분 0초
-    const date = new Date(2024, 0, 1, 0, 0, 0, 0);
+    const date = new Date(2024, 0, 1);
 
     // 2023. 12. 01 0시 0분 0초
-    const start = new Date(2023, 11, 1, 0, 0, 0, 0);
+    const start = new Date(2023, 11, 1);
 
     // 2024. 12. 31 23시 59분 59초 999
     const end = new Date(2024, 0, 0, 23, 59, 59, 999);
