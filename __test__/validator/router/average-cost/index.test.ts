@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpErrorResponse } from "../../../../util/http-response";
-import { DATA, mustBe, TYPE, validate } from "../../../../validator";
-import { getAverageCostSchema } from "../../../../validator/schema/routes/average-cost";
-import { TestName } from "../types/test-name";
+import { validate } from "../../../../validator";
+import { getAverageCostSchema } from "../../../../validator/schema/routes/average";
 
 let req: Partial<Request>;
 let res: Partial<Response>;
@@ -14,59 +13,52 @@ beforeEach(() => {
   next = jest.fn();
 });
 
-describe("GET: /average-cost", () => {
-  const testTarget = validate(getAverageCostSchema, ["query"]);
+describe("GET: /orders/average/cost/latest", () => {
+  const validateFn = validate(getAverageCostSchema, ["query"]);
 
-  describe(TestName.VALID_REQUSET, () => {
-    test(TestName.PASS, async () => {
-      req.query = {
-        distance: "42",
-      };
+  test("통과하는 테스트", async () => {
+    req.query = {
+      distance: "42",
+    };
 
-      await testTarget(req as Request, res as Response, next);
+    await validateFn(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith();
-    });
+    expect(next).toHaveBeenCalledWith();
   });
 
-  describe(TestName.INVALID_REQUSET, () => {
-    test(TestName.NOT_EXIST_ATTRIBUTE, async () => {
-      req.query = {};
+  describe("실패하는 테스트", () => {
+    test("타입 미스, 문자열 음수", async () => {
+      req.query = {
+        distance: "-1",
+      };
 
-      await testTarget(req as Request, res as Response, next);
+      await validateFn(req as Request, res as Response, next);
 
       expect(res.send).toHaveBeenCalledWith(
         new HttpErrorResponse(400, [
           {
             location: "query",
-            msg: DATA.NOT_EXIST,
+            msg: "양수 이어야 합니다.",
             path: "distance",
             type: "field",
-            value: "",
-          },
-          {
-            location: "query",
-            msg: "정수 이어야 합니다.",
-            path: "distance",
-            type: "field",
-            value: "",
+            value: "-1",
           },
         ]),
       );
     });
 
-    test(TestName.MISS_TYPE, async () => {
+    test("타입 미스, 문자열 타입 숫자가 아닌 일반 문자열", async () => {
       req.query = {
         distance: "42d",
       };
 
-      await testTarget(req as Request, res as Response, next);
+      await validateFn(req as Request, res as Response, next);
 
       expect(res.send).toHaveBeenCalledWith(
         new HttpErrorResponse(400, [
           {
             location: "query",
-            msg: mustBe(TYPE.INTEGER),
+            msg: "양수 이어야 합니다.",
             path: "distance",
             type: "field",
             value: "42d",

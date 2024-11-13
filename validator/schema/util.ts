@@ -66,3 +66,11 @@ export const existStringTypeInt = {
     bail: true,
   },
 };
+export const existStringTypePositiveInt = {
+  ...existStringTypeInt,
+  isInt: {
+    bail: true,
+    options: { min: 1 },
+    errorMessage: mustBe(TYPE.POSITIVE_INTEGER),
+  },
+};

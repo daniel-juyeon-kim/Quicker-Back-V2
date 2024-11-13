@@ -6,6 +6,7 @@ export enum TYPE {
   OBJECT = "객체",
   INTEGER_ARRAY = "정수 배열",
   ARRAY = "배열",
+  POSITIVE_INTEGER = "양수",
 }
 
 export enum DATA {
