@@ -1,4 +1,4 @@
-import { createLastMonthRange } from "../../core/date";
+import { createLastMonth, createLastMonthRange } from "../../core/date";
 
 describe("createLastMonthRange 테스트", () => {
   test("통과", () => {
@@ -26,5 +26,20 @@ describe("createLastMonthRange 테스트", () => {
 
     // 작년 12월 올해 1월
     expect(createLastMonthRange(date)).toEqual({ start, end });
+  });
+});
+describe("createLastMonth 테스트", () => {
+  test("통과", () => {
+    const date = new Date(1999, 1, 1);
+    const expectDate = new Date(1999, 0);
+
+    expect(createLastMonth(date)).toEqual(expectDate);
+  });
+
+  test("통과, 생성된 날자가 작년인 테스트", () => {
+    const date = new Date(1999, 0, 1);
+    const expectDate = new Date(1998, 11);
+
+    expect(createLastMonth(date)).toEqual(expectDate);
   });
 });

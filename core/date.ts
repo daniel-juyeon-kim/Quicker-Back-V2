@@ -4,3 +4,6 @@ export const createLastMonthRange = (date: Date) => {
 
   return { start, end };
 };
+export const createLastMonth = (now: Date) => {
+  return new Date(now.getFullYear(), now.getMonth() - 1);
+};
