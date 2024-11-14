@@ -10,50 +10,44 @@ export class ChatMessageRepository extends MongoRepository {
     super();
   }
 
-  async saveMessage(orderId: string, { userId, message, date }: { userId: string; message: string; date?: Date }) {
-    const isExistChatRoom = await this.isExistChatRoom(orderId);
-
-    if (!isExistChatRoom) {
+  async saveMessage(
+    orderId: number,
+    { walletAddress, message, date }: { walletAddress: string; message: string; date: Date },
+  ) {
+    try {
       await this.createChatRoom(orderId);
+      await this.insertMessage(orderId, { walletAddress, message, date });
+    } catch (error) {
+      throw new UnknownDataBaseError(error);
     }
-    await this.updateMessage(orderId, { userId, message, date });
   }
 
-  private async isExistChatRoom(orderId: string) {
-    const room = await this.model.exists({ roomId: orderId });
-
-    if (isNull(room)) {
-      return false;
+  private async createChatRoom(orderId: number) {
+    if (await this.isExistChatRoom(orderId)) {
+      return;
     }
-    return true;
+    await new this.model({ roomId: orderId }).save();
   }
 
-  private async createChatRoom(orderId: string) {
-    const userMessage = new this.model({
-      roomName: orderId,
-      messages: [],
-    });
+  private async isExistChatRoom(orderId: number) {
+    const chatRoom = await this.model.exists({ roomId: orderId });
 
-    await userMessage.save();
+    return !isNull(chatRoom);
   }
 
-  private async updateMessage(
-    orderId: string,
+  private async insertMessage(
+    orderId: number,
     {
-      userId,
+      walletAddress,
       message,
       date,
     }: {
-      userId: string;
+      walletAddress: string;
       message: string;
-      date?: Date;
+      date: Date;
     },
   ) {
-    const createdDate = isUndefined(date) ? new Date() : date;
-    await this.model.updateOne(
-      { roomId: orderId },
-      { $push: { messages: { _id: userId, message, date: createdDate } } },
-    );
+    await this.model.updateOne({ roomId: orderId }, { $push: { messages: { walletAddress, message, date } } });
   }
 
   async findAllMessageByOrderId(orderId: number) {
