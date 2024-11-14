@@ -23,4 +23,4 @@ const chatMessageModel = mongoose.model("chatMessage", ChatMessageSchema);
 export const chatMessageRepository = new ChatMessageRepository(chatMessageModel);
 
 const deliveryLocationModel = mongoose.model("deliveryLocation", CurrentDeliveryLocationSchema);
-export const currentDeliverLocationRepository = new CurrentDeliveryLocationRepository(deliveryLocationModel);
+export const currentDeliveryLocationRepository = new CurrentDeliveryLocationRepository(deliveryLocationModel);

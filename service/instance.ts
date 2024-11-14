@@ -2,9 +2,9 @@ import { config } from "../config";
 
 import { DeliveryUrlCreator, messageSender } from "../core";
 import {
+  averageCostRepository,
   chatMessageRepository,
   completeDeliveryImageRepository,
-  currentDeliverLocationRepository,
   deliveryPersonMatchedDateRepository,
   failDeliveryImageRepository,
   locationRepository,
@@ -13,6 +13,7 @@ import {
   receiverRepository,
   userRepository,
 } from "../database";
+import { currentDeliveryLocationRepository } from "../database/mongoose/instance";
 import { AppDataSource } from "../loaders";
 import { ChatService } from "./chat/chat.service";
 import { DeliveryPersonService } from "./order/delivery-person/delivery-person.service";
@@ -26,8 +27,11 @@ import { UserServiceImpl } from "./user/user.service.impl";
 
 export const chatService = new ChatService(chatMessageRepository);
 export const userService = new UserServiceImpl(userRepository);
-export const deliveryPersonService = new DeliveryPersonService(currentDeliverLocationRepository);
-export const senderReceiverService = new SenderReceiverService(orderParticipantRepository);
+
+export const orderService = new OrderServiceImpl({
+  orderRepository,
+  averageCostRepository,
+});
 
 const deliveryUrlCreator = new DeliveryUrlCreator({
   encryptKey: config.urlCryptoKey,
@@ -38,13 +42,16 @@ const deliveryUrlMessage = new DeliveryUrlMessage({
   smsApi: messageSender,
   urlCreator: deliveryUrlCreator,
 });
-export const orderService = new OrderServiceImpl({
+
+export const deliveryPersonService = new DeliveryPersonService({
   dataSource: AppDataSource,
-  repository: orderRepository,
+  orderRepository,
   receiverRepository,
   deliveryUrlMessage,
   deliveryPersonMatchedDateRepository,
+  currentDeliveryLocationRepository,
 });
+export const senderReceiverService = new SenderReceiverService(orderParticipantRepository);
 
 export const orderLocationService = new OrderLocationServiceImpl(locationRepository);
 export const orderFailImageService = new OrderFailImageService(failDeliveryImageRepository);

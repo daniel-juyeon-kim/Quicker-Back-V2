@@ -9,7 +9,7 @@ const averageRepository = mock<AverageCostRepository>();
 const orderRepository = mock<OrderRepository>();
 const service = new OrderServiceImpl({
   orderRepository,
-  averageRepository,
+  averageCostRepository: averageRepository,
 });
 
 beforeEach(() => {

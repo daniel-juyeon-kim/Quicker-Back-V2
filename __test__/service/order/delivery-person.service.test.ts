@@ -35,7 +35,7 @@ describe("DeliveryPersonService", () => {
       receiverRepository,
       deliveryUrlMessage,
       deliveryPersonMatchedDateRepository,
-      deliveryLocationRepository,
+      currentDeliveryLocationRepository: deliveryLocationRepository,
     });
 
     beforeEach(() => {
@@ -210,7 +210,7 @@ describe("DeliveryPersonService", () => {
       orderRepository,
       receiverRepository,
       deliveryPersonMatchedDateRepository,
-      deliveryLocationRepository,
+      currentDeliveryLocationRepository: deliveryLocationRepository,
       deliveryUrlMessage,
     });
 

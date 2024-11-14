@@ -12,13 +12,13 @@ export class OrderServiceImpl implements OrderService {
 
   constructor({
     orderRepository,
-    averageRepository,
+    averageCostRepository,
   }: {
     orderRepository: OrderRepository;
-    averageRepository: AverageCostRepository;
+    averageCostRepository: AverageCostRepository;
   }) {
     this.orderRepository = orderRepository;
-    this.averageRepository = averageRepository;
+    this.averageRepository = averageCostRepository;
   }
 
   async findAllOrderDetail(stringTypeOrderIds: string) {

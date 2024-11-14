@@ -13,7 +13,7 @@ export class DeliveryPersonService {
   private readonly receiverRepository: ReceiverRepository;
   private readonly deliverUrlMessage: DeliveryUrlMessage;
   private readonly deliveryPersonMatchedDateRepository: DeliveryPersonMatchedDateRepository;
-  private readonly deliveryLocationRepository: CurrentDeliveryLocationRepository;
+  private readonly currentDeliveryLocationRepository: CurrentDeliveryLocationRepository;
 
   constructor({
     dataSource,
@@ -21,29 +21,29 @@ export class DeliveryPersonService {
     receiverRepository,
     deliveryUrlMessage,
     deliveryPersonMatchedDateRepository,
-    deliveryLocationRepository,
+    currentDeliveryLocationRepository,
   }: {
     dataSource: DataSource;
     orderRepository: OrderRepository;
     receiverRepository: ReceiverRepository;
     deliveryPersonMatchedDateRepository: DeliveryPersonMatchedDateRepository;
     deliveryUrlMessage: DeliveryUrlMessage;
-    deliveryLocationRepository: CurrentDeliveryLocationRepository;
+    currentDeliveryLocationRepository: CurrentDeliveryLocationRepository;
   }) {
     this.dataSource = dataSource;
     this.orderRepository = orderRepository;
     this.receiverRepository = receiverRepository;
     this.deliverUrlMessage = deliveryUrlMessage;
     this.deliveryPersonMatchedDateRepository = deliveryPersonMatchedDateRepository;
-    this.deliveryLocationRepository = deliveryLocationRepository;
+    this.currentDeliveryLocationRepository = currentDeliveryLocationRepository;
   }
 
   async findCurrentLocation(orderId: string) {
-    return await this.deliveryLocationRepository.findCurrentLocationByOrderId(parseInt(orderId));
+    return await this.currentDeliveryLocationRepository.findCurrentLocationByOrderId(parseInt(orderId));
   }
 
   async createDeliveryPersonCurrentLocation({ orderId, x, y }: { x: number; y: number; orderId: number }) {
-    await this.deliveryLocationRepository.saveDeliveryPersonLocation(orderId, { x, y });
+    await this.currentDeliveryLocationRepository.saveDeliveryPersonLocation(orderId, { x, y });
   }
 
   async matchDeliveryPersonAtOrder({
