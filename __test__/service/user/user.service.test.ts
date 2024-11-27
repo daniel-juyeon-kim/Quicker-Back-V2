@@ -6,7 +6,8 @@ import { UserRepository } from "../../../database/type-orm/repository/impl/user/
 import { UserServiceImpl } from "../../../service/user/user.service.impl";
 
 const repository = mock<UserRepository>();
-const service = new UserServiceImpl(repository);
+const dbUserPkCreator = mock<KeyCreator>();
+const service = new UserServiceImpl({ repository, dbUserPkCreator });
 
 beforeEach(async () => {
   mockReset(repository);
@@ -21,10 +22,9 @@ describe("UserServiceImpl 테스트", () => {
       contact: "연락처",
       birthDate: "2000/01/01",
     };
-    const keyCreator = mock<KeyCreator>();
 
     test("통과하는 테스트", async () => {
-      await service.createUser(body, keyCreator);
+      await service.createUser(body);
 
       expect(repository.create).toHaveBeenCalledWith({
         id: undefined,
@@ -39,7 +39,7 @@ describe("UserServiceImpl 테스트", () => {
     });
 
     test("실패하는 테스트, 중복 회원 가입", async () => {
-      await service.createUser(body, keyCreator);
+      await service.createUser(body);
 
       expect(repository.create).toHaveBeenCalledWith({
         id: undefined,
@@ -55,8 +55,8 @@ describe("UserServiceImpl 테스트", () => {
       const ERROR_MESSAGE = `에 해당하는 데이터가 이미 존재합니다.`;
       repository.create.mockRejectedValue(new DuplicatedDataError(ERROR_MESSAGE));
 
-      await expect(service.createUser(body, keyCreator)).rejects.toBeInstanceOf(DuplicatedDataError);
-      await expect(service.createUser(body, keyCreator)).rejects.toThrow(ERROR_MESSAGE);
+      await expect(service.createUser(body)).rejects.toBeInstanceOf(DuplicatedDataError);
+      await expect(service.createUser(body)).rejects.toThrow(ERROR_MESSAGE);
       expect(repository.create).toHaveBeenCalledTimes(3);
     });
 
@@ -69,8 +69,7 @@ describe("UserServiceImpl 테스트", () => {
         birthDate: "2000/01/01",
       };
 
-      const keyCreator = mock<KeyCreator>();
-      await service.createUser(body, keyCreator);
+      await service.createUser(body);
 
       expect(repository.create).toHaveBeenCalledWith({
         id: undefined,

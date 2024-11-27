@@ -9,7 +9,7 @@ export const errorMessageBot: ErrorMessageBot = new SlackBot({
   webClient,
   channelId: config.slackbot.channelId,
 });
-export const keyCreator = new KeyCreator(config.cryptoKey as string);
+export const dbUserPkCreator = new KeyCreator(config.cryptoKey as string);
 
 export const tmapApi = new TmapApi(config.tmapApiKey);
 export const messageSender: SmsApi = new NaverSmsApi(config.nhnApi);

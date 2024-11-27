@@ -1,6 +1,6 @@
 import { config } from "../config";
 import { DeliveryUrlCreator } from "../core";
-import { messageSender } from "../core/instance";
+import { dbUserPkCreator, messageSender } from "../core/instance";
 
 import {
   chatMessageRepository,
@@ -29,7 +29,7 @@ import { SenderReceiverService } from "./order/sender-receiver/sender-receiver.s
 import { UserServiceImpl } from "./user/user.service.impl";
 
 export const chatService = new ChatService(chatMessageRepository);
-export const userService = new UserServiceImpl(userRepository);
+export const userService = new UserServiceImpl({ repository: userRepository, dbUserPkCreator });
 
 export const orderService = new OrderServiceImpl({
   orderRepository,

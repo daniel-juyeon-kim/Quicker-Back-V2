@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-import { keyCreator } from "../core/instance";
 import { UserService } from "../service/user/user.service";
 import { HttpResponse } from "../util/http-response";
 import { UserControllerRequestData } from "../validator/schema/routes/user/user-controller-request-data";
@@ -12,7 +11,7 @@ export class UserController {
     try {
       const body = req.body as UserControllerRequestData["createUser"];
 
-      await this.service.createUser(body, keyCreator);
+      await this.service.createUser(body);
 
       res.send(new HttpResponse(200));
     } catch (error) {
