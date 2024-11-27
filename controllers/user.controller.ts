@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { keyCreator } from "../core";
+import { keyCreator } from "../core/instance";
 import { UserService } from "../service/user/user.service";
 import { HttpResponse } from "../util/http-response";
 import { UserControllerRequestData } from "../validator/schema/routes/user/user-controller-request-data";

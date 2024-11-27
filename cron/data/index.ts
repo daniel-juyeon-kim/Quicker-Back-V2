@@ -1,4 +1,4 @@
-import { blockchain, tmapApi } from "../../core";
+import { blockchain, tmapApi } from "../../core/instance";
 import { averageInstance, cacheOrderInstance, locationInstance } from "../../maria/commands";
 
 import { Combiner } from "./combiner";

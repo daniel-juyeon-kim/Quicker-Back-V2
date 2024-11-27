@@ -1,7 +1,6 @@
 import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 
-import { ErrorLogger, errorMessageBot } from "../core";
 import {
   chatService,
   deliveryPersonService,
@@ -17,6 +16,8 @@ import { DataBaseErrorController } from "./error/database/database-error.control
 import { ExternalApiErrorController } from "./error/external-api/external-api-error.controller";
 import { UnknownErrorController } from "./error/unknown/unknown-error.controller";
 
+import { ErrorLogger } from "../core";
+import { errorMessageBot } from "../core/instance";
 import { ChatController } from "./chat.controller";
 import { OrderFailImageController } from "./order/fail-image/order-fail-image.controller";
 import { OrderLocationController } from "./order/location/order-location.controller";

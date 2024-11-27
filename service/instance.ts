@@ -1,19 +1,22 @@
 import { config } from "../config";
+import { DeliveryUrlCreator } from "../core";
+import { messageSender } from "../core/instance";
 
-import { DeliveryUrlCreator, messageSender } from "../core";
 import {
-  averageCostRepository,
   chatMessageRepository,
   completeDeliveryImageRepository,
-  deliveryPersonMatchedDateRepository,
+  currentDeliveryLocationRepository,
   failDeliveryImageRepository,
+} from "../database/mongoose/instance";
+import {
+  averageCostRepository,
+  deliveryPersonMatchedDateRepository,
   locationRepository,
   orderParticipantRepository,
   orderRepository,
   receiverRepository,
   userRepository,
-} from "../database";
-import { currentDeliveryLocationRepository } from "../database/mongoose/instance";
+} from "../database/type-orm/instance";
 import { AppDataSource } from "../loaders";
 import { ChatService } from "./chat/chat.service";
 import { DeliveryPersonService } from "./order/delivery-person/delivery-person.service";
