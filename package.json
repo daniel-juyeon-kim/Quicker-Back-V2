@@ -6,7 +6,8 @@
   "scripts": {
     "start": "pm2 start server.ts",
     "start:dev": "nodemon server.ts",
-    "test": "jest",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:dev": "jest",
     "install-test-package": "npm i jest ts-jest typescript @types/jest"
   },
   "keywords": [],
