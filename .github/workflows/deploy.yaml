@@ -52,7 +52,7 @@ jobs:
 
             if [ "$(docker images | grep -q ${{ env.PACKAGE_URL }})" ]; then
               # 기존 이미지 삭제
-              docker rmi ${{ env.PACKAGE_URL }}
+              docker rmi $(docker images -q $(${{ env.PACKAGE_URL }} | cut -d ":" -f1))
             fi
 
             # github container registry 로그인
