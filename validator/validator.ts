@@ -1,8 +1,9 @@
-import { Request, RequestHandler } from "express";
+import { NextFunction, Request, Response } from "express";
 import { checkSchema, Location, Result, Schema, ValidationError, validationResult } from "express-validator";
+import { HttpErrorResponse } from "../util/http-response";
 
-export const validate = (schema: Schema, location: Location[]): RequestHandler => {
-  return async (req, _, next) => {
+export const validate = (schema: Schema, location: Location[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     // 스키마로 요청 검증
     const validateResult = await generateResult(schema, location, req);
 
@@ -11,9 +12,9 @@ export const validate = (schema: Schema, location: Location[]): RequestHandler =
       return next();
     }
 
-    // 요청값에 검증에러가 있으면 에러를 에러를 처리하는 미들웨어로
-    const error = validateResult.array({ onlyFirstError: true })[0];
-    next(error);
+    // 바로 처리함
+    const error = validateResult.array();
+    res.send(new HttpErrorResponse(400, error));
   };
 };
 

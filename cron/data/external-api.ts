@@ -1,7 +1,7 @@
+import { Blockchain, TmapApi } from "../../core";
 import { Location } from "../../maria/commands/location";
-import { Blockchain } from "../../service/blockchain";
-import { TmapApi } from "../../service/tmap-api";
-import { isUndefined } from "../../util";
+
+import { isFulfilled, isNull, isUndefined } from "../../util";
 
 export class ExternalApi {
   private blockchain: Blockchain;
@@ -17,7 +17,10 @@ export class ExternalApi {
   }
 
   public async findDistance(locations: Location[]) {
-    return this.tmapApi.requestRouteDistances(locations);
+    return (await this.tmapApi.requestRouteDistances(locations))
+      .filter(isFulfilled)
+      .map((distance) => distance.value)
+      .filter((distance) => !isNull(distance));
   }
 }
 

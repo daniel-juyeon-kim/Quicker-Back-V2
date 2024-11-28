@@ -1,15 +1,15 @@
 import mongoose, { Connection, Schema } from "mongoose";
 
-import { validateEnvValue } from "../../util/env";
+import { validateEnv } from "../../util/env";
 import { EnvConfig } from "../../util/env/types";
 
 export class MongooseConnector {
   private readonly connection: Connection;
 
-  constructor(mongoDB: EnvConfig["mongoDB"], dbName: string) {
-    validateEnvValue("mongoDB", mongoDB);
+  constructor(mongoDB: EnvConfig["mongoDB"]) {
+    validateEnv(mongoDB);
 
-    this.connection = mongoose.createConnection(mongoDB, { dbName });
+    this.connection = mongoose.createConnection(mongoDB.url, { dbName: mongoDB.dbName });
   }
 
   createModel<T extends Schema>(name: string, schema?: T) {

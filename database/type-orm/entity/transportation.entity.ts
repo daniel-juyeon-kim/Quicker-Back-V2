@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
-import { Order } from "./order.entity";
+import { Order } from "..";
 
 @Entity()
 export class Transportation {
@@ -32,5 +32,3 @@ export class Transportation {
   @JoinColumn()
   order!: Order;
 }
-
-export type BasicTransportation = Omit<Transportation, "id" | "order">;

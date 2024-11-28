@@ -1,4 +1,4 @@
-import { ExpectType, ValidateErrorMessage } from ".";
+import { mustBe, TYPE } from ".";
 import { isNumber } from "../util";
 
 const SPLITTER = ",";
@@ -15,5 +15,5 @@ const validateNumber = (expectNumber: string) => {
   if (isNumber(number)) {
     return;
   }
-  throw new Error(ValidateErrorMessage.mustBe(ExpectType.INT_ARRAY));
+  throw new Error(mustBe(TYPE.INTEGER_ARRAY));
 };

@@ -5,6 +5,8 @@ const status = {
   401: "Unauthorized",
   403: "Forbidden",
   404: "NotFound",
+  409: "Conflict",
+  422: "Unprocessable Entity",
 
   500: "InternalServerError",
   501: "NotImplemented",
@@ -16,16 +18,15 @@ type Code = keyof typeof status;
 
 type Message = (typeof status)[Code];
 
-type ErrorTypes = Result<FieldValidationError> | Error | string | undefined;
+type ErrorTypes<T> = Result<FieldValidationError> | Error | string | T;
 
-export class HttpErrorResponse {
-  private code: Code;
+export class HttpErrorResponse<T> {
   private message: Message;
-  private error: ErrorTypes;
 
-  constructor(code: Code, error?: ErrorTypes) {
-    this.code = code;
+  constructor(
+    private code: Code,
+    private error?: ErrorTypes<T>,
+  ) {
     this.message = status[code];
-    this.error = error;
   }
 }

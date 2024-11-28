@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity("AverageOfCost")
+@Entity()
 export class AverageOfCost {
   @PrimaryColumn({ type: "datetime" })
   "date"!: Date;

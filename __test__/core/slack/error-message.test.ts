@@ -1,18 +1,19 @@
-import { ErrorMessage } from "../../../core/slack/error-message";
+import { ErrorMessage } from "../../../core";
 
-test("슬랙 에러 메시지 테스트", () => {
-  const error = {
-    name: "테스트용 에러 메시지 ",
-    message: "에러 메시지",
-    stack: "스텍트레이스",
-  };
-  const occurDate = new Date(1995, 11, 17, 3, 24, 0);
-  const errorMessage = new ErrorMessage(error, occurDate);
+describe("ErrorMessage 테스트", () => {
+  describe("parseToStringForSlack 테스트", () => {
+    test("통과하는 테스트", () => {
+      const error = {
+        name: "테스트용 에러 메시지 ",
+        message: "에러 메시지",
+        stack: "스텍트레이스",
+      };
+      const occurDate = new Date(1995, 11, 17, 3, 24, 0);
+      const errorMessage = new ErrorMessage({ error, date: occurDate });
 
-  const expectMessage =
-    `*에러 발생 [ 1995. 12. 17. 오전 3:24:00 ]* \n\n` +
-    `*Error Message : * 에러 메시지\n` +
-    `*Error Stack : * \`\`\`스텍트레이스\`\`\``;
+      const expectMessage = `*에러 발생 [ ${occurDate.toLocaleString("ko-KR")} ]* \n\n${JSON.stringify(error)}`;
 
-  expect(errorMessage.parseToStringForSlack()).toBe(expectMessage);
+      expect(errorMessage.parseToStringForSlack()).toBe(expectMessage);
+    });
+  });
 });

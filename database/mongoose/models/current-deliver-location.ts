@@ -5,17 +5,15 @@ export interface Location {
   y: number;
 }
 
-export interface CurrentDeliverLocation {
-  _id: string;
-  location: Location[];
+export interface CurrentDeliveryLocation {
+  _id: number;
+  location: Location;
 }
 
-export const CurrentDeliverLocationSchema = new mongoose.Schema<CurrentDeliverLocation>({
-  _id: String,
-  location: [
-    {
-      x: Number,
-      y: Number,
-    },
-  ],
+export const CurrentDeliveryLocationSchema = new mongoose.Schema<CurrentDeliveryLocation>({
+  _id: Number,
+  location: {
+    x: Number,
+    y: Number,
+  },
 });

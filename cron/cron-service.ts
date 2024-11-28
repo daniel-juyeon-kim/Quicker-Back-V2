@@ -1,4 +1,4 @@
-import { ErrorMessage, ErrorMessageBot } from "../core/slack";
+import { ErrorMessage, ErrorMessageBot } from "../core";
 import { DataService } from "./data/data-service";
 import { TableService } from "./table";
 
@@ -19,7 +19,7 @@ export class CronService {
       const table = this.tableService.createAverageTable(orderInfos);
       await this.dataService.saveAverageTable(table);
     } catch (e) {
-      const errorMessage = new ErrorMessage(e as Error, new Date());
+      const errorMessage = new ErrorMessage({ error: e as Error, date: new Date() });
       this.errorMessageBot.sendMessage(errorMessage);
     }
   }

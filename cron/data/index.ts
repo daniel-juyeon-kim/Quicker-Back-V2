@@ -1,5 +1,6 @@
+import { blockchain, tmapApi } from "../../core/instance";
 import { averageInstance, cacheOrderInstance, locationInstance } from "../../maria/commands";
-import { blockchain, tmapApi } from "../../service";
+
 import { Combiner } from "./combiner";
 import { DataService } from "./data-service";
 import { DB } from "./database";

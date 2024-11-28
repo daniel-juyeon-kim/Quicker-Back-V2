@@ -1,4 +1,4 @@
-import { errorMessageBot } from "../service";
+import { errorMessageBot } from "../core/instance";
 import { CronService } from "./cron-service";
 import { dataService } from "./data";
 import { tableService } from "./table";

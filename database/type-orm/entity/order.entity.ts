@@ -1,10 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { CacheMatchedOrder } from "./cache-matched-order.entity";
-import { Departure } from "./departure.entity";
-import { Destination } from "./destination.entity";
-import { Product } from "./product.entity";
-import { Transportation } from "./transportation.entity";
-import { User } from "./user.entity";
+import { DeliveryPersonMatchedDate, Departure, Destination, Product, Transportation, User } from "../";
 
 @Entity()
 export class Order {
@@ -20,13 +15,12 @@ export class Order {
 
   @ManyToOne(() => User, (user) => user.deliverOrder, {
     nullable: true,
-    onDelete: "CASCADE",
   })
   @JoinColumn()
-  deliver!: User;
+  deliveryPerson!: User | null;
 
   @Column({ nullable: true })
-  detail!: string;
+  detail?: string;
 
   @OneToOne(() => Transportation, (transportation) => transportation.order, {
     cascade: ["insert"],
@@ -48,8 +42,8 @@ export class Order {
   })
   departure!: Departure;
 
-  @OneToOne(() => CacheMatchedOrder, (cacheMatchedOrder) => cacheMatchedOrder.order)
-  cacheMatchedOrder!: CacheMatchedOrder;
+  @OneToOne(() => DeliveryPersonMatchedDate, (deliveryPersonMatchedDate) => deliveryPersonMatchedDate.order)
+  deliveryPersonMatchedDate!: DeliveryPersonMatchedDate;
 }
 
 export type BasicOrder = Pick<Order, "requester" | "detail">;

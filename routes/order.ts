@@ -1,173 +1,40 @@
 import express from "express";
 
-import multer from "multer";
-import { orderController } from "../controllers";
+import { orderController, orderLocationController, orderSenderReceiverController } from "../controllers";
 import { validate } from "../validator";
-import { getOrderSchema, patchOrderSchema, postOrderSchema } from "../validator/schema/routes/order";
-import {
-  getOrderImageCompleteSchema,
-  postOrderImageCompleteSchema,
-} from "../validator/schema/routes/order/image/complete";
-import { getOrderImageFailSchema, postOrderImageFailSchema } from "../validator/schema/routes/order/image/fail";
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+import { postOrderSchema } from "../validator/schema/routes/order/order-controller-request-data";
+import { getOrdersDetailSchema } from "../validator/schema/routes/orders/detail";
+import { orderIdParamSchema } from "../validator/schema/routes/params";
+import { walletAddressSchema } from "../validator/schema/routes/query";
+import average from "./average";
+import deliveryPerson from "./delivery-person";
+import imageRouter from "./image";
 
 const router = express.Router();
 
-// GET /order
+// POST /orders
+router.post("/", validate(postOrderSchema, ["body"]), orderController.createOrder);
 
-// query {
-//   orderId: number
-// }
+// GET /orders/matchable?walletAddress={walletAddress}
+router.get("/matchable", validate(walletAddressSchema, ["query"]), orderController.getMatchableOrdersByWalletAddress);
 
-// Response
+// GET /orders/{orderId}/coordinates
+router.get("/:orderId/coordinates", validate(orderIdParamSchema, ["params"]), orderLocationController.getCoordinates);
 
-// code: 200,
-// message: "OK",
-// body: {
-//   id: number,
-//   Destination: {
-//     X: number,
-//     Y: number
-//   },
-//   Departure: {
-//     X: number,
-//     Y: number
-//   }
-// }
-router.get("/", validate(getOrderSchema, ["query"]), orderController.order);
-
-// POST /order
-
-// walletAddress: string,
-// Order: {
-//   id: number,
-//   ID_REQ: string,
-//   DETAIL: string
-// },
-// Transportation: {
-//   ID: number,
-//   WALKING: number,
-//   BICYCLE: number,
-//   SCOOTER: number,
-//   BIKE: number,
-//   CAR: number,
-//   TRUCK: number
-// },
-// Destination: {
-//   id: number,
-//   X: number,
-//   Y: number,
-//   DETAIL: string
-// },
-// Departure: {
-//   ID: number,
-//   X: number,
-//   Y: number,
-//   DETAIL: string
-// },
-// Product: {
-//   ID: number,
-//   WIDTH: number,
-//   LENGTH: number,
-//   HEIGHT: number,
-//   WEIGHT: number
-// },
-// Sender: {
-//   ID: number,
-//   NAME: string,
-//   PHONE: string
-// },
-// Recipient: {
-//   id: number,
-//   NAME: string,
-//   PHONE: string
-// }
-
-// Response
-
-// code: 200,
-// message: "OK"
-router.post("/", validate(postOrderSchema, ["body"]), orderController.request);
-
-// PATCH /order
-
-// body {
-//   userWalletAddress: string
-//   orderId: number
-// }
-
-// Response
-
-// code: 200,
-// message: "OK"
-router.patch("/", validate(patchOrderSchema, ["body"]), orderController.updateOrder);
-
-// GET /order/image/fail
-
-// query {
-//   orderId: "3" // string
-// }
-
-// code: 200,
-// message: "OK",
-// body: {
-//   imageBuffer: {
-//     type: string,
-//     data: number[]
-//   },
-//   reason: string
-// }
-router.get("/image/fail", validate(getOrderImageFailSchema, ["query"]), orderController.getFailImage);
-
-// POST /order/image/fail
-
-// body {
-//   orderNum: "3" // string
-//   reason: string
-//   image: file
-// }
-
-// code: 200,
-// message: "OK"
-router.post(
-  "/image/fail",
-  validate(postOrderImageFailSchema, ["body"]),
-  upload.single("image"),
-  orderController.postFailImage,
+// GET /orders/{orderId}/sender-receiver-info
+router.get(
+  "/:orderId/sender-receiver-info/",
+  validate(orderIdParamSchema, ["params"]),
+  orderSenderReceiverController.getSenderReceiverInfo,
 );
 
-// GET /order/image/complete
+// GET /orders/{orderIds}/detail
+router.get("/:orderIds/detail", validate(getOrdersDetailSchema, ["params"]), orderController.getOrdersDetail);
 
-// query {
-//   orderId: "3" // string
-// }
+router.use("/", imageRouter);
 
-// code: 200,
-// message: "OK",
-// body: {
-//   imageBuffer: {
-//     type: string,
-//     data: number[]
-//   }
-// }
-router.get("/image/complete", validate(getOrderImageCompleteSchema, ["query"]), orderController.getImage);
+router.use("/", deliveryPerson);
 
-// POST /order/image/complete
-
-// body {
-//   orderNum: number
-//   uploadImage: file
-// }
-
-// code: 200,
-// message: "OK",
-router.post(
-  "/image/complete",
-  validate(postOrderImageCompleteSchema, ["body"]),
-  upload.single("uploadImage"),
-  orderController.postImage,
-);
+router.use("/average", average);
 
 export default router;

@@ -1,8 +1,8 @@
+import { createLastMonthRange } from "../../core/date";
 import { AverageOfCostAttributes } from "../../maria/models/AverageOfCost";
 import { Combiner } from "./combiner";
 import { DB } from "./database";
 import { ExternalApi } from "./external-api";
-import { createLastMonthRange } from "./month";
 
 export class DataService {
   private database: DB;

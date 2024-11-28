@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import { config } from "../config";
-import { validateEnvValue } from "../util/env";
+import { validateEnv } from "../util/env";
 import { EnvConfig } from "../util/env/types";
 
 const setUpMongoConnection = (mongoDB: EnvConfig["mongoDB"]) => {
-  validateEnvValue("mongoDB", mongoDB);
+  validateEnv(mongoDB);
 
   return async (dbName: string) => {
-    return mongoose.createConnection(mongoDB, { dbName });
+    return mongoose.createConnection(mongoDB.url, { dbName: mongoDB.dbName });
   };
 };
 

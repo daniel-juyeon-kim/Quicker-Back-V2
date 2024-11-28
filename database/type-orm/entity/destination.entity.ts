@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
-import { Order } from "./order.entity";
-import { Recipient } from "./recipient.entity";
+import { Order, Receiver } from "..";
 
 @Entity()
 export class Destination {
@@ -24,10 +23,10 @@ export class Destination {
   @JoinColumn()
   order!: Order;
 
-  @OneToOne(() => Recipient, (recipient) => recipient.destination, {
+  @OneToOne(() => Receiver, (receiver) => receiver.destination, {
     cascade: ["insert"],
   })
-  recipient!: Recipient;
+  receiver!: Receiver;
 }
 
-export type BasicDestination = Omit<Destination, "id" | "order" | "recipient">;
+export type BasicDestination = Omit<Destination, "id" | "order" | "receiver">;

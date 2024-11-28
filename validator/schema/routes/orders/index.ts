@@ -1,11 +1,6 @@
-import { ValidateErrorMessage } from "../../../error-message";
+import { existString } from "../../util";
 
 // GET /orders
 export const getOrdersSchema = {
-  walletAddress: {
-    escape: true,
-    notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
-    },
-  },
+  walletAddress: existString,
 };

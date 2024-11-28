@@ -1,14 +1,16 @@
 import { Schema } from "express-validator";
 
-import { validateStringTypeNumberList } from "../../../..";
-import { ValidateErrorMessage } from "../../../../error-message";
+import { ParamsDictionary } from "express-serve-static-core";
+import { DATA, validateStringTypeNumberList } from "../../../..";
 
-// GET /orders/detail
+export type OrderIdsParam = { orderIds: string } & ParamsDictionary;
+
+// GET /orders/:orderIds/detail
 export const getOrdersDetailSchema: Schema = {
   orderIds: {
     escape: true,
     notEmpty: {
-      errorMessage: ValidateErrorMessage.notExist,
+      errorMessage: DATA.NOT_EXIST,
     },
     custom: {
       options: validateStringTypeNumberList,

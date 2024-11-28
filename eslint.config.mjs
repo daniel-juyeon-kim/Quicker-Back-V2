@@ -8,7 +8,14 @@ export default [
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
   pluginJs.configs.recommended,
-  { languageOptions: { globals: globals.node } },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        Express: "readonly",
+      },
+    },
+  },
   { plugins: { "@stylistic/js": stylisticJs } },
   { ignores: ["**/node_modules/", "/**/tsconfig.json"] },
   {
