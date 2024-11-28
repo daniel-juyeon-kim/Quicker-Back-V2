@@ -33,7 +33,8 @@ jobs:
       - name: Deploy server to ec2
         uses: appleboy/ssh-action@v1.0.3
         env:
-          PACKAGE_URL: ghcr.io/${{ github.repository }}:latest
+          LATEST_PACKAGE_URL: ghcr.io/${{ github.repository }}:latest
+          BASIC_PACKAGE_URL: ghcr.io/${{ github.repository }}
         with:
           host: ${{ secrets.EC2_IP }}
           key: ${{ secrets.EC2_SSH_KEY }}
@@ -42,24 +43,24 @@ jobs:
             set -e
 
             # .env생성
-            printf "%s\n" "${{ secrets.DOT_ENV }}" > .env && echo "IMAGE_NAME=${{ env.PACKAGE_URL }}" >> .env
+            printf "%s\n" "${{ secrets.DOT_ENV }}" > .env && echo "IMAGE_NAME=${{ env.LATEST_PACKAGE_URL }}" >> .env
 
-            # docke-compose로 생성된 컨테이너 삭제
+            # docker-compose로 생성된 컨테이너 삭제
             if [ "$(docker compose ps -q)" ]; then
               # 컨테이너 종료 및 삭제
               docker compose down
             fi
 
-            if [ "$(docker images | grep -q ${{ env.PACKAGE_URL }})" ]; then
+            if [ "$(docker images | grep -q ${{ env.BASIC_PACKAGE_URL }})" ]; then
               # 기존 이미지 삭제
-              docker rmi ${{ env.PACKAGE_URL }}
+              docker rmi $(docker images -q $(${{ env.BASIC_PACKAGE_URL }} | cut -d ":" -f1))
             fi
 
             # github container registry 로그인
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
             # 새로 빌드된 이미지 설치
-            docker pull ${{ env.PACKAGE_URL }}
+            docker pull ${{ env.LATEST_PACKAGE_URL }}
 
             # 컨테이너 실행
             docker compose up -d
