@@ -16,7 +16,7 @@ const tableService = {
 let cronService: CronService;
 
 beforeEach(() => {
-  dataService.findLastMonthOrderInfo = jest.fn();
+  dataService.findAllLastMonthOrderPriceAndDistance = jest.fn();
   cronService = new CronService({ errorMessageBot, dataService, tableService });
 });
 
@@ -29,7 +29,7 @@ describe("cronService 테스트", () => {
   });
 
   test("에러 발생 처리 테스트", async () => {
-    dataService.findLastMonthOrderInfo = jest.fn((date: Date) => {
+    dataService.findAllLastMonthOrderPriceAndDistance = jest.fn((date: Date) => {
       throw new Error();
     });
 

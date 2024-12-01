@@ -1,7 +1,7 @@
 import { AverageTable } from "../../../../cron/table/impl/average-table";
 import { CountTable } from "../../../../cron/table/impl/count-table";
 import { SumTable } from "../../../../cron/table/impl/sum-table";
-import { createAverageTable } from "./util";
+import { createTable } from "./util";
 
 const sumTableInstance = new SumTable();
 const countTableInstance = new CountTable();
@@ -20,15 +20,13 @@ test("averageTable create 테스트", () => {
 
   const countTable = countTableInstance.create(orderInfos);
   const sumTable = sumTableInstance.create(orderInfos);
-  const expectResult = createAverageTable([
+  const expectResult = createTable([
     { key: "5KM", value: 10 },
     { key: "20KM", value: 21 },
     { key: "50KM", value: 190 },
     { key: "60KM", value: 149 },
   ]);
-  const date = new Date(2020, 1, 1, 1, 1, 1, 1);
-  expectResult["date"] = date.toISOString();
 
-  const result = averageTable.create({ sumTable, countTable, date });
+  const result = averageTable.create({ sumTable, countTable });
   expect(result).toStrictEqual(expectResult);
 });

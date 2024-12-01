@@ -1,4 +1,4 @@
-import { createLastMonth, createLastMonthRange } from "../../core/date";
+import { createFirstDateOfCurrentMonth, createLastMonth, createLastMonthRange } from "../../core/date";
 
 describe("createLastMonthRange 테스트", () => {
   test("통과", () => {
@@ -28,6 +28,7 @@ describe("createLastMonthRange 테스트", () => {
     expect(createLastMonthRange(date)).toEqual({ start, end });
   });
 });
+
 describe("createLastMonth 테스트", () => {
   test("통과", () => {
     const date = new Date(1999, 1, 1);
@@ -41,5 +42,30 @@ describe("createLastMonth 테스트", () => {
     const expectDate = new Date(1998, 11);
 
     expect(createLastMonth(date)).toEqual(expectDate);
+  });
+});
+
+describe("createFirstDateOfCurrentMonth", () => {
+  test("말일인 경우", () => {
+    const now = new Date(2024, 11, 29);
+    const result = createFirstDateOfCurrentMonth(now);
+
+    expect(result).toEqual(new Date(2024, 11, 1));
+  });
+
+  test("1일인 경우", () => {
+    const now = new Date(2024, 11, 1);
+    const result = createFirstDateOfCurrentMonth(now);
+
+    expect(result).toEqual(new Date(2024, 11, 1));
+  });
+
+  describe("실패하는 테스트", () => {
+    test("다른 달", () => {
+      const now = new Date(2024, 11, 1);
+      const result = createFirstDateOfCurrentMonth(now);
+
+      expect(result).not.toEqual(new Date(2024, 12, 1));
+    });
   });
 });

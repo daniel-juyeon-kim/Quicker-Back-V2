@@ -33,7 +33,7 @@ export class AverageCostRepository extends AbstractRepository {
     }
   }
 
-  async createAverage(averageOfCost: AverageOfCost) {
-    await this.repository.save(averageOfCost);
+  async createAverage(averageOfCost: Omit<AverageOfCost, "date">, date: Date) {
+    await this.repository.save({ ...averageOfCost, date });
   }
 }

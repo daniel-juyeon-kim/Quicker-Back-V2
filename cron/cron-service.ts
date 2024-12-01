@@ -7,7 +7,15 @@ export class CronService {
   private dataService: DataService;
   private tableService: TableService;
 
-  constructor({ errorMessageBot, dataService, tableService }: Dependency) {
+  constructor({
+    errorMessageBot,
+    dataService,
+    tableService,
+  }: {
+    errorMessageBot: ErrorMessageBot;
+    dataService: DataService;
+    tableService: TableService;
+  }) {
     this.errorMessageBot = errorMessageBot;
     this.dataService = dataService;
     this.tableService = tableService;
@@ -15,17 +23,12 @@ export class CronService {
 
   public async run() {
     try {
-      const orderInfos = await this.dataService.findLastMonthOrderInfo(new Date());
-      const table = this.tableService.createAverageTable(orderInfos);
-      await this.dataService.saveAverageTable(table);
+      const orders = await this.dataService.findAllLastMonthOrderPriceAndDistance(new Date());
+      const averageTable = this.tableService.createAverageTable(orders);
+      await this.dataService.saveAverageTable(averageTable);
     } catch (e) {
       const errorMessage = new ErrorMessage({ error: e as Error, date: new Date() });
       this.errorMessageBot.sendMessage(errorMessage);
     }
   }
 }
-type Dependency = {
-  errorMessageBot: ErrorMessageBot;
-  dataService: DataService;
-  tableService: TableService;
-};

@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-import { Location } from "../../../maria/commands/location";
+import { DestinationDepartureLocation } from "../../../database/type-orm/repository/location/location.repository";
 import { isNull, validateResponse } from "../../../util";
 import { validateEnvValue } from "../../../util/env";
 import { EnvConfig } from "../../../util/env/types";
@@ -18,14 +18,14 @@ export class TmapApi {
     this.appKey = appKey;
   }
 
-  public async requestRouteDistances(locations: Location[]) {
+  public async requestRouteDistances(locations: DestinationDepartureLocation[]) {
     const promises = locations.map(async (location) => {
       const requestBody = {
         totalValue: 2,
-        startX: location.Departure.X.toString(),
-        startY: location.Departure.Y.toString(),
-        endX: location.Destination.X.toString(),
-        endY: location.Destination.Y.toString(),
+        startX: location.departure.x.toString(),
+        startY: location.departure.y.toString(),
+        endX: location.destination.x.toString(),
+        endY: location.destination.y.toString(),
       };
 
       const distance = await this.requestRouteDistance(requestBody);
