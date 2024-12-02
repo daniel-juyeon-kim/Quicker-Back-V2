@@ -20,7 +20,7 @@ export class Destination {
     nullable: false,
     onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   order!: Order;
 
   @OneToOne(() => Receiver, (receiver) => receiver.destination, {

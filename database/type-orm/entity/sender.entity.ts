@@ -17,7 +17,7 @@ export class Sender {
     nullable: false,
     onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   departure!: Departure;
 }
 

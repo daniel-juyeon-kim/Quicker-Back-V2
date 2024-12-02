@@ -23,7 +23,7 @@ export class Product {
     nullable: false,
     onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   order!: Order;
 }
 

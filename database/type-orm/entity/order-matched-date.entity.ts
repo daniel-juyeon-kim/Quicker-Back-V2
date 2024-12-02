@@ -6,13 +6,13 @@ export class DeliveryPersonMatchedDate {
   @PrimaryColumn()
   id!: number;
 
-  @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-  date!: Date;
+  @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP", nullable: true })
+  date!: Date | null;
 
   @OneToOne(() => Order, (order) => order.deliveryPersonMatchedDate, {
     cascade: ["insert"],
     onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   order!: Order;
 }

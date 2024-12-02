@@ -13,6 +13,6 @@ export class ProfileImage {
     nullable: false,
     onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   user!: User;
 }
