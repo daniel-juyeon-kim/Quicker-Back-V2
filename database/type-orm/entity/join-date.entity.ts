@@ -13,6 +13,6 @@ export class JoinDate {
     onDelete: "CASCADE",
     nullable: false,
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   user!: User;
 }

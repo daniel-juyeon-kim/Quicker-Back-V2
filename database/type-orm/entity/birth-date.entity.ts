@@ -15,6 +15,6 @@ export class BirthDate {
     onDelete: "CASCADE",
     nullable: false,
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   user!: User;
 }

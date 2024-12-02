@@ -20,7 +20,7 @@ export class Departure {
     nullable: false,
     onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "id" })
   order!: Order;
 
   @OneToOne(() => Sender, (sender) => sender.departure, {
