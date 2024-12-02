@@ -1,13 +1,17 @@
 import { findDistanceKey } from "../../../util/distance";
-import { Order, Table } from "../../types";
+import { PriceAndDistance } from "../../types";
 import { AbstractTable } from "../abstract/table";
 
 export class CountTable extends AbstractTable {
-  protected calculate(table: Table) {
-    return ({ km }: Order) => {
+  public create(priceAndDistanceList: PriceAndDistance[]) {
+    const table = this.createTable();
+
+    priceAndDistanceList.forEach(({ km }) => {
       const key = findDistanceKey(km);
 
       table[key] += 1;
-    };
+    });
+
+    return table;
   }
 }

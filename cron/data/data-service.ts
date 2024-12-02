@@ -1,5 +1,5 @@
 import { createLastMonthRange } from "../../core/date";
-import { AverageOfCostAttributes } from "../../maria/models/AverageOfCost";
+import { Table } from "../types";
 import { Combiner } from "./combiner";
 import { DB } from "./database";
 import { ExternalApi } from "./external-api";
@@ -9,31 +9,25 @@ export class DataService {
   private externalApi: ExternalApi;
   private combiner: Combiner;
 
-  constructor({ database, externalApi, combiner }: Dependency) {
+  constructor({ database, externalApi, combiner }: { database: DB; externalApi: ExternalApi; combiner: Combiner }) {
     this.database = database;
     this.externalApi = externalApi;
     this.combiner = combiner;
   }
 
-  public async findLastMonthOrderInfo(date: Date) {
+  public async findAllLastMonthOrderPriceAndDistance(date: Date) {
     const { start, end } = createLastMonthRange(date);
 
-    const ids = await this.database.findLastMonthOrderIds(start, end);
+    const ids = await this.database.findAllLastMonthOrderId(start, end);
 
-    const prices = await this.externalApi.findPrice(ids);
-    const locations = await this.database.findLocation(ids);
-    const distances = await this.externalApi.findDistance(locations);
+    const prices = await this.externalApi.findAllPriceByIds(ids);
+    const locations = await this.database.findAllDestinationDeparture(ids);
+    const distances = await this.externalApi.findAllDistance(locations);
 
     return this.combiner.combineById(prices, distances);
   }
 
-  public async saveAverageTable(table: AverageOfCostAttributes) {
-    await this.database.saveAverage(table);
+  public async saveAverageTable(table: Table) {
+    await this.database.saveAverageTable(table);
   }
 }
-
-type Dependency = {
-  database: DB;
-  externalApi: ExternalApi;
-  combiner: Combiner;
-};

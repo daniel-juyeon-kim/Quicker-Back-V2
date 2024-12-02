@@ -1,37 +1,38 @@
-import { AverageModel } from "../../maria/commands/average";
-import { CacheOrderModel } from "../../maria/commands/cache-order";
-import { LocationModel } from "../../maria/commands/location";
-import sequelizeConnector from "../../maria/connector/sequelize-connector";
-import { AverageOfCostAttributes, initModels } from "../../maria/models/init-models";
-
-initModels(sequelizeConnector);
+import { AverageCostRepository, AverageOfCost, DeliveryPersonMatchedDateRepository } from "../../database";
+import { LocationRepository } from "../../database/type-orm/repository/location/location.repository";
 
 export class DB {
-  private averageInstance: AverageModel;
-  private cacheOrderInstance: CacheOrderModel;
-  private locationInstance: LocationModel;
+  private averageCostRepository: AverageCostRepository;
+  private deliveryPersonMatchedDateRepository: DeliveryPersonMatchedDateRepository;
+  private locationRepository: LocationRepository;
 
-  constructor({ averageInstance, cacheOrderInstance, locationInstance }: Dependency) {
-    this.averageInstance = averageInstance;
-    this.cacheOrderInstance = cacheOrderInstance;
-    this.locationInstance = locationInstance;
+  constructor({
+    averageCostRepository,
+    deliveryPersonMatchedDateRepository,
+    locationRepository,
+  }: {
+    averageCostRepository: AverageCostRepository;
+    deliveryPersonMatchedDateRepository: DeliveryPersonMatchedDateRepository;
+    locationRepository: LocationRepository;
+  }) {
+    this.averageCostRepository = averageCostRepository;
+    this.deliveryPersonMatchedDateRepository = deliveryPersonMatchedDateRepository;
+    this.locationRepository = locationRepository;
   }
 
-  public saveAverage(averageTable: AverageOfCostAttributes) {
-    return this.averageInstance.create(averageTable);
+  public async saveAverageTable(averageTable: Omit<AverageOfCost, "date">) {
+    const date = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+    return await this.averageCostRepository.createAverage(averageTable, date);
   }
 
-  public findLastMonthOrderIds(startDate: Date, endDate: Date) {
-    return this.cacheOrderInstance.findAllId(startDate, endDate);
+  public async findAllLastMonthOrderId(startDate: Date, endDate: Date) {
+    const orders = await this.deliveryPersonMatchedDateRepository.findAllOrderIdByBetweenDates(startDate, endDate);
+
+    return orders.map((order) => order.id);
   }
 
-  public findLocation(ids: number[]) {
-    return this.locationInstance.findAll(ids);
+  public async findAllDestinationDeparture(ids: number[]) {
+    return await this.locationRepository.findAllDestinationDepartureByOrderId(ids);
   }
 }
-
-type Dependency = {
-  averageInstance: AverageModel;
-  cacheOrderInstance: CacheOrderModel;
-  locationInstance: LocationModel;
-};

@@ -6,7 +6,11 @@ import { DataService } from "./data-service";
 import { DB } from "./database";
 import { ExternalApi } from "./external-api";
 
-const database = new DB({ averageInstance, cacheOrderInstance, locationInstance });
+const database = new DB({
+  averageCostRepository: averageInstance,
+  deliveryPersonMatchedDateRepository: cacheOrderInstance,
+  locationInstance,
+});
 const externalApi = new ExternalApi({ blockchain, tmapApi });
 const combiner = new Combiner();
 

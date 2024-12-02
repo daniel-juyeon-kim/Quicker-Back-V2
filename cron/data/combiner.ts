@@ -1,8 +1,8 @@
 import { isNull, isUndefined } from "../../util";
-import { Distance, Order, Price } from "../types";
+import { Distance, Price } from "../types";
 
 export class Combiner {
-  public combineById(prices: Price[], distances: Distance[]): Order[] {
+  public combineById(prices: Price[], distances: Distance[]) {
     return prices.map(this.combineWithDistance(distances)).filter((orderInfo) => !isNull(orderInfo));
   }
 

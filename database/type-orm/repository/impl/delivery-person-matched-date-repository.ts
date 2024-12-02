@@ -32,13 +32,13 @@ export class DeliveryPersonMatchedDateRepository extends AbstractRepository {
   }
 
   async findAllOrderIdByBetweenDates(startDate: Date, endDate: Date) {
-    const orderIds = await this.repository.find({
-      select: { id: true },
-      where: { date: Between(startDate, endDate) },
-    });
-
-    this.validateNotNull(orderIds);
-
-    return orderIds;
+    try {
+      return await this.repository.find({
+        select: { id: true },
+        where: { date: Between(startDate, endDate) },
+      });
+    } catch (error) {
+      throw new UnknownDataBaseError(error);
+    }
   }
 }

@@ -1,17 +1,5 @@
-import { Order, Table } from "../../types";
-
 export abstract class AbstractTable {
-  public create(orders: Order[]) {
-    const table = this.createTable();
-
-    orders.forEach(this.calculate(table));
-
-    return table;
-  }
-
-  protected abstract calculate(table: Table): ForEachCallBackFn;
-
-  private createTable() {
+  protected createTable() {
     return {
       "5KM": 0,
       "10KM": 0,
@@ -26,5 +14,3 @@ export abstract class AbstractTable {
     };
   }
 }
-
-type ForEachCallBackFn = Parameters<Array<Order>["forEach"]>[0];

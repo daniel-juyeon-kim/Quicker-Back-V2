@@ -2,7 +2,7 @@ import { TableService } from "../../../cron/table";
 import { AverageTable } from "../../../cron/table/impl/average-table";
 import { CountTable } from "../../../cron/table/impl/count-table";
 import { SumTable } from "../../../cron/table/impl/sum-table";
-import { createAverageTable } from "./impl/util";
+import { createTable } from "./impl/util";
 
 const tableService = new TableService({
   averageTable: new AverageTable(),
@@ -21,17 +21,13 @@ test("TableService.createAverageTable 테스트", () => {
     { id: 11, price: 110, km: 60 },
   ];
 
-  const expectResult = createAverageTable([
+  const expectResult = createTable([
     { key: "5KM", value: 10 },
     { key: "20KM", value: 21 },
     { key: "50KM", value: 190 },
     { key: "60KM", value: 149 },
   ]);
   const result = tableService.createAverageTable(orderInfos);
-
-  const date = new Date(2020, 1, 1, 1, 1, 1, 1);
-  expectResult.date = date.toISOString();
-  result.date = date.toISOString();
 
   expect(result).toStrictEqual(expectResult);
 });

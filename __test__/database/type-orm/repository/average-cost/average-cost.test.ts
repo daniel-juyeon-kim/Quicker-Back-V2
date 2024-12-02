@@ -13,9 +13,8 @@ afterEach(async () => {
 
 describe("createAverage 테스트", () => {
   test("통과하는 테스트", async () => {
-    const createDate = new Date(1990, 0, 1, 0, 0, 0, 0);
+    const createDate = new Date(1990, 0, 1);
     const average = {
-      date: createDate,
       "5KM": 5,
       "10KM": 10,
       "15KM": 15,
@@ -28,7 +27,7 @@ describe("createAverage 테스트", () => {
       "60+KM": 70,
     };
 
-    await averageRepository.createAverage(average);
+    await averageRepository.createAverage(average, createDate);
 
     await expect(testDataSource.manager.existsBy(AverageOfCost, { date: createDate })).resolves.toBe(true);
   });

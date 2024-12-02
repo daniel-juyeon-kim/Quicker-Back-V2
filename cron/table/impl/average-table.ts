@@ -1,64 +1,24 @@
-import { AverageOfCostAttributes } from "../../../maria/models/init-models";
-import { validateNotZero, validateNumeric } from "../../../util";
 import { DistanceKeys, Table } from "../../types";
+import { AbstractTable } from "../abstract/table";
 
-type Tables = {
-  averageTable: AverageOfCostAttributes;
-  sumTable: Table;
-  countTable: Table;
-};
-
-export class AverageTable {
-  public create({ sumTable, countTable, date }: { sumTable: Table; countTable: Table; date: Date }) {
-    const averageTable = this.createAverageOfCostTable();
+export class AverageTable extends AbstractTable {
+  public create({ sumTable, countTable }: { sumTable: Table; countTable: Table }) {
+    const averageTable = this.createTable();
     const sumTableKeys = Object.keys(sumTable) as DistanceKeys[];
 
-    sumTableKeys.forEach(this.calculate({ averageTable, sumTable, countTable }));
+    sumTableKeys.forEach((key) => {
+      // 0 / 0 이 존재할 수 있음
+      if (sumTable[key] === 0 || countTable[key] === 0) {
+        return;
+      }
 
-    this.assignCreatedDate(averageTable, date);
+      averageTable[key] = this.calculateAverage(sumTable[key], countTable[key]);
+    });
 
     return averageTable;
   }
 
-  private calculate({ averageTable, sumTable, countTable }: Tables) {
-    return (key: DistanceKeys) => {
-      try {
-        averageTable[key] = this.calculateAverage(sumTable[key], countTable[key]);
-      } catch {
-        return;
-      }
-    };
-  }
-
   private calculateAverage(sum: number, count: number) {
-    this.validate(sum);
-    this.validate(count);
-
     return Math.floor(sum / count);
-  }
-
-  private validate(value: number) {
-    validateNumeric(value);
-    validateNotZero(value);
-  }
-
-  private assignCreatedDate(table: AverageOfCostAttributes, date: Date) {
-    table.date = date.toISOString();
-  }
-
-  private createAverageOfCostTable() {
-    return {
-      date: "",
-      "5KM": 0,
-      "10KM": 0,
-      "15KM": 0,
-      "20KM": 0,
-      "25KM": 0,
-      "30KM": 0,
-      "40KM": 0,
-      "50KM": 0,
-      "60KM": 0,
-      "60+KM": 0,
-    };
   }
 }
