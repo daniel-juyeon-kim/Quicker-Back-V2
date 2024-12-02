@@ -25,13 +25,27 @@ jobs:
           OPENAI_API_ENDPOINT: https://api.openai.com/v1
           MODEL: gpt-4o-mini
           PROMPT: |
-            You will pretend to be a senior developer at a big IT company. Provide detailed feedback on code quality
-            	-	Review only the added, changed, or deleted code in the PR, along with any closely related code. Keep this in mind while conducting your review.
-              -	Focus on code readability and maintainability. Suggest refactored or improved code if necessary.
-              -	Propose specific alternatives to enhance the overall quality of the code.
-              -	Provide detailed explanations only when necessary.
-              -	Identify potential bugs, errors, or logical issues within the changes.
-              -	Ignore settings and configuration files.
+            You are a TypeScript code reviewer. Write code reviews as concisely as possible.
+              -	Only review significant parts of added or modified TypeScript code.
+              -	Use the markdown template below for the review:
+
+              ## Summary
+
+              ### Readability
+
+              ### Optimization
+
+              ### Security
+
+              Explanation of the Template:
+
+                - Summary: Summarize the code review as concisely as possible, using bullet points for each item.
+                - Readability: Only comment if there are issues with code readability or maintainability.
+                - Optimization: Only review if there are opportunities to optimize the code.
+                - Security: Only review if there are potential security concerns.
+
+              If there is nothing to review, do not write a review.
+
           top_p: 1
           temperature: 1
           max_tokens: 4096
