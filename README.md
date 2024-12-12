@@ -10,41 +10,44 @@
 
 리팩토링 과정에서 변경, 추가에 따라 검증에 요구되는 비용이 증가하는 문제가 있었습니다.
 
-- 변경되어도 같은 동작을 보장하기 어려움
-- 직접 검증은 일시적이고 시간 소모가 큼
+- 변경이 발생하면 같은 동작을 보장하기 어려움
+- 변경이 발생할 때마다 검증해야 함
+- 수작업으로 검증하는 방식은 일시적이고 시간 소모가 큼
+- 어디까지 검증했는지 기억하기 어려움
 
 #### 해결
 
-- 구현, 변경 후 테스트 코드를 작성하여 의도대로 동작하는지 반복, 지속적 검증을 가능(테스트 커버리지 95.52%)
-- CI/CD 파이프라인에 테스트 과정을 추가하여 최종 검증과 다른 환경에서 검증
+- 구현이나 변경 후 테스트 코드를 작성하여 의도대로 동작하는지 테스트(테스트 커버리지 95.52%)
+- 테스트 코드를 통해 지속적이면서 빠른 검증 가능
 
 ### Github Action을 통한 CI/CD 파이프라인 구축
 
 #### 문제
 
-- 개발 환경에서만 잘 동작하는 테스트인지 확인할 방법이 없음
-- 기존 프로젝트에서 코드 리뷰를 받을 수 없었음
-- PR 후 직접 서버에 접속 후 업데이트하는 과정이 귀찮음
+- 다른 환경에서도 잘 돌아가는지 테스트 필요
+- 코드 리뷰의 부재
+- PR 후 수작업으로 서버에 접속해서 업데이트해야 함
+  - 만약 같은 파트의 팀원이 있다면 해당 팀원의 PR에 일일이 업데이트해야 함, 이는 개발에 병목이 발생
 
 #### 해결
 
 > **CI/CD 파이프라인**<br>
 > PR -> 테스트 -> GPT 코드 리뷰 - PR merge -> 도커 이미지 빌드 -> EC2 인스턴스 배포
 
-- 테스트를 실행하는 워크플로 추가로 다른 환경에서 잘 동작하는지 검증 가능
-- PR 과정 중 GPT를 이용한 코드 리뷰
-- 도커 이미지 빌드 + EC2 인스턴스 배포 자동화
+- 테스트 과정을 통해 다른 환경에서 검증
+- PR 과정에 GPT를 이용한 코드 리뷰 추가
+- 도커 이미지 빌드 + EC2 인스턴스 배포 자동화s(5분 -> 0분)
 
 ### Docker 설정
 
 #### 문제
 
-- EC2 인스턴스 생성 후 설정하는 시간 소모가 큼
-- 팀원의 개발 환경이 달라서 문제가 발생
+- EC2 인스턴스 생성 후, 인스턴스에서 프로젝트를 배포하기 위한 초기 설정을 하는 시간 소모가 큼
+- 팀원의 개발 환경이 달라서 문제 발생
 
 #### 해결
 
-- 도커를 이용한 배포로 개발자가 인스턴스를 설정하는 시간을 단축(1시간 -> 10분)
+- 도커를 통한 배포로 개발자가 인스턴스를 설정하는 시간을 단축(1시간 -> 10분)
 - 개발 환경에 사용할 도커 설정 파일을 작성하여 해결
 
 ### Sequelize에서 TypeORM으로 변경
@@ -53,30 +56,31 @@
 
 - 동시성 문제
 - 프로젝트 설계 과정에서 DB 설계에 결함과 불필요한 부분이 존재
-- DB 테스트가 외부 환경에 의존적(테스트가 개발 환경의 DB에 의존)
+- DB 테스트가 로컬 환경에 의존(테스트가 로컬 DB에 의존)
+- DB 계층의 에러 핸들링 부족
 
 ##### Sequelize를 사용하면서 겪은 문제
 
-- 타입 스크립트를 지원하지만 상대적으로 불편함
-- 알아야 하고 작성해야 하는 정보가 많음
-  - sequelize-auto로 해결하다 보니 해당 라이브러리에 의존적이고 ORM에 대한 이해 부족
+- TypeScript를 지원하지만, 상대적으로 불편함
+- 알아야 하는 정보와 작성해야 하는 코드가 많음
+  - sequelize-auto로 해결하다 보니 해당 라이브러리에 의존적이고 ORM에 대한 이해, 학습 부족
 
 #### 해결
 
 TypeScript를 지원하는 ORM 중 다운로드, 러닝 커브, 데코레이터 지원 때문에 TypeORM을 선택했습니다.
 
-Sequelize에서 TypeORM으로 변경하기 위해 TypeORM을 배워야 해서 [TypeORM 학습 테스트](https://github.com/daniel-juyeon-kim/study-typeorm)을 통해 학습했습니다.
+Sequelize에서 TypeORM으로 변경하기 위해 TypeORM을 [테스트](https://github.com/daniel-juyeon-kim/study-typeorm)를 통해 학습했습니다.
 
 - transaction 적용으로 동시성 문제 해결
 - 기존 Sequelize로 구현된 부분을 TypeORM으로 재구현하면서 DB 재설계
 - 인메모리 DB를 통한 테스트 작성
-- repository 계층에서 발생한 문제는 에러 컨트롤러의 적절한 처리를 위해 데이터베이스 계층의 에러를 던짐
+- repository 계층에서 발생한 문제는 데이터베이스 계층의 에러를 던짐으로써 에러 컨트롤러가 적절하게 처리하도록 수정
 
 ### Swagger를 통한 API 문서 작성
 
 #### 문제
 
-- 시간이 지나면서 개발한 라우터의 응답이 기억나지 않음
+- 시간이 지나면서 개발한 API의 응답이 기억나지 않음
 - 프론트 인원이 API 연동을 해야 하는 상황에서는 API 문서는 필수
 - 기존 API 설계에 결함 존재
 
@@ -89,8 +93,8 @@ API 재설계, Swagger를 통해 API 문서를 작성했습니다.
 #### 문제
 
 - 비즈니스 로직에 필요한 의존성(레포지토리, 외부 API 등)을 서비스 계층으로 혼동
-- 컨트롤러에 요청, 응답, 비지니스 로직이 포함
-- 에러 컨트롤러가 단순하게 처리해서 프론트는 명확한 에러 핸들링이 어려움
+- 컨트롤러가 여러 가지 작업을 수행(컨트롤러에 요청과 응답, 비지니스 로직이 모여있음)
+- 에러 컨트롤의 단순한 에러 처리로 프론트에서는 정확한 에러 핸들링이 어려움
 
 #### 해결
 
@@ -98,7 +102,7 @@ API 재설계, Swagger를 통해 API 문서를 작성했습니다.
 
 - /service -> /core로 변경
 - service 계층 추가
-- 에러 컨트롤러가 각 계층의 에러를 핸들링 하도록 수정
+- 에러 컨트롤러가 각 계층의 에러를 핸들링하도록 수정
 
 <details>
   <summary>전 후 비교</summary>
@@ -152,7 +156,7 @@ export class ErrorControllerImpl implements ErrorController {
   handleError = async (error: ErrorTypes, _: Request, res: Response, next: NextFunction) => {
     const date = new Date();
 
-    // 1. 데이터 베이스 계층 에러
+    // 1. 데이터베이스 계층 에러
     this.databaseErrorController.handle({ error, res, date });
     // 2. 외부 api 에러 확인
     await this.externalApiErrorController.handle({ error, res, date });
@@ -296,7 +300,7 @@ export class TmapApiErrorHandler extends CommonExternalApiErrorHandler {
 
 #### 문제
 
-아래의 코드가 파일 하나로 작성되어있어서 테스트, 유지보수에 어려움이 있었습니다.
+아래의 코드가 파일 하나로 작성되어 있어서 테스트, 유지보수에 어려움이 있었습니다.
 
 - 월간 거리당 평균 의뢰금을 계산하는 스케줄러
 - PATCH /order/{orderId}/delivery-person의 서비스
@@ -515,8 +519,8 @@ export const main = async () => {
     - [x] 외부 데이터, ExternalApi
       - [x] 금액 조회, findAllPriceByIds(ids: number[]) => {orderNumber: number; price: number;}[]
       - [x] 거리 조회, findAllDistance(locations: DestinationDepartureLocation[] ): {orderId: number; km: number;}[]
-    - [x] Combiner(거리와 금액을 id를 기준으로 통합한 주문정보 생성)
-      - [x] id로 주문정보 통합, combineById(prices: Price[], distances: Distance[]): {id: number, km: number, price: number}[]
+    - [x] Combiner(거리와 금액을, id를 기준으로 통합한 주문 정보 생성)
+      - [x] id로 주문 정보 통합, combineById(prices: Price[], distances: Distance[]): {id: number, km: number, price: number}[]
   - [x] /table
     - [x] 테이블과 관련된 내용 처리 TableService
       - [x] 각 거리당 평균을 계산한 테이블 생성, createAverageTable(PriceAndDistance[]): Table
@@ -788,4 +792,4 @@ export class DeliveryUrlMessage {
 
 - ESLint, Prettier를 이용한 코드 포멧팅
 - 요청 데이터에 대한 유효성 검사
-- HTTP 응답 코드, 메시지로 클라언트에게 명확한 응답을 보내도록 수정
+- HTTP 응답 코드, 메시지로 프론트에 명확한 응답을 보내도록 수정
