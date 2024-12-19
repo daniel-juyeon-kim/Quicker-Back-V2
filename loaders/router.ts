@@ -4,7 +4,6 @@ import swaggerUi from "swagger-ui-express";
 import { errorController } from "../controllers";
 import notFound from "../routes/not-found";
 
-import associateOrder from "../routes/associate-order";
 import chat from "../routes/chat";
 import order from "../routes/order";
 import user from "../routes/user";
@@ -21,9 +20,6 @@ AppDataSource.initialize()
 
 export const router = {
   routing: (app: Application) => {
-    // 개발용 라우터
-    app.use("/AssociateOrder", associateOrder);
-
     // 서비스용 라우터
     app.use("/chat", chat);
     app.use("/user", user);
