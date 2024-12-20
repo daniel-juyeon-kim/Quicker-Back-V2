@@ -20,10 +20,6 @@ AppDataSource.initialize()
 
 export const router = {
   routing: (app: Application) => {
-    // 개발용 라우터
-    // app.use("/", home);
-    // app.use("/AssociateOrder", associateOrder);
-
     // 서비스용 라우터
     app.use("/chat", chat);
     app.use("/user", user);
