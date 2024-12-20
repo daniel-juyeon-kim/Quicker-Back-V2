@@ -1,4 +1,4 @@
-import { AverageCostRepository, AverageOfCost, NotExistDataError } from "../../../../../database";
+import { AverageCostRepository, AverageOfCost, DuplicatedDataError, NotExistDataError } from "../../../../../database";
 import { initializeDataSource, testDataSource } from "../data-source";
 
 const averageRepository = new AverageCostRepository(testDataSource.getRepository(AverageOfCost));
@@ -31,7 +31,33 @@ describe("createAverage 테스트", () => {
 
     await expect(testDataSource.manager.existsBy(AverageOfCost, { date: createDate })).resolves.toBe(true);
   });
+
+  describe("실패하는 테스트", () => {
+    test("중복 데이터 존재", async () => {
+      const createDate = new Date(1990, 4, 1);
+      const average = {
+        "5KM": 5,
+        "10KM": 10,
+        "15KM": 15,
+        "20KM": 20,
+        "25KM": 25,
+        "30KM": 30,
+        "40KM": 40,
+        "50KM": 50,
+        "60KM": 60,
+        "60+KM": 70,
+      };
+
+      await averageRepository.createAverage(average, createDate);
+      await expect(averageRepository.createAverage(average, createDate)).rejects.toStrictEqual(
+        new DuplicatedDataError(`${createDate}에 해당되는 데이터가 이미 존재합니다.`),
+      );
+
+      await expect(testDataSource.manager.existsBy(AverageOfCost, { date: createDate })).resolves.toBe(true);
+    });
+  });
 });
+
 describe("findLastMonthAverageCost 테스트", () => {
   beforeEach(async () => {
     const average1: AverageOfCost = {
