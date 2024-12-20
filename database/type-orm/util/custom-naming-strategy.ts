@@ -1,5 +1,5 @@
-import { isUndefined } from "lodash";
 import { DefaultNamingStrategy, Table } from "typeorm";
+import { isUndefined } from "../../../util";
 
 export class CustomNamingStrategy extends DefaultNamingStrategy {
   foreignKeyName(tableOrName: Table | string, columnNames: string[], _referencedTablePath?: string): string {

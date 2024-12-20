@@ -1,6 +1,6 @@
-import { AverageOfCostAttributes } from "../../maria/models/AverageOfCost";
+import { AverageOfCost } from "../../database";
 
-export type DistanceKeys = Exclude<keyof AverageOfCostAttributes, "date">;
+export type DistanceKeys = Exclude<keyof AverageOfCost, "date">;
 export type Distance = { orderId: number; km: number };
 export type Price = { orderNumber: number; price: number };
 export type Table = {

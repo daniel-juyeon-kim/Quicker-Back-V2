@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { messageInstance } from "../mongo/command";
+import { chatMessageRepository } from "../database";
 
 const main = (server: any) => {
   const io = new Server(server, {
@@ -25,7 +25,8 @@ const main = (server: any) => {
         socket.join(roomName);
         // db 내용 불러옴
         try {
-          const messages = await messageInstance.find(roomName.toString());
+          const messages = await chatMessageRepository.findAllMessageByOrderId(parseInt(roomName));
+
           if (messages !== undefined) {
             socket.emit("loadMessage", messages);
           }
@@ -43,10 +44,10 @@ const main = (server: any) => {
           date: new Date().toISOString(),
         });
         try {
-          messageInstance.create({
-            id: receiveMessage.sender,
-            roomName: roomName,
-            receiveMessage: receiveMessage.data,
+          chatMessageRepository.saveMessage(parseInt(roomName), {
+            walletAddress: receiveMessage.sender,
+            message: receiveMessage.data,
+            date: new Date(),
           });
           done();
         } catch (error) {
