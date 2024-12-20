@@ -1,5 +1,9 @@
-import { AverageCostRepository, AverageOfCost, DeliveryPersonMatchedDateRepository } from "../../database";
-import { LocationRepository } from "../../database/type-orm/repository/location/location.repository";
+import {
+  AverageCostRepository,
+  AverageOfCost,
+  DeliveryPersonMatchedDateRepository,
+  LocationRepository,
+} from "../../database";
 
 export class DB {
   private averageCostRepository: AverageCostRepository;

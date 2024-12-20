@@ -1,6 +1,5 @@
 import { DataSource } from "typeorm";
-import { Order, User } from "../../../../../database";
-import { OrderRepositoryImpl } from "../../../../../database/type-orm/repository/order/order.repository.impl";
+import { Order, OrderRepositoryImpl, User } from "../../../../../database";
 import { initializeDataSource, testDataSource } from "../data-source";
 
 const orderRepository = new OrderRepositoryImpl(testDataSource.getRepository(Order));

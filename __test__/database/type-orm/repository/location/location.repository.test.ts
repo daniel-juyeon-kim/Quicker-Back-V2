@@ -1,8 +1,16 @@
 import { mock } from "jest-mock-extended";
 import { Repository } from "typeorm";
 import { UnknownDataBaseError } from "../../../../../core";
-import { Departure, Destination, Order, Product, Transportation, User } from "../../../../../database/type-orm";
-import { LocationRepositoryImpl } from "../../../../../database/type-orm/repository/location/location.repository.impl";
+import {
+  Departure,
+  Destination,
+  LocationRepositoryImpl,
+  Order,
+  Product,
+  Transportation,
+  User,
+} from "../../../../../database/type-orm";
+
 import { initializeDataSource, testDataSource } from "../data-source";
 
 const locationRepository = new LocationRepositoryImpl(testDataSource.getRepository(Order));

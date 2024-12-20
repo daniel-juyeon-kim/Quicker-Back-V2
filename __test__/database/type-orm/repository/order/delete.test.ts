@@ -3,13 +3,14 @@ import {
   Departure,
   Destination,
   Order,
+  OrderRepositoryImpl,
   Product,
   Receiver,
   Sender,
   Transportation,
   User,
 } from "../../../../../database/type-orm";
-import { OrderRepositoryImpl } from "../../../../../database/type-orm/repository/order/order.repository.impl";
+
 import { initializeDataSource, testDataSource } from "../data-source";
 
 const orderRepository = new OrderRepositoryImpl(testDataSource.getRepository(Order));

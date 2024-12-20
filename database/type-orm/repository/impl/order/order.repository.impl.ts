@@ -1,9 +1,10 @@
 import { In, IsNull, Not, Repository } from "typeorm";
-import { UnknownDataBaseError } from "../../../../core";
-import { isNull } from "../../../../util";
-import { Departure, Destination, Order, Product, Transportation, User } from "../../entity";
-import { BusinessRuleConflictDataError, NotExistDataError } from "../../util";
-import { AbstractRepository } from "../abstract-repository";
+
+import { AbstractRepository } from "../..";
+import { UnknownDataBaseError } from "../../../../../core";
+import { isNull } from "../../../../../util";
+import { Departure, Destination, Order, Product, Transportation, User } from "../../../entity";
+import { BusinessRuleConflictDataError, NotExistDataError } from "../../../util";
 import { OrderRepository } from "./order.repository";
 
 export class OrderRepositoryImpl extends AbstractRepository implements OrderRepository {

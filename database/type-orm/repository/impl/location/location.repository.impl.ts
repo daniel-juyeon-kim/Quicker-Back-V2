@@ -1,8 +1,9 @@
 import { In, Repository } from "typeorm";
-import { UnknownDataBaseError } from "../../../../core";
-import { Order } from "../../entity/order.entity";
-import { NotExistDataError } from "../../util";
-import { AbstractRepository } from "../abstract-repository";
+
+import { AbstractRepository } from "../..";
+import { UnknownDataBaseError } from "../../../../../core";
+import { Order } from "../../../entity";
+import { NotExistDataError } from "../../../util";
 import { LocationRepository } from "./location.repository";
 
 export class LocationRepositoryImpl extends AbstractRepository implements LocationRepository {

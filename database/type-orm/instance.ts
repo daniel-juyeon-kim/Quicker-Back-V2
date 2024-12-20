@@ -3,12 +3,12 @@ import { AverageOfCost, DeliveryPersonMatchedDate, Order, User } from "./entity"
 import {
   AverageCostRepository,
   DeliveryPersonMatchedDateRepository,
+  LocationRepositoryImpl,
   OrderParticipantRepository,
+  OrderRepositoryImpl,
   ReceiverRepository,
 } from "./repository";
 import { UserRepositoryImpl } from "./repository/impl/user/user.repository.impl";
-import { LocationRepositoryImpl } from "./repository/location/location.repository.impl";
-import { OrderRepositoryImpl } from "./repository/order/order.repository.impl";
 
 export const userRepository = new UserRepositoryImpl(AppDataSource.getRepository(User));
 export const orderRepository = new OrderRepositoryImpl(AppDataSource.getRepository(Order));

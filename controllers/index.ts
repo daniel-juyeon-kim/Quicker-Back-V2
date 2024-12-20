@@ -1,4 +1,3 @@
-export * from "./admin";
 export * from "./chat.controller";
 export * from "./error";
 export * from "./instance";

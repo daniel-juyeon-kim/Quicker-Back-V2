@@ -1,7 +1,6 @@
 import { parseNumericStringToNumberList } from "../../core";
 import { createLastMonth } from "../../core/date";
-import { AverageCostRepository } from "../../database";
-import { OrderRepository } from "../../database/type-orm/repository/order/order.repository";
+import { AverageCostRepository, OrderRepository } from "../../database";
 import { findDistanceKey } from "../../util/distance";
 import { OrderService } from "./order.service";
 import { createBasicTransportationEntity } from "./util";
