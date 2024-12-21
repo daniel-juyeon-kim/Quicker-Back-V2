@@ -22,12 +22,12 @@ export class AverageCostRepository extends AbstractRepository {
         select: { [distanceUnit]: true },
       });
 
-      this.validateNotNull(average);
+      this.validateNotNull(lastMonth, average);
 
       return average[distanceUnit];
     } catch (error) {
       if (error instanceof NotExistDataError) {
-        throw new NotExistDataError(`${lastMonth}에 해당되는 데이터가 존재하지 않습니다.`);
+        throw error;
       }
       throw new UnknownDataBaseError(error);
     }

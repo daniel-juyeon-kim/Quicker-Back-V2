@@ -23,12 +23,12 @@ export class LocationRepositoryImpl extends AbstractRepository implements Locati
         },
       });
 
-      this.validateNotNull(destinationDeparture);
+      this.validateNotNull(orderId, destinationDeparture);
 
       return destinationDeparture;
     } catch (error) {
       if (error instanceof NotExistDataError) {
-        throw new NotExistDataError(`${orderId}에 대한 주소 정보가 존재하지 않습니다.`);
+        throw error;
       }
       throw new UnknownDataBaseError(error);
     }
@@ -45,7 +45,7 @@ export class LocationRepositoryImpl extends AbstractRepository implements Locati
       },
     });
 
-    this.validateNotNull(orderLocations);
+    this.validateNotNull(orderIds, orderLocations);
 
     return orderLocations;
   }
