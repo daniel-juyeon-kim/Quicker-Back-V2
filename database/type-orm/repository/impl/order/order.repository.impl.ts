@@ -3,7 +3,7 @@ import { In, IsNull, Not, Repository } from "typeorm";
 import { AbstractRepository } from "../..";
 import { UnknownDataBaseError } from "../../../../../core";
 import { isNull } from "../../../../../util";
-import { Departure, Destination, Order, Product, Transportation, User } from "../../../entity";
+import { Departure, Destination, Order, Product, Receiver, Sender, Transportation, User } from "../../../entity";
 import { BusinessRuleConflictDataError, NotExistDataError } from "../../../util";
 import { OrderRepository } from "./order.repository";
 
@@ -64,44 +64,40 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
       await this.repository.manager.transaction(async (manager) => {
         const requester = await manager.findOneBy(User, { walletAddress });
 
-        this.validateNotNull(requester);
+        this.validateNotNull(walletAddress, requester);
 
         const order = manager.create(Order, {
           detail,
           requester,
         });
 
-        await manager.save(Order, order);
+        await manager.insert(Order, order);
 
         const id = order.id;
 
-        await manager.save(Product, {
+        await manager.insert(Product, {
           id,
           ...product,
-          order: order,
         });
-        await manager.save(Transportation, {
+        await manager.insert(Transportation, {
           id,
           ...transportation,
-          order: order,
         });
-        await manager.save(Destination, {
+        await manager.insert(Destination, {
           id,
           ...destination,
-          order: order,
-          receiver: {
-            id,
-            ...receiver,
-          },
         });
-        await manager.save(Departure, {
+        await manager.insert(Receiver, {
+          id,
+          ...receiver,
+        });
+        await manager.insert(Departure, {
           id,
           ...departure,
-          order: order,
-          sender: {
-            id,
-            ...sender,
-          },
+        });
+        await manager.insert(Sender, {
+          id,
+          ...sender,
         });
       });
     } catch (error) {
@@ -113,22 +109,29 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
   }
 
   async findRequesterIdByOrderId(orderId: number) {
-    const requester = await this.repository.findOne({
-      relations: {
-        requester: true,
-        deliveryPerson: true,
-      },
-      where: { id: orderId },
-      select: {
-        id: true,
-        requester: { id: true },
-        deliveryPerson: { id: true },
-      },
-    });
+    try {
+      const requester = await this.repository.findOne({
+        relations: {
+          requester: true,
+          deliveryPerson: true,
+        },
+        where: { id: orderId },
+        select: {
+          id: true,
+          requester: { id: true },
+          deliveryPerson: { id: true },
+        },
+      });
 
-    this.validateNotNull(requester);
+      this.validateNotNull(orderId, requester);
 
-    return requester;
+      return requester;
+    } catch (error) {
+      if (error instanceof NotExistDataError) {
+        throw error;
+      }
+      throw new UnknownDataBaseError(error);
+    }
   }
 
   async findAllMatchableOrderByWalletAddress(deliverPersonWalletAddress: string) {
@@ -239,6 +242,10 @@ export class OrderRepositoryImpl extends AbstractRepository implements OrderRepo
   }
 
   async deleteByOrderId(orderId: number) {
-    await this.repository.delete(orderId);
+    try {
+      await this.repository.delete(orderId);
+    } catch (error) {
+      throw new UnknownDataBaseError(error);
+    }
   }
 }
