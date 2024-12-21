@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-import { DestinationDepartureLocation } from "../../../database/type-orm/repository/location/location.repository";
+import { DestinationDepartureLocation } from "../../../database";
 import { isNull, validateResponse } from "../../../util";
 import { validateEnvValue } from "../../../util/env";
 import { EnvConfig } from "../../../util/env/types";

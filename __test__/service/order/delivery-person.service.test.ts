@@ -9,13 +9,13 @@ import {
   Destination,
   NotExistDataError,
   Order,
-  OrderRepository,
-  OrderRepositoryImpl,
   Product,
   ReceiverRepository,
   Transportation,
   User,
 } from "../../../database";
+import { OrderRepository } from "../../../database/type-orm/repository/impl/order/order.repository";
+import { OrderRepositoryImpl } from "../../../database/type-orm/repository/impl/order/order.repository.impl";
 import { DeliveryPersonService } from "../../../service/order/delivery-person/delivery-person.service";
 import { DeliveryUrlMessage } from "../../../service/order/delivery-url-message";
 import { initializeDataSource, testDataSource } from "../../database/type-orm/repository/data-source";

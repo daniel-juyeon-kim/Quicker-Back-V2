@@ -26,37 +26,29 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
   }) {
     try {
       await this.repository.manager.transaction(async (manager) => {
-        const condition = await manager.existsBy(User, { id });
+        const userExists = await manager.existsBy(User, { id });
 
-        if (condition) {
+        if (userExists) {
           throw new DuplicatedDataError(`${id}에 해당하는 데이터가 이미 존재합니다.`);
         }
 
-        const userEntity = manager.create(User, {
+        await manager.insert(User, {
+          id,
           ...user,
-          id,
         });
-        await manager.insert(User, userEntity);
 
-        const birthDateEntity = manager.create(BirthDate, {
+        await manager.insert(BirthDate, {
           id,
           date: birthDate,
-          user: userEntity,
         });
-        await manager.insert(BirthDate, birthDateEntity);
 
-        const profileImage = manager.create(ProfileImage, {
+        await manager.insert(ProfileImage, {
           id,
-          user: userEntity,
         });
-        await manager.insert(ProfileImage, profileImage);
 
-        const joinDate = manager.create(JoinDate, {
+        await manager.insert(JoinDate, {
           id,
-          date: birthDate,
-          user: userEntity,
         });
-        await manager.insert(JoinDate, joinDate);
       });
     } catch (error) {
       if (error instanceof DuplicatedDataError) {
@@ -73,12 +65,12 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
         select: { name: true },
       });
 
-      this.validateNotNull(name);
+      this.validateNotNull(walletAddress, name);
 
       return name;
     } catch (error) {
       if (error instanceof NotExistDataError) {
-        throw new NotExistDataError(`지갑주소 ${walletAddress}에 대응되는 ${this.ERROR_MESSAGE_NOT_EXIST_DATA}`);
+        throw new NotExistDataError(`지갑주소 ${walletAddress}에 대응되는 데이터가 존재하지 않습니다.`);
       }
       throw new UnknownDataBaseError(error);
     }
@@ -92,12 +84,12 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
         select: { profileImage: { imageId: true } },
       });
 
-      this.validateNotNull(user);
+      this.validateNotNull(walletAddress, user);
 
       return user.profileImage;
     } catch (error) {
       if (error instanceof NotExistDataError) {
-        throw new NotExistDataError(`지갑주소 ${walletAddress}에 대응되는 ${this.ERROR_MESSAGE_NOT_EXIST_DATA}`);
+        throw new NotExistDataError(`지갑주소 ${walletAddress}에 대응되는 데이터가 존재하지 않습니다.`);
       }
       throw new UnknownDataBaseError(error);
     }
@@ -114,13 +106,13 @@ export class UserRepositoryImpl extends AbstractRepository implements UserReposi
       await this.repository.manager.transaction(async (manager) => {
         const user = await manager.findOneBy(User, { walletAddress });
 
-        this.validateNotNull(user);
+        this.validateNotNull(walletAddress, user);
 
         await manager.update(ProfileImage, { id: user.id }, { imageId });
       });
     } catch (error) {
       if (error instanceof NotExistDataError) {
-        throw new NotExistDataError(`${walletAddress}에 대응되는 ${this.ERROR_MESSAGE_NOT_EXIST_DATA}`);
+        throw new NotExistDataError(`${walletAddress}에 대응되는 데이터가 존재하지 않습니다.`);
       }
       throw new UnknownDataBaseError(error);
     }

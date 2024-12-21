@@ -1,4 +1,4 @@
-import { LocationRepository } from "../../../database/type-orm/repository/location/location.repository";
+import { LocationRepository } from "../../../database";
 import { OrderLocationService } from "./order-location.service";
 
 export class OrderLocationServiceImpl implements OrderLocationService {

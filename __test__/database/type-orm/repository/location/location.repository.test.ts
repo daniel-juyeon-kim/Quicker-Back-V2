@@ -1,37 +1,61 @@
 import { mock } from "jest-mock-extended";
 import { Repository } from "typeorm";
+import {
+  BirthDate,
+  Departure,
+  Destination,
+  JoinDate,
+  LocationRepositoryImpl,
+  Order,
+  Product,
+  ProfileImage,
+  Receiver,
+  Sender,
+  Transportation,
+  User,
+} from "../../../../../database/type-orm";
+
 import { UnknownDataBaseError } from "../../../../../core";
-import { Departure, Destination, Order, Product, Transportation, User } from "../../../../../database/type-orm";
-import { LocationRepositoryImpl } from "../../../../../database/type-orm/repository/location/location.repository.impl";
 import { initializeDataSource, testDataSource } from "../data-source";
 
-const locationRepository = new LocationRepositoryImpl(testDataSource.getRepository(Order));
+const repository = new LocationRepositoryImpl(testDataSource.getRepository(Order));
 
 const createUser = async () => {
-  const user = testDataSource.manager.create(User, {
-    id: "아이디",
+  const id = "아이디";
+  const user = {
+    id,
     walletAddress: "지갑주소",
     name: "이름",
     email: "이메일",
     contact: "연락처",
-    birthDate: {
-      id: "아이디",
-      date: new Date(2000, 9, 12).toISOString(),
-    },
-    profileImage: {
-      id: "아이디",
-      imageId: "111",
-    },
-    joinDate: {
-      id: "아이디",
-      date: new Date(2023, 9, 12).toISOString(),
-    },
+  };
+
+  const birthDate = {
+    id,
+    date: new Date(2000, 9, 12).toISOString(),
+  };
+
+  const profileImage = {
+    id,
+    imageId: "111",
+  };
+
+  const joinDate = {
+    id,
+    date: new Date(2023, 9, 12).toISOString(),
+  };
+
+  await testDataSource.transaction(async (manager) => {
+    await manager.insert(User, user);
+    await manager.insert(BirthDate, birthDate);
+    await manager.insert(ProfileImage, profileImage);
+    await manager.insert(JoinDate, joinDate);
   });
 
-  await testDataSource.manager.save(User, user);
+  return (await testDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
 };
 
-const createOrder = async (walletAddress: string) => {
+const createOrder = async (requester: User) => {
   const detail = "디테일";
   const product = {
     width: 0,
@@ -47,7 +71,7 @@ const createOrder = async (walletAddress: string) => {
     car: 0,
     truck: 0,
   };
-  const recipient = {
+  const receiver = {
     name: "이름",
     phone: "01012345678",
   };
@@ -67,54 +91,52 @@ const createOrder = async (walletAddress: string) => {
   };
 
   await testDataSource.transaction(async (manager) => {
-    const requester = (await manager.findOneBy(User, { walletAddress })) as User;
-
     const order = manager.create(Order, {
       detail,
       requester,
     });
 
-    await manager.save(Order, order);
+    await manager.insert(Order, order);
 
     const id = order.id;
 
-    await manager.save(Product, {
+    await manager.insert(Product, {
       id,
       ...product,
-      order: order,
     });
-    await manager.save(Transportation, {
+    await manager.insert(Transportation, {
       id,
       ...transportation,
-      order: order,
     });
-    await manager.save(Destination, {
+    await manager.insert(Destination, {
       id,
       ...destination,
-      order: order,
-      recipient: {
-        id,
-        ...recipient,
-      },
     });
-    await manager.save(Departure, {
+    await manager.insert(Receiver, {
+      id,
+      ...receiver,
+    });
+    await manager.insert(Departure, {
       id,
       ...departure,
-      order: order,
-      sender: {
-        id,
-        ...sender,
-      },
+    });
+    await manager.insert(Sender, {
+      id,
+      ...sender,
     });
   });
 };
 
 beforeAll(async () => {
   await initializeDataSource(testDataSource);
-  await createUser();
-  const user = (await testDataSource.manager.findOneBy(User, { id: "아이디" })) as User;
-  await createOrder(user.walletAddress);
-  await createOrder(user.walletAddress);
+  const user = await createUser();
+  await createOrder(user);
+  await createOrder(user);
+});
+
+afterAll(async () => {
+  testDataSource.manager.clear(Order);
+  testDataSource.manager.clear(User);
 });
 
 describe("LocationRepository", () => {
@@ -122,41 +144,44 @@ describe("LocationRepository", () => {
     test("통과하는 테스트", async () => {
       const orderId = 1;
 
-      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).resolves.toEqual({
+      await expect(repository.findDestinationDepartureByOrderId(orderId)).resolves.toEqual({
         id: orderId,
         departure: { x: 127.09, y: 37.527 },
         destination: { x: 127.8494, y: 37.5 },
       });
     });
 
-    test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-      const orderId = 32;
-      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toThrow(
-        `${orderId}에 대한 주소 정보가 존재하지 않습니다.`,
-      );
-    });
+    describe("실패하는 테스트", () => {
+      test("존재하지 않는 값 입력", async () => {
+        const orderId = 32;
+        await expect(repository.findDestinationDepartureByOrderId(orderId)).rejects.toThrow(
+          `${orderId}에 대한 데이터가 존재하지 않습니다.`,
+        );
+      });
 
-    test("실패하는 테스트, 예측하지 못한 에러", async () => {
-      const orderId = 32;
-      const repository = mock<Repository<Order>>();
-      const error = new Error("알 수 없는 에러");
+      test("예측하지 못한 에러", async () => {
+        const orderId = 1;
+        const typeOrmRepository = mock<Repository<Order>>();
+        const originalError = new Error("알 수 없는 에러");
 
-      repository.findOne.mockRejectedValue(error);
+        typeOrmRepository.findOne.mockRejectedValue(originalError);
 
-      const locationRepository = new LocationRepositoryImpl(repository as Repository<Order>);
+        const repository = new LocationRepositoryImpl(typeOrmRepository);
 
-      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toBeInstanceOf(
-        UnknownDataBaseError,
-      );
-      await expect(locationRepository.findDestinationDepartureByOrderId(orderId)).rejects.toStrictEqual(
-        expect.objectContaining(error),
-      );
+        try {
+          await repository.findDestinationDepartureByOrderId(orderId);
+        } catch (e) {
+          const error = e as UnknownDataBaseError;
+          expect(error).toBeInstanceOf(UnknownDataBaseError);
+          expect(error.unknownError).toStrictEqual(originalError);
+        }
+      });
     });
   });
 
   describe("findAllDestinationDepartureByOrderId()", () => {
     test("통과하는 테스트", async () => {
-      await expect(locationRepository.findAllDestinationDepartureByOrderId([1, 2])).resolves.toEqual([
+      await expect(repository.findAllDestinationDepartureByOrderId([1, 2])).resolves.toEqual([
         {
           id: 1,
           departure: { x: 127.09, y: 37.527 },
@@ -170,18 +195,20 @@ describe("LocationRepository", () => {
       ]);
     });
 
-    test("실패하는 테스트, 존재하는 값과 존재하지 않는 값이 섞임", async () => {
-      await expect(locationRepository.findAllDestinationDepartureByOrderId([2, 3])).resolves.toEqual([
-        {
-          id: 2,
-          departure: { x: 127.09, y: 37.527 },
-          destination: { x: 127.8494, y: 37.5 },
-        },
-      ]);
-    });
+    describe("실패하는 테스트", () => {
+      test("존재하는 값과 존재하지 않는 값이 섞임", async () => {
+        await expect(repository.findAllDestinationDepartureByOrderId([2, 3])).resolves.toEqual([
+          {
+            id: 2,
+            departure: { x: 127.09, y: 37.527 },
+            destination: { x: 127.8494, y: 37.5 },
+          },
+        ]);
+      });
 
-    test("실패하는 테스트, 존재하지 않는 값 입력", async () => {
-      await expect(locationRepository.findAllDestinationDepartureByOrderId([3, 4])).resolves.toEqual([]);
+      test("존재하지 않는 값 입력", async () => {
+        await expect(repository.findAllDestinationDepartureByOrderId([3, 4])).resolves.toEqual([]);
+      });
     });
   });
 });

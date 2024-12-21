@@ -36,7 +36,7 @@ export class OrderParticipantRepository extends AbstractRepository {
         },
       });
 
-      this.validateNotNull(order);
+      this.validateNotNull(orderId, order);
 
       return order;
     } catch (error) {

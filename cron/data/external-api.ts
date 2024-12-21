@@ -1,5 +1,5 @@
 import { Blockchain, TmapApi } from "../../core";
-import { DestinationDepartureLocation } from "../../database/type-orm/repository/location/location.repository";
+import { DestinationDepartureLocation } from "../../database";
 
 import { isFulfilled, isNull, isUndefined } from "../../util";
 
