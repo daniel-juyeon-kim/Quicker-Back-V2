@@ -15,7 +15,7 @@ export class ReceiverRepository extends AbstractRepository {
         where: { id: orderId },
       });
 
-      this.validateNotNull(receiver);
+      this.validateNotNull(orderId, receiver);
 
       return receiver;
     } catch (error) {
